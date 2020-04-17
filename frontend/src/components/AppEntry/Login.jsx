@@ -11,7 +11,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "",
+      email: "",
       password: "",
       errors: {},
     };
@@ -22,11 +22,11 @@ class Login extends Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.auth.isAuthenticated) {
       console.log("Login done");
-      let user_details = nextProps.auth.user;
-      console.log("user details are....", user_details);
-      localStorage.setItem("username", user_details.username);
-      localStorage.setItem("user_id", user_details.id);
-      this.props.history.push("/welcomePage");
+      // let user_details = nextProps.auth.user;
+      // console.log("user details are....", user_details);
+      // localStorage.setItem("username", user_details.username);
+      // localStorage.setItem("user_id", user_details.id);
+      // this.props.history.push("/welcomePage");
     }
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
@@ -43,7 +43,7 @@ class Login extends Component {
     e.preventDefault();
 
     const data = {
-      username: this.state.username,
+      email: this.state.email,
       password: this.state.password,
     };
 
@@ -73,21 +73,21 @@ class Login extends Component {
               </td>
               <td width="33%">
                 <Form>
-                  <Form.Group controlId="username">
+                  <Form.Group controlId="email">
                     <Form.Label style={style1}>Email</Form.Label>
                     <Form.Control
                       type="text"
                       className={classnames({
-                        "is-invalid": errors.username,
+                        "is-invalid": errors.email,
                       })}
                       placeholder="Enter email"
-                      name="username"
-                      value={this.state.username}
+                      name="email"
+                      value={this.state.email}
                       onChange={this.handleChange}
                       required
                     />
-                    {errors.username && (
-                      <div className="invalid-feedback">{errors.username}</div>
+                    {errors.email && (
+                      <div className="invalid-feedback">{errors.email}</div>
                     )}
                   </Form.Group>
 
