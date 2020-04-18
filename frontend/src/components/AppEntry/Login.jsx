@@ -45,7 +45,7 @@ class Login extends Component {
 
   render() {
     const { errors, onSignUp } = this.state;
-    return onSignUp == "True" ? (
+    return onSignUp === "True" ? (
       <Register />
     ) : (
       <Form>
