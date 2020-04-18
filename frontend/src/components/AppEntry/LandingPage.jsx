@@ -1,16 +1,7 @@
 import React, { Component } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { Redirect } from "react-router-dom";
-import classnames from "classnames";
 import Login from "./Login";
-import SignUp from "./Register";
 
 class LandingPage extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <div className="d-md-flex h-md-100 align-items-center">

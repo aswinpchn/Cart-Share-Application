@@ -48,7 +48,7 @@ class Register extends Component {
   }
   render() {
     const { errors, onSignIn } = this.state;
-    return onSignIn == "True" ? (
+    return onSignIn === "True" ? (
       <Login />
     ) : (
       <Form>
