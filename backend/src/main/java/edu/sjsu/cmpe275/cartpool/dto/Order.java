@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.cartpool.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -34,6 +35,12 @@ public class Order {
 	
 	private String status;
 	
+	private Date date;
+	
+	private String qrCode;
+	
+	private double price;
+
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "order")
 	private List<OrderDetail> orderDetails;
 
@@ -75,5 +82,29 @@ public class Order {
 
 	public void setOrderDetails(List<OrderDetail> orderDetails) {
 		this.orderDetails = orderDetails;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public String getQrCode() {
+		return qrCode;
+	}
+
+	public void setQrCode(String qrCode) {
+		this.qrCode = qrCode;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
 	}
 }

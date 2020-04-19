@@ -24,6 +24,10 @@ public class OrderDetail {
 	@JoinColumn(name = "order_id")
 	private Order order;
 	
+	/**
+	 * TODO:Add Product mapping
+	 */
+	
 	private long quantity;
 
 	public long getId() {
@@ -49,8 +53,4 @@ public class OrderDetail {
 	public void setQuantity(long quantity) {
 		this.quantity = quantity;
 	}
-	
-	// Add Mapping for product_id
-	
-	// Do we need price?
 }
