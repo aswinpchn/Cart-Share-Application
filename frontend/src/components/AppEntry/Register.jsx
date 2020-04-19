@@ -11,12 +11,9 @@ class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      screenName: "",
-      nickName: "",
-      password: "",
       email: "",
-      isLogin: false,
-      signup: false,
+      password: "",
+      confirm_password: "",
       errors: {},
       onSignIn: "False",
     };
@@ -37,12 +34,12 @@ class Register extends Component {
 
   handleSubmit(e) {
     const data = {
-      screenName: this.state.screenName,
-      nickName: this.state.nickName,
       email: this.state.email,
       password: this.state.password,
+      confirm_password: this.state.confirm_password,
     };
     console.log("data is..", data);
+    window.location.href = "/UserDetailsForm";
 
     //this.props.registerUser(data, this.props.history);
   }
@@ -52,42 +49,11 @@ class Register extends Component {
       <Login />
     ) : (
       <Form>
-        <Form.Group controlId="screenName">
-          <Form.Label>Screen Name</Form.Label>
-          <Form.Control
-            type="text"
-            className={classnames({
-              "is-invalid": errors.screenName,
-            })}
-            placeholder="Enter Screen Name"
-            name="screenName"
-            value={this.state.screenName}
-            onChange={this.handleChange}
-          />
-          {errors.screenName && (
-            <div className="invalid-feedback">{errors.screenName}</div>
-          )}
-        </Form.Group>
-        <Form.Group controlId="nickName">
-          <Form.Label>Nick Name</Form.Label>
-          <Form.Control
-            type="text"
-            className={classnames({
-              "is-invalid": errors.nickName,
-            })}
-            placeholder="Enter your Nick name"
-            name="nickName"
-            value={this.state.nickName}
-            onChange={this.handleChange}
-          />
-          {errors.nickName && (
-            <div className="invalid-feedback">{errors.nickName}</div>
-          )}
-        </Form.Group>
         <Form.Group controlId="email">
           <Form.Label>Email ID</Form.Label>
           <Form.Control
             type="email"
+            required="true"
             className={classnames({ "is-invalid": errors.email })}
             placeholder="Enter email"
             name="email"
@@ -102,6 +68,7 @@ class Register extends Component {
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
+            required="true"
             className={classnames({
               "is-invalid": errors.password,
             })}
@@ -112,6 +79,23 @@ class Register extends Component {
           />
           {errors.password && (
             <div className="invalid-feedback">{errors.password}</div>
+          )}
+        </Form.Group>
+        <Form.Group controlId="confirm_password">
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control
+            type="confirm_password"
+            required="true"
+            className={classnames({
+              "is-invalid": errors.confirm_password,
+            })}
+            placeholder="Confirm Password"
+            name="confirm_password"
+            value={this.state.confirm_password}
+            onChange={this.handleChange}
+          />
+          {errors.confirm_password && (
+            <div className="invalid-feedback">{errors.confirm_password}</div>
           )}
         </Form.Group>
         <br />
