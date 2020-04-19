@@ -53,6 +53,7 @@ class Login extends Component {
           <Form.Label>Email</Form.Label>
           <Form.Control
             type="text"
+            required="true"
             className={classnames({
               "is-invalid": errors.email,
             })}
@@ -60,7 +61,6 @@ class Login extends Component {
             name="email"
             value={this.state.email}
             onChange={this.handleChange}
-            required
           />
           {errors.email && (
             <div className="invalid-feedback">{errors.email}</div>
@@ -70,6 +70,7 @@ class Login extends Component {
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
+            required="true"
             className={classnames({
               "is-invalid": errors.password,
             })}
@@ -77,7 +78,6 @@ class Login extends Component {
             name="password"
             value={this.state.password}
             onChange={this.handleChange}
-            required
           />
           {errors.password && (
             <div className="invalid-feedback">{errors.password}</div>
