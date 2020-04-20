@@ -24,6 +24,7 @@ class ProductCard extends Component {
         return (
             <Card bg="white" style={{ width: "15rem", margin: "1rem" }}>
                 <Card.Body>
+                    <Card.Img variant="top" src="holder.js/100px160" />
                     <Col sm={10}>
                         <Card.Title>{this.props.product.name}</Card.Title>
                         <Card.Text><b>Description: </b>{this.props.product.description}</Card.Text>
