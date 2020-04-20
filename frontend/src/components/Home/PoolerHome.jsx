@@ -44,6 +44,21 @@ class PoolerHome extends Component {
           id: 2,
           name: "Rice",
           price: 6
+        },
+        {
+          id: 3,
+          name: "Pizza",
+          price: 6
+        },
+        {
+          id: 4,
+          name: "Pasta",
+          price: 6
+        },
+        {
+          id: 5,
+          name: "Pop Corn",
+          price: 6
         }
       ];
       this.setState({
