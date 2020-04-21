@@ -1,17 +1,39 @@
 import React, { Component } from "react";
-import Button from "react-bootstrap/Button";
+import { Col } from "react-bootstrap";
 import Modal from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import StoreInfoForm from "../AdminStore/StoreInfoForm";
+import StoreCard from "../AdminStore/StoreCard";
+
 class AdminHome extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      storeID: "",
+      storeName: "",
+      storeImage: "",
+      stores: [],
       open: false,
       blockScroll: true,
       errors: "",
     };
   }
+  componentDidMount() {
+    this.getStores();
+  }
+
+  getStores = async () => {
+    const stores = [
+      {
+        storeName: "Costco",
+        storeID: 1,
+      },
+      { storeName: "Target", storeID: 2 },
+    ];
+    this.setState({
+      stores: stores,
+    });
+  };
 
   onOpenModal = () => {
     this.setState({ open: true, blockScroll: false });
@@ -49,6 +71,15 @@ class AdminHome extends Component {
             </Modal>
           </div>
         </li>
+
+        {this.state.stores &&
+          this.state.stores.map((store, storeIndex) => {
+            return (
+              <Col key={storeIndex} sm={3}>
+                <StoreCard store={store} />
+              </Col>
+            );
+          })}
       </div>
     );
   }
