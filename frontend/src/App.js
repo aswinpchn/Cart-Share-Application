@@ -5,6 +5,7 @@ import Home from "./components/Home/Home";
 import UserDetailsForm from "./components/AppEntry/UserDetailsForm";
 import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.css";
+import Navbar from "./components/Navbar/Navbar"
 import "./App.css";
 
 class App extends Component {
@@ -13,6 +14,7 @@ class App extends Component {
       <main>
         <div className="content">
           <BrowserRouter>
+            <Navbar />
             <Switch>
               <Route exact path="/" component={LandingPage} />
               <Route exact path="/home" component={Home} />
