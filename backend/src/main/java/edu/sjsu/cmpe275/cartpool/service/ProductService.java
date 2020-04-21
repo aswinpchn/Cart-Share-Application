@@ -24,7 +24,7 @@ public class ProductService {
 	public List<Product> getProductsByStore(long storeId) {
 		Optional<Store> store = storeRespository.findById(storeId);
 		if (store.isPresent()) {
-			productRespository.findByStore(store.get());
+			return productRespository.findByStore(store.get());
 		}
 		return new ArrayList<>();
 	}
