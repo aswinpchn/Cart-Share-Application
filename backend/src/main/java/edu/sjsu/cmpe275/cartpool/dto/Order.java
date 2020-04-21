@@ -3,26 +3,17 @@ package edu.sjsu.cmpe275.cartpool.dto;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "order")
+@Table(name = "pool_order")
 public class Order {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id; 
 	
+	/*
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonIgnoreProperties({"orders"})
 	@JoinColumn(name = "pooler_id")
@@ -31,7 +22,7 @@ public class Order {
 	@ManyToOne(fetch = FetchType.EAGER, optional = true)
 	@JsonIgnoreProperties({"orders"})
 	@JoinColumn(name = "delivery_pooler_id", nullable = true)
-	private User delivery_pooler;
+	private User delivery_pooler;*/
 	
 	private String status;
 	
@@ -52,6 +43,7 @@ public class Order {
 		this.id = id;
 	}
 
+	/*
 	public User getPooler() {
 		return pooler;
 	}
@@ -66,7 +58,7 @@ public class Order {
 
 	public void setDelivery_pooler(User delivery_pooler) {
 		this.delivery_pooler = delivery_pooler;
-	}
+	}*/
 
 	public String getStatus() {
 		return status;
