@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Col, Row } from "react-bootstrap";
 import Select from 'react-select'
 import ProductCard from "./ProductCard";
+import axios from 'axios';
+import { properties } from '../../properties';
 
 class PoolerHome extends Component {
   constructor(props) {
@@ -19,55 +21,42 @@ class PoolerHome extends Component {
   }
 
   getStores = async () => {
-    const stores = [{
-      name: "Costco",
-      id: 1
-    },
-    { name: "Target",
-      id: 2 
-    }];
-    this.setState({
-      stores: stores,
+    axios.defaults.withCredentials = true;
+    const backendurl = properties.backendhost + 'store/all'
+    let token = localStorage.getItem('token');
+    axios.get(backendurl, {
+      headers: {
+        'Authorization': "bearer " + token,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then((response) => {
+      if (response) {
+        this.setState({
+          stores: response.data
+        })
+      }
     });
   }
 
   getProducts = async () => {
     const storeId = this.state.storeId;
-    console.log(storeId);
-    try {
-      //const products = await apiService.get(`${config.api_host}/bug/${project_id}`);
-      const products = [{
-        id: 1,
-        name: "Hand Wash",
-        price: 10
-      }, {
-          id: 2,
-          name: "Rice",
-          price: 6
-        },
-        {
-          id: 3,
-          name: "Pizza",
-          price: 6
-        },
-        {
-          id: 4,
-          name: "Pasta",
-          price: 6
-        },
-        {
-          id: 5,
-          name: "Pop Corn",
-          price: 6
-        }
-      ];
-      this.setState({
-        products: products
-      });
-    }
-    catch (e) {
-      console.log(e);
-    }
+    axios.defaults.withCredentials = true;
+    const backendurl = properties.backendhost + `product/${storeId}`;
+    let token = localStorage.getItem('token');
+    axios.get(backendurl, {
+      headers: {
+        'Authorization': "bearer " + token,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then((response) => {
+      if (response) {
+        this.setState({
+          products: response.data
+        })
+      }
+    });
   };
 
   onStoreChange = async (item) => {
@@ -81,7 +70,6 @@ class PoolerHome extends Component {
   render() {
     let options = [];
     let products = [];
-
     if (this.state.stores.length) {
       this.state.stores.forEach(function (store) {
         options.push({
