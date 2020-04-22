@@ -17,11 +17,16 @@ public class User {
   private String nickName;
 
   @Column(unique = true)
-  private String emailAddress;
+  private String email;
 
   private String password;
 
   private boolean isVerified;
+
+  private String poolId;
+
+  @Column(unique = true)
+  private String uid;
 
   @Embedded
   private Address address;
@@ -31,6 +36,9 @@ public class User {
   private int creditScore;
 
   private String role;
+
+  public User() {
+  }
 
   public int getCreditScore() {
     return creditScore;
@@ -64,12 +72,12 @@ public class User {
     this.nickName = nickName;
   }
 
-  public String getEmailAddress() {
-    return emailAddress;
+  public String getEmail() {
+    return email;
   }
 
-  public void setEmailAddress(String emailAddress) {
-    this.emailAddress = emailAddress;
+  public void setEmail(String email) {
+    this.email = email;
   }
 
   public String getPassword() {
@@ -104,4 +112,36 @@ public class User {
     this.role = role;
   }
 
+  public String getUid() {
+    return uid;
+  }
+
+  public void setUid(String uid) {
+    this.uid = uid;
+  }
+
+  public String getPoolId() {
+    return poolId;
+  }
+
+  public void setPoolId(String poolId) {
+    this.poolId = poolId;
+  }
+
+  @Override
+  public String toString() {
+    return "User{" +
+            "id=" + id +
+            ", screenName='" + screenName + '\'' +
+            ", nickName='" + nickName + '\'' +
+            ", email='" + email + '\'' +
+            ", password='" + password + '\'' +
+            ", isVerified=" + isVerified +
+            ", poolId='" + poolId + '\'' +
+            ", uid='" + uid + '\'' +
+            ", address=" + address +
+            ", creditScore=" + creditScore +
+            ", role='" + role + '\'' +
+            '}';
+  }
 }
