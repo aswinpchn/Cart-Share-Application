@@ -25,6 +25,7 @@ public class User {
 
   private String poolId;
 
+  @Column(unique = true)
   private String uid;
 
   @Embedded
