@@ -53,7 +53,7 @@ class Register extends Component {
           <Form.Label>Email ID</Form.Label>
           <Form.Control
             type="email"
-            required="true"
+            required
             className={classnames({ "is-invalid": errors.email })}
             placeholder="Enter email"
             name="email"
@@ -68,7 +68,7 @@ class Register extends Component {
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
-            required="true"
+            required
             className={classnames({
               "is-invalid": errors.password,
             })}
@@ -85,7 +85,7 @@ class Register extends Component {
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control
             type="confirm_password"
-            required="true"
+            required
             className={classnames({
               "is-invalid": errors.confirm_password,
             })}
