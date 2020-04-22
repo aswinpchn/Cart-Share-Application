@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import PoolerHome from "./PoolerHome";
 import AdminHome from "./AdminHome";
-import decode from 'jwt-decode';
+import decode from "jwt-decode";
 
 class Home extends Component {
   constructor(props) {
@@ -13,25 +13,21 @@ class Home extends Component {
 
   render() {
     var homeComponent;
-    let token = sessionStorage.getItem('token');
+    let token = sessionStorage.getItem("token");
     if (!token) {
       this.props.history.push("/");
     }
     if (token) {
       let decodedtoken = decode(token);
-      if (decodedtoken.data.role === 'admin') {
-        homeComponent = <AdminHome />
-      } else if (decodedtoken.data.role === 'pooler') {
-        homeComponent = <PoolerHome />
+      if (decodedtoken.data.role === "admin") {
+        homeComponent = <AdminHome />;
+      } else if (decodedtoken.data.role === "pooler") {
+        homeComponent = <PoolerHome />;
       } else {
         this.props.history.push("/");
       }
     }
-    return (
-      <div>
-        {homeComponent}
-      </div>
-    );
+    return <div>{homeComponent}</div>;
   }
 }
 

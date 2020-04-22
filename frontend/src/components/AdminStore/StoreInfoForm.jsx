@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Col, Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import axios from "axios";
 
 class StoreInfoForm extends Component {
   componentDidMount() {
