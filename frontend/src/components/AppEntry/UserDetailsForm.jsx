@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
+import { connect } from "react-redux";
 
 class UserDetailsForm extends Component {
   constructor(props) {
@@ -21,6 +22,7 @@ class UserDetailsForm extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
   handleChange(e) {
     this.setState({
       [e.target.name]: e.target.value,
@@ -45,6 +47,7 @@ class UserDetailsForm extends Component {
   }
   render() {
     const { errors } = this.state;
+    const { email, password } = this.props.auth.user;
     return (
       <div className="d-md-flex h-md-100 align-items-center">
         <div className="col-md-6 p-0 bg-indigo h-md-100">
@@ -80,6 +83,10 @@ class UserDetailsForm extends Component {
               </div>
               <br />
               <br />
+              <div>
+                <h5> Email: {email} </h5>
+                <br />
+              </div>
               <Form>
                 <Form.Row>
                   <Form.Group as={Col} controlId="screenName">
@@ -157,4 +164,11 @@ class UserDetailsForm extends Component {
     );
   }
 }
-export default UserDetailsForm;
+
+const mapState = (state) => {
+  return {
+    auth: state.auth,
+  };
+};
+
+export default connect(mapState)(UserDetailsForm);
