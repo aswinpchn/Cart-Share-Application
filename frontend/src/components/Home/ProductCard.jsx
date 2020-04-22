@@ -21,6 +21,9 @@ class ProductCard extends Component {
     }
 
     addToCart = (e) => { 
+        if (this.state.quantity == 0) {
+            return;
+        }
         e.preventDefault();
         let cartItem = {
             id: this.props.product.id,
@@ -32,7 +35,7 @@ class ProductCard extends Component {
         if (cart.length > 0) {
             let existingCartItem = cart.find(element => element.id === this.props.product.id);
             if (existingCartItem) {
-                existingCartItem.quantity = parseInt(cartItem.quantity, 10);
+                existingCartItem.quantity = existingCartItem.quantity + parseInt(cartItem.quantity, 10);
             } else {
                 cart.push(cartItem);
             }
