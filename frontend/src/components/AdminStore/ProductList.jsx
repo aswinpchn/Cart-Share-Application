@@ -2,36 +2,52 @@ import React, { Component } from "react";
 import { Col } from "react-bootstrap";
 import Modal from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
-import StoreInfoForm from "../AdminStore/StoreInfoForm";
-import StoreCard from "../AdminStore/StoreCard";
+import ProductInfoForm from "./ProductInfoForm";
+import ProductCard from "./ProductCard";
 
-class AdminHome extends Component {
+class ProductList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      storeID: "",
-      storeName: "",
-      storeImage: "",
-      stores: [],
+      productID: "",
+      sku: "",
+      name: "",
+      description: "",
+      image: "",
+      brand: "",
+      price: "",
+      unit: "",
+      products: [],
       open: false,
       blockScroll: true,
       errors: "",
     };
   }
   componentDidMount() {
-    this.getStores();
+    this.getProducts();
   }
 
-  getStores = async () => {
-    const stores = [
+  getProducts = async () => {
+    const products = [
       {
-        storeName: "Costco",
-        storeID: 1,
+        sku: 1,
+        name: "Milk",
+        description: "Organic Milk",
+        brand: "Dairy Farm",
+        price: "8",
+        unit: "Gallon",
       },
-      { storeName: "Target", storeID: 2 },
+      {
+        sku: 2,
+        name: "Bread",
+        description: "Organic wheat bread",
+        brand: "Orowheat",
+        price: "9",
+        unit: "Grams",
+      },
     ];
     this.setState({
-      stores: stores,
+      products: products,
     });
   };
 
@@ -52,30 +68,31 @@ class AdminHome extends Component {
             <h2>Welcome Admin</h2>
           </div>
         </div>
-
         <li className="list-group-item border border-white">
           <button
             type="button"
             className="btn btn-primary"
             onClick={this.onOpenModal}
           >
-            Create New Store
+            Create New Product
           </button>
           <div className="overflow-auto border">
             <Modal open={open} onClose={this.onCloseModal} center>
-              <h4 className="text-center tex-secondary">Enter Store Details</h4>
-              <StoreInfoForm />
+              <h4 className="text-center tex-secondary">
+                Enter Product Details
+              </h4>
+              <ProductInfoForm />
             </Modal>
           </div>
         </li>
         <h3>
           <p>Existing Stores</p>
         </h3>
-        {this.state.stores &&
-          this.state.stores.map((store, storeIndex) => {
+        {this.state.products &&
+          this.state.products.map((product, productIndex) => {
             return (
-              <Col key={storeIndex} sm={3}>
-                <StoreCard store={store} />
+              <Col key={productIndex} sm={3}>
+                <ProductCard product={product} />
               </Col>
             );
           })}
@@ -84,4 +101,4 @@ class AdminHome extends Component {
   }
 }
 
-export default AdminHome;
+export default ProductList;

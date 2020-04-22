@@ -4,8 +4,6 @@ import Button from "react-bootstrap/Button";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
-import classnames from "classnames";
-import Login from "./Login";
 
 class UserDetailsForm extends Component {
   constructor(props) {
@@ -30,6 +28,8 @@ class UserDetailsForm extends Component {
   }
 
   handleSubmit(e) {
+    e.preventDefault();
+
     const data = {
       screenName: this.state.screenName,
       nickName: this.state.nickName,
@@ -40,7 +40,7 @@ class UserDetailsForm extends Component {
       zipCode: this.state.zipCode,
     };
     console.log("data is..", data);
-
+    window.location.href = "/main/home";
     //this.props.registerUser(data, this.props.history);
   }
   render() {
@@ -84,34 +84,52 @@ class UserDetailsForm extends Component {
                 <Form.Row>
                   <Form.Group as={Col} controlId="screenName">
                     <Form.Label>Screen Name</Form.Label>
-                    <Form.Control type="name" placeholder="Enter Screen Name" />
+                    <Form.Control
+                      type="name"
+                      placeholder="Enter Screen Name"
+                      onChange={this.handleChange}
+                    />
                   </Form.Group>
 
                   <Form.Group as={Col} controlId="nickName">
                     <Form.Label>Nick Name</Form.Label>
-                    <Form.Control type="name" placeholder="Enter Nick Name" />
+                    <Form.Control
+                      type="name"
+                      placeholder="Enter Nick Name"
+                      onChange={this.handleChange}
+                    />
                   </Form.Group>
                 </Form.Row>
 
                 <Form.Group controlId="streetDetails">
                   <Form.Label>Address</Form.Label>
-                  <Form.Control placeholder="1234 Main St" />
+                  <Form.Control
+                    placeholder="1234 Main St"
+                    onChange={this.handleChange}
+                  />
                 </Form.Group>
 
                 <Form.Group controlId="aptDetails">
                   <Form.Label>Address 2</Form.Label>
-                  <Form.Control placeholder="Apartment, studio, or floor" />
+                  <Form.Control
+                    placeholder="Apartment, studio, or floor"
+                    onChange={this.handleChange}
+                  />
                 </Form.Group>
 
                 <Form.Row>
                   <Form.Group as={Col} controlId="cityName">
                     <Form.Label>City</Form.Label>
-                    <Form.Control />
+                    <Form.Control onChange={this.handleChange} />
                   </Form.Group>
 
                   <Form.Group as={Col} controlId="stateName">
                     <Form.Label>State</Form.Label>
-                    <Form.Control as="select" value="Choose...">
+                    <Form.Control
+                      as="select"
+                      value="Choose..."
+                      onChange={this.handleChange}
+                    >
                       <option>CA</option>
                       <option>TX</option>
                       <option>VA</option>
@@ -120,11 +138,15 @@ class UserDetailsForm extends Component {
 
                   <Form.Group as={Col} controlId="zipCode">
                     <Form.Label>Zip</Form.Label>
-                    <Form.Control />
+                    <Form.Control onChange={this.handleChange} />
                   </Form.Group>
                 </Form.Row>
 
-                <Button className="btn btn-success" type="submit">
+                <Button
+                  className="btn btn-success"
+                  type="submit"
+                  onClick={this.handleSubmit}
+                >
                   Proceed
                 </Button>
               </Form>
