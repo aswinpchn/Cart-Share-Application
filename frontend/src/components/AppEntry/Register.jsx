@@ -10,6 +10,13 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { onSignup } from "../_actions/authActions";
 import { Redirect } from "react-router-dom";
+import firebase from 'firebase';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+
+firebase.initializeApp({
+  apiKey: 'AIzaSyAsxkjbgvkJeKFIN2jMVszfhdyaWB7am7g',
+  authDomain: 'cart-share-2712d.firebaseapp.com'
+})
 
 class Register extends Component {
   constructor(props) {
@@ -20,11 +27,36 @@ class Register extends Component {
       confirm_password: "",
       errors: {},
       onSignIn: "False",
+      uid: "",
+      isSocialSignedIn : false
     };
+    this.uiConfig = {
+      signInFlow: "popup",
+      signInOptions: [
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        firebase.auth.FacebookAuthProvider.PROVIDER_ID
+      ],
+      callbacks: {
+        signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+          // User successfully signed in.
+          // Return type determines whether we continue the redirect automatically
+          // or whether we leave that to developer to handle.
+          return true;
+        }
+      }
+    }
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  componentWillMount = () => {
+    // firebase.auth().onAuthStateChanged(user => {
+    //    this.setState({ isSignedIn: !!user });
+    //   console.log("user in component will mount of register-->", user)
+    // });
+  }
+
   handleClick() {
     this.setState({
       onSignIn: "True",
@@ -41,6 +73,7 @@ class Register extends Component {
       email: this.state.email,
       password: this.state.password,
       confirm_password: this.state.confirm_password,
+      uid: this.state.uid
     };
     console.log("data is..", data);
     this.props.onSignup(data);
@@ -49,6 +82,17 @@ class Register extends Component {
     const { errors, onSignIn } = this.state;
     const { email, password } = this.props.auth.user;
     let userDetailsForm = false;
+    if (this.state.isSocialSignedIn) {
+      console.log("Firebase User Object in register render", firebase.auth().currentUser)
+      this.setState({
+        email: firebase.auth().currentUser.email,
+        uid: firebase.auth().currentUser.uid
+      })
+      // Redirecting to second step of registration
+      this.handleSubmit();
+      console.log("Redirecting to next step")
+      userDetailsForm = <Redirect to="/UserDetailsForm" />;
+    }
     if (email && password) {
       userDetailsForm = <Redirect to="/UserDetailsForm" />;
     }
@@ -58,6 +102,12 @@ class Register extends Component {
       <div>
         {userDetailsForm}
         <Form>
+          <StyledFirebaseAuth
+              uiConfig={this.uiConfig}
+              firebaseAuth={firebase.auth()}
+            />
+          <br />
+          <br />
           <Form.Group controlId="email">
             <Form.Label>Email ID</Form.Label>
             <Form.Control
@@ -110,7 +160,7 @@ class Register extends Component {
           <br />
 
           <Button className="btn btn-success" onClick={this.handleSubmit}>
-            Submit
+            Proceed
           </Button>
           <br />
           <br />
