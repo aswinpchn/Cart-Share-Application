@@ -35,6 +35,16 @@ public class UserService {
 		}
 		return userRepository.save(user);
 	}
+	
+	public User getUserByEmail(String email) {
+		System.out.println(email);
+		User user = userRepository.findByEmail(email);
+		if (user == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+		}
+		return user;
+	}
+	
 	private void performValidations(User user) {
 //		if (player.getFirstname().isEmpty() || player.getLastname().isEmpty() || player.getEmail().isEmpty()) {
 //			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty parameter found");
