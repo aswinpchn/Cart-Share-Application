@@ -7,8 +7,10 @@ import "mdbreact/dist/css/mdb.css";
 import classnames from "classnames";
 import Register from "./Register";
 import { Redirect } from "react-router-dom";
-import firebase from 'firebase';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import firebase from "firebase";
+import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
+import axios from "axios";
+import { properties } from "../../properties";
 
 class Login extends Component {
   constructor(props) {
@@ -20,19 +22,19 @@ class Login extends Component {
       loggedIn: false,
       onSignUp: false,
       uid: "",
-      isSocialSignedIn : false
+      isSignedIn: false,
     };
     this.uiConfig = {
       signInFlow: "popup",
       signInOptions: [
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID
+        firebase.auth.EmailAuthProvider.PROVIDER_ID,
       ],
       callbacks: {
-        signInSuccess: () => false
-      }
-    }
+        signInSuccess: () => false,
+      },
+    };
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
@@ -55,17 +57,28 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    var that = this
-    firebase.auth().onAuthStateChanged(user => {
-      console.log("user-->", user)
+    var that = this;
+    firebase.auth().onAuthStateChanged((user) => {
+      console.log("user-->", user);
       if (user) {
-        console.log("setting local storage")
-        localStorage.setItem('email', user.email)
-        localStorage.setItem('uid', user.uid)
+        console.log("setting local storage");
+        localStorage.setItem("email", user.email);
+        localStorage.setItem("uid", user.uid);
+        var data = { email: user.email, uid: user.uid };
         // make a axios call for checking if user existence
-        that.setState({ isSocialSignedIn: true })
+        const backendurl = properties.backendhost + "user/register";
+
+        axios
+          .post(backendurl, data)
+          .then((response) => {
+            console.log(response.data);
+            this.setState({ isSignedIn: true });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
-    })
+    });
   }
 
   handleChange(e) {
@@ -96,27 +109,28 @@ class Login extends Component {
   render() {
     const { errors, onSignUp, loggedIn } = this.state;
     let redirectVar = null;
-    console.log("localStorage.getItem('email')-->", localStorage.getItem('email'))
-    if(localStorage.getItem('email') && localStorage.getItem('uid') && this.state.isSocialSignedIn) {
+    console.log(
+      "localStorage.getItem('email')-->",
+      localStorage.getItem("email")
+    );
+    if (
+      localStorage.getItem("email") &&
+      localStorage.getItem("uid") &&
+      this.state.isSignedIn
+    ) {
       redirectVar = <Redirect to="/main/home" />;
     }
     return (
       <div>
-        {onSignUp ? (
-          <Register />
-        ) : (
-          <div>
-            {redirectVar}
-            <Form>
-              <StyledFirebaseAuth
-                uiConfig={this.uiConfig}
-                firebaseAuth={firebase.auth()}
-              />
-            <br />
-            <br />
-            </Form>
-          </div>
-        )}
+        {redirectVar}
+        <Form>
+          <StyledFirebaseAuth
+            uiConfig={this.uiConfig}
+            firebaseAuth={firebase.auth()}
+          />
+          <br />
+          <br />
+        </Form>
       </div>
     );
   }
