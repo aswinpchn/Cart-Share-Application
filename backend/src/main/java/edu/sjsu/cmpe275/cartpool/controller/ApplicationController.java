@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import edu.sjsu.cmpe275.cartpool.service.ProductService;
 import edu.sjsu.cmpe275.cartpool.service.StoreService;
 import edu.sjsu.cmpe275.cartpool.service.UserService;
+import edu.sjsu.cmpe275.cartpool.Constants;
 
 import javax.validation.Valid;
 
@@ -45,31 +46,6 @@ public class ApplicationController {
 		return userService.getUserByEmail(email);
 	}
 
-	@PostMapping("/user/register")
-	@ResponseBody
-	public User createUser(@Valid @RequestBody CreateUserRequestBodyModel createUserRequestBody) {
-		System.out.println("in api:    " + createUserRequestBody);
-		User user = new User();
-		Address address = new Address();
-		if (createUserRequestBody.getUid() != null) {
-			user.setUid(createUserRequestBody.getUid());
-		} else {
-			user.setPassword(createUserRequestBody.getPassword());
-		}
-		user.setEmail(createUserRequestBody.getEmail());
-		user.setScreenName(createUserRequestBody.getScreenName());
-		user.setNickName(createUserRequestBody.getNickName());
-		user.setCreditScore(0);
-		user.setVerified(false);
-		address.setStreet(createUserRequestBody.getStreet());
-		address.setCity(createUserRequestBody.getCity());
-		address.setState(createUserRequestBody.getState());
-		address.setZip(createUserRequestBody.getZip());
-		user.setAddress(address);
-
-		return userService.createUser(user);
-	}
-
 	@PostMapping("/user/updateProfile")
 	@ResponseBody
 	public User updateUserProfile(@Valid @RequestBody UpdateUserProfileRequestBodyModel request) {
@@ -83,6 +59,20 @@ public class ApplicationController {
 		address.setState(request.getState());
 		address.setZip(request.getZip());
 		user.setAddress(address);
-		return userService.createUser(user);
+		return userService.updateUserProfile(user);
 	}
+
+    @PostMapping("/user/register")
+    @ResponseBody
+    public User createUser(@Valid @RequestBody CreateUserRequestBodyModel createUserRequestBody) {
+        System.out.println("in api:    "+ createUserRequestBody);
+        User user = new User();
+        if(createUserRequestBody.getPassword() != null) {
+            user.setPassword(createUserRequestBody.getPassword());
+        }
+        user.setEmail(createUserRequestBody.getEmail());
+        user.setUid(createUserRequestBody.getUid());
+
+        return userService.createUser(user);
+    }
 }

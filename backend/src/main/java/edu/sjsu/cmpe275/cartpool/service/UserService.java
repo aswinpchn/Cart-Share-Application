@@ -10,30 +10,27 @@ import org.springframework.web.server.ResponseStatusException;
 
 import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
 import edu.sjsu.cmpe275.cartpool.dto.User;
-import edu.sjsu.cmpe275.cartpool.dto.Address;
+import edu.sjsu.cmpe275.cartpool.Constants;
 
 @Service
 public class UserService {
-	String POOLER_ROLE = "pooler";
-	String ADMIN_ROLE = "admin";
-	String DOMAIN = "sjsu.edu";
 
 	@Autowired
 	private UserRepository userRepository;
 
 	@Transactional
 	public User createUser(User user) {
-//		performValidations(user);
-		if (userRepository.existsByEmail(user.getEmail())) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "User with same email address already exists");
+		if (userRepository.existsUserByUidOrEmail(user.getUid(), user.getEmail())) {
+			User existingUser = userRepository.findUserByEmail(user.getEmail());
+			return existingUser;
 		}
 
 		String email = user.getEmail();
 		String domain = email.substring(email .indexOf("@") + 1);
-		if(domain.equals(DOMAIN)) {
-			user.setRole(ADMIN_ROLE);
+		if(domain.equals(Constants.DOMAIN)) {
+			user.setRole(Constants.ADMIN_ROLE);
 		} else {
-			user.setRole(POOLER_ROLE);
+			user.setRole(Constants.POOLER_ROLE);
 		}
 		return userRepository.save(user);
 	}
@@ -47,6 +44,7 @@ public class UserService {
 		existingUser.setAddress(user.getAddress());
 		existingUser.setNickName(user.getNickName());
 		existingUser.setScreenName(user.getScreenName());
+		existingUser.setProfileCompleted(true);
 		return userRepository.save(existingUser);
 	}
 	
@@ -58,11 +56,5 @@ public class UserService {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
 		}
 		return user;
-	}
-	
-	private void performValidations(User user) {
-//		if (player.getFirstname().isEmpty() || player.getLastname().isEmpty() || player.getEmail().isEmpty()) {
-//			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty parameter found");
-//		}
 	}
 }
