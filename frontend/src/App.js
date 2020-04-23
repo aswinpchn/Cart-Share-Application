@@ -6,9 +6,8 @@ import UserDetailsForm from "./components/AppEntry/UserDetailsForm";
 import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.css";
 import "./App.css";
-import firebase from 'firebase';
+import firebase from "firebase";
 import Test from "./components/AppEntry/Test";
-
 
 // firebase.initializeApp({
 //     apiKey: 'AIzaSyAsxkjbgvkJeKFIN2jMVszfhdyaWB7am7g',
