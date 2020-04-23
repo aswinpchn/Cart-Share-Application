@@ -16,7 +16,7 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping(path = "/cartpool")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = Constants.BACKEND_URL)
 public class ApplicationController {
 
 	@Autowired
