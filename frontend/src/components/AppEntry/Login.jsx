@@ -114,56 +114,6 @@ class Login extends Component {
               />
             <br />
             <br />
-              <Form.Group controlId="email">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="text"
-                  required
-                  className={classnames({
-                    "is-invalid": errors.email,
-                  })}
-                  placeholder="Enter email"
-                  name="email"
-                  value={this.state.email}
-                  onChange={this.handleChange}
-                />
-                {errors.email && (
-                  <div className="invalid-feedback">{errors.email}</div>
-                )}
-              </Form.Group>
-              <Form.Group controlId="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  required
-                  className={classnames({
-                    "is-invalid": errors.password,
-                  })}
-                  placeholder="Password"
-                  name="password"
-                  value={this.state.password}
-                  onChange={this.handleChange}
-                />
-                {errors.password && (
-                  <div className="invalid-feedback">{errors.password}</div>
-                )}
-              </Form.Group>
-              <br></br>
-              <Button className="btn btn-success" onClick={this.handleLogin}>
-                LogIn
-              </Button>
-              <br />
-              <br />
-              <div className="form-group"> OR </div>
-              <div>
-                Don't have an account ?
-                <a className="text-info" onClick={this.handleClick}>
-                  <div>
-                    {" "}
-                    <h4>Sign Up</h4>
-                  </div>
-                </a>
-              </div>
             </Form>
           </div>
         )}
