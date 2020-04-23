@@ -86,7 +86,7 @@ class ProductList extends Component {
           </div>
         </li>
         <h3>
-          <p>Existing Stores</p>
+          <p>Existing Products</p>
         </h3>
         {this.state.products &&
           this.state.products.map((product, productIndex) => {

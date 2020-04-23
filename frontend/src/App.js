@@ -6,6 +6,14 @@ import UserDetailsForm from "./components/AppEntry/UserDetailsForm";
 import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.css";
 import "./App.css";
+import firebase from 'firebase';
+import Test from "./components/AppEntry/Test";
+
+
+firebase.initializeApp({
+    apiKey: 'AIzaSyAsxkjbgvkJeKFIN2jMVszfhdyaWB7am7g',
+    authDomain: 'cart-share-2712d.firebaseapp.com'
+  })
 
 class App extends Component {
   render() {
@@ -21,6 +29,7 @@ class App extends Component {
                 component={UserDetailsForm}
               />
               <Route path="/main" component={Main} />
+              <Route exact path="/Test" component={Test} />
             </Switch>
           </BrowserRouter>
         </div>
