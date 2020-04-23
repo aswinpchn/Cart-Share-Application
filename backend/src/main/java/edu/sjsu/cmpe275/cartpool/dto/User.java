@@ -21,7 +21,9 @@ public class User {
 
   private String password;
 
-  private boolean isVerified;
+  private boolean isProfileCompleted = false;
+
+  private boolean isVerified = false;
 
   private String poolId;
 
@@ -31,9 +33,7 @@ public class User {
   @Embedded
   private Address address;
 
-  /*private Pool pool;*/
-
-  private int creditScore;
+  private int creditScore = 0;
 
   private String role;
 
@@ -88,14 +88,6 @@ public class User {
     this.password = password;
   }
 
-  public boolean isVerified() {
-    return isVerified;
-  }
-
-  public void setVerified(boolean verified) {
-    isVerified = verified;
-  }
-
   public Address getAddress() {
     return address;
   }
@@ -128,6 +120,22 @@ public class User {
     this.poolId = poolId;
   }
 
+  public boolean isProfileCompleted() {
+    return isProfileCompleted;
+  }
+
+  public void setProfileCompleted(boolean profileCompleted) {
+    isProfileCompleted = profileCompleted;
+  }
+
+  public boolean isVerified() {
+    return isVerified;
+  }
+
+  public void setVerified(boolean verified) {
+    isVerified = verified;
+  }
+
   @Override
   public String toString() {
     return "User{" +
@@ -136,12 +144,13 @@ public class User {
             ", nickName='" + nickName + '\'' +
             ", email='" + email + '\'' +
             ", password='" + password + '\'' +
-            ", isVerified=" + isVerified +
+            ", verified=" + isVerified +
             ", poolId='" + poolId + '\'' +
             ", uid='" + uid + '\'' +
             ", address=" + address +
             ", creditScore=" + creditScore +
             ", role='" + role + '\'' +
+            ", profileCompleted='" + isProfileCompleted + '\'' +
             '}';
   }
 }

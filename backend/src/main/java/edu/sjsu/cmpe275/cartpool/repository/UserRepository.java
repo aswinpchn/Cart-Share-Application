@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import edu.sjsu.cmpe275.cartpool.dto.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    public boolean existsByEmail(String email);
+    public boolean existsUserByUidOrEmail(String uid, String email);
+    public User findUserByEmail(String email);
 }
