@@ -1,16 +1,14 @@
 package edu.sjsu.cmpe275.cartpool.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
-import edu.sjsu.cmpe275.cartpool.dto.User;
 import edu.sjsu.cmpe275.cartpool.Constants;
+import edu.sjsu.cmpe275.cartpool.dto.User;
+import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
 
 @Service
 public class UserService {
