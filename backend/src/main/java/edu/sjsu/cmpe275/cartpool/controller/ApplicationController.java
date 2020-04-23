@@ -19,33 +19,49 @@ import javax.validation.Valid;
 @CrossOrigin(origins = "http://localhost:3000")
 public class ApplicationController {
 
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private UserService userService;
 
-    @Autowired
-    private StoreService storeService;
+	@Autowired
+	private StoreService storeService;
 
-    @Autowired
-    private ProductService productService;
+	@Autowired
+	private ProductService productService;
 
-    @GetMapping("/store/all")
-    @ResponseBody
-    public List<Store> getAllStores() {
-        return storeService.getAllStores();
-    }
+	@GetMapping("/store/all")
+	@ResponseBody
+	public List<Store> getAllStores() {
+		return storeService.getAllStores();
+	}
 
-    @GetMapping("/product/{storeId}")
-    @ResponseBody
-    public List<Product> getProducts(@PathVariable("storeId") long storeId) {
-        return productService.getProductsByStore(storeId);
-    }
-    
-    @GetMapping("/user")
-    @ResponseBody
-    public User getUserByEmail(@RequestParam String email) {
-        return userService.getUserByEmail(email);
-    }
-    
+	@GetMapping("/product/{storeId}")
+	@ResponseBody
+	public List<Product> getProducts(@PathVariable("storeId") long storeId) {
+		return productService.getProductsByStore(storeId);
+	}
+
+	@GetMapping("/user")
+	@ResponseBody
+	public User getUserByEmail(@RequestParam String email) {
+		return userService.getUserByEmail(email);
+	}
+
+	@PostMapping("/user/updateProfile")
+	@ResponseBody
+	public User updateUserProfile(@Valid @RequestBody UpdateUserProfileRequestBodyModel request) {
+		User user = new User();
+		Address address = new Address();
+		user.setEmail(request.getEmail());
+		user.setScreenName(request.getScreenName());
+		user.setNickName(request.getNickName());
+		address.setStreet(request.getStreet());
+		address.setCity(request.getCity());
+		address.setState(request.getState());
+		address.setZip(request.getZip());
+		user.setAddress(address);
+		return userService.updateUserProfile(user);
+	}
+
     @PostMapping("/user/register")
     @ResponseBody
     public User createUser(@Valid @RequestBody CreateUserRequestBodyModel createUserRequestBody) {
