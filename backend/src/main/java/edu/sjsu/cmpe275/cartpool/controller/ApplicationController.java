@@ -38,6 +38,13 @@ public class ApplicationController {
     public List<Product> getProducts(@PathVariable("storeId") long storeId) {
         return productService.getProductsByStore(storeId);
     }
+    
+    @GetMapping("/user")
+    @ResponseBody
+    public User getUserByEmail(@RequestParam String email) {
+        return userService.getUserByEmail(email);
+    }
+    
     @PostMapping("/user/register")
     @ResponseBody
     public User createUser(@Valid @RequestBody CreateUserRequestBodyModel createUserRequestBody) {
