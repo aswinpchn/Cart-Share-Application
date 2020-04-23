@@ -45,6 +45,12 @@ public class ApplicationController {
 	public User getUserByEmail(@RequestParam String email) {
 		return userService.getUserByEmail(email);
 	}
+	
+	@GetMapping("/user/verify")
+	@ResponseBody
+	public String verifyUser(@RequestParam String email, @RequestParam int code) {
+		return userService.verifyUser(email, code);
+	}
 
 	@PostMapping("/user/updateProfile")
 	@ResponseBody
