@@ -10,10 +10,10 @@ import firebase from 'firebase';
 import Test from "./components/AppEntry/Test";
 
 
-firebase.initializeApp({
-    apiKey: 'AIzaSyAsxkjbgvkJeKFIN2jMVszfhdyaWB7am7g',
-    authDomain: 'cart-share-2712d.firebaseapp.com'
-  })
+// firebase.initializeApp({
+//     apiKey: 'AIzaSyAsxkjbgvkJeKFIN2jMVszfhdyaWB7am7g',
+//     authDomain: 'cart-share-2712d.firebaseapp.com'
+//   })
 
 class App extends Component {
   render() {
