@@ -32,4 +32,13 @@ public class UserService {
 		}
 		return userRepository.save(user);
 	}
+	
+	public User getUserByEmail(String email) {
+		System.out.println(email);
+		User user = userRepository.findByEmail(email);
+		if (user == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+		}
+		return user;
+	}
 }
