@@ -17,6 +17,7 @@ class PoolerHome extends Component {
   }
 
   componentDidMount() {
+    console.log("In pooler home ----------------");
     this.getStores();
   }
 
