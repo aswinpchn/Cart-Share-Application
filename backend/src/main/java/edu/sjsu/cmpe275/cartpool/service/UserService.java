@@ -1,5 +1,7 @@
 package edu.sjsu.cmpe275.cartpool.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,20 @@ public class UserService {
 		return userRepository.save(user);
 	}
 	
+	@Transactional
+	public User updateUserProfile(User user) {
+		User existingUser = userRepository.findByEmail(user.getEmail());
+		if (existingUser == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+		}
+		existingUser.setAddress(user.getAddress());
+		existingUser.setNickName(user.getNickName());
+		existingUser.setScreenName(user.getScreenName());
+		existingUser.setProfileCompleted(true);
+		return userRepository.save(existingUser);
+	}
+	
+	@Transactional
 	public User getUserByEmail(String email) {
 		System.out.println(email);
 		User user = userRepository.findByEmail(email);
