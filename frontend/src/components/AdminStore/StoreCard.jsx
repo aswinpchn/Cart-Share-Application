@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Card, Button, Col } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { Card, Col } from "react-bootstrap";
 
 class StoreCard extends Component {
   constructor(props) {
@@ -15,7 +16,18 @@ class StoreCard extends Component {
         <Card.Body>
           <Card.Img variant="top" src="holder.js/100px160" />
           <Col sm={10}>
-            <Card.Title>{this.props.store.storeName}</Card.Title>
+            <Link
+              to={{
+                pathname: "/main/productList",
+                state: {
+                  storeID: this.props.store.storeID,
+                  storeName: this.props.store.storeName,
+                },
+                target: "_blank",
+              }}
+            >
+              <Card.Title>{this.props.store.storeName}</Card.Title>
+            </Link>
           </Col>
         </Card.Body>
       </Card>
