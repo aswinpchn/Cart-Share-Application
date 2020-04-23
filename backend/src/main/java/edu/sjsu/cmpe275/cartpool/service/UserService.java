@@ -16,6 +16,9 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private EmailService emailService;
+
 	@Transactional
 	public User createUser(User user) {
 		if (userRepository.existsUserByUidOrEmail(user.getUid(), user.getEmail())) {
@@ -24,15 +27,15 @@ public class UserService {
 		}
 
 		String email = user.getEmail();
-		String domain = email.substring(email .indexOf("@") + 1);
-		if(domain.equals(Constants.DOMAIN)) {
+		String domain = email.substring(email.indexOf("@") + 1);
+		if (domain.equals(Constants.DOMAIN)) {
 			user.setRole(Constants.ADMIN_ROLE);
 		} else {
 			user.setRole(Constants.POOLER_ROLE);
 		}
 		return userRepository.save(user);
 	}
-	
+
 	@Transactional
 	public User updateUserProfile(User user) {
 		User existingUser = userRepository.findByEmail(user.getEmail());
@@ -43,16 +46,33 @@ public class UserService {
 		existingUser.setNickName(user.getNickName());
 		existingUser.setScreenName(user.getScreenName());
 		existingUser.setProfileCompleted(true);
-		return userRepository.save(existingUser);
+		int code = (int) (Math.random() * ((214748364 - 1000) + 1)) + 1000;
+		existingUser.setValidationCode(code);
+		User response = userRepository.save(existingUser);
+		emailService.sendEmail(user.getEmail(), code);
+		return response;
 	}
-	
+
 	@Transactional
 	public User getUserByEmail(String email) {
-		System.out.println(email);
 		User user = userRepository.findByEmail(email);
 		if (user == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
 		}
 		return user;
 	}
+
+	@Transactional
+	public String verifyUser(String email, int code) {
+		User existingUser = userRepository.findByEmail(email);
+		if (existingUser == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+		}
+		if (code != 0 && code == existingUser.getValidationCode()) {
+			existingUser.setVerified(true);
+			return "User verified succesfully. Please login to cartpool";
+		}
+		return "User verification failed";
+	}
+
 }
