@@ -6,151 +6,151 @@ import javax.persistence.*;
 @Table(name = "user")
 public class User {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
-  @Column(unique = true)
-  private String screenName;
+	@Column(unique = true)
+	private String screenName;
 
-  @Column(unique =  true)
-  private String nickName;
+	@Column(unique = true)
+	private String nickName;
 
-  @Column(unique = true)
-  private String email;
+	@Column(unique = true)
+	private String email;
 
-  private String password;
+	private String password;
 
-  private boolean isProfileCompleted = false;
+	private boolean isProfileCompleted = false;
 
-  private boolean isVerified = false;
+	private boolean isVerified = false;
 
-  private String poolId;
+	private String poolId;
 
-  @Column(unique = true)
-  private String uid;
+	@Column(unique = true)
+	private String uid;
 
-  @Embedded
-  private Address address;
+	@Embedded
+	private Address address;
 
-  private int creditScore = 0;
+	private int creditScore = 0;
 
-  private String role;
+	private String role;
 
-  public User() {
-  }
+	private int validationCode;
 
-  public int getCreditScore() {
-    return creditScore;
-  }
+	public User() {
+	}
 
-  public void setCreditScore(int creditScore) {
-    this.creditScore = creditScore;
-  }
+	public int getCreditScore() {
+		return creditScore;
+	}
 
-  public long getId() {
-    return id;
-  }
+	public void setCreditScore(int creditScore) {
+		this.creditScore = creditScore;
+	}
 
-  public void setId(long id) {
-    this.id = id;
-  }
+	public long getId() {
+		return id;
+	}
 
-  public String getScreenName() {
-    return screenName;
-  }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-  public void setScreenName(String screenName) {
-    this.screenName = screenName;
-  }
+	public String getScreenName() {
+		return screenName;
+	}
 
-  public String getNickName() {
-    return nickName;
-  }
+	public void setScreenName(String screenName) {
+		this.screenName = screenName;
+	}
 
-  public void setNickName(String nickName) {
-    this.nickName = nickName;
-  }
+	public String getNickName() {
+		return nickName;
+	}
 
-  public String getEmail() {
-    return email;
-  }
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
 
-  public void setEmail(String email) {
-    this.email = email;
-  }
+	public String getEmail() {
+		return email;
+	}
 
-  public String getPassword() {
-    return password;
-  }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
+	public String getPassword() {
+		return password;
+	}
 
-  public Address getAddress() {
-    return address;
-  }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-  public void setAddress(Address address) {
-    this.address = address;
-  }
+	public Address getAddress() {
+		return address;
+	}
 
-  public String getRole() {
-    return role;
-  }
+	public void setAddress(Address address) {
+		this.address = address;
+	}
 
-  public void setRole(String role) {
-    this.role = role;
-  }
+	public String getRole() {
+		return role;
+	}
 
-  public String getUid() {
-    return uid;
-  }
+	public void setRole(String role) {
+		this.role = role;
+	}
 
-  public void setUid(String uid) {
-    this.uid = uid;
-  }
+	public String getUid() {
+		return uid;
+	}
 
-  public String getPoolId() {
-    return poolId;
-  }
+	public void setUid(String uid) {
+		this.uid = uid;
+	}
 
-  public void setPoolId(String poolId) {
-    this.poolId = poolId;
-  }
+	public String getPoolId() {
+		return poolId;
+	}
 
-  public boolean isProfileCompleted() {
-    return isProfileCompleted;
-  }
+	public void setPoolId(String poolId) {
+		this.poolId = poolId;
+	}
 
-  public void setProfileCompleted(boolean profileCompleted) {
-    isProfileCompleted = profileCompleted;
-  }
+	public boolean isProfileCompleted() {
+		return isProfileCompleted;
+	}
 
-  public boolean isVerified() {
-    return isVerified;
-  }
+	public void setProfileCompleted(boolean profileCompleted) {
+		isProfileCompleted = profileCompleted;
+	}
 
-  public void setVerified(boolean verified) {
-    isVerified = verified;
-  }
+	public boolean isVerified() {
+		return isVerified;
+	}
 
-  @Override
-  public String toString() {
-    return "User{" +
-            "id=" + id +
-            ", screenName='" + screenName + '\'' +
-            ", nickName='" + nickName + '\'' +
-            ", email='" + email + '\'' +
-            ", password='" + password + '\'' +
-            ", verified=" + isVerified +
-            ", poolId='" + poolId + '\'' +
-            ", uid='" + uid + '\'' +
-            ", address=" + address +
-            ", creditScore=" + creditScore +
-            ", role='" + role + '\'' +
-            ", profileCompleted='" + isProfileCompleted + '\'' +
-            '}';
-  }
+	public void setVerified(boolean verified) {
+		isVerified = verified;
+	}
+
+	public int getValidationCode() {
+		return validationCode;
+	}
+
+	public void setValidationCode(int validationCode) {
+		this.validationCode = validationCode;
+	}
+
+	@Override
+	public String toString() {
+		return "User{" + "id=" + id + ", screenName='" + screenName + '\'' + ", nickName='" + nickName + '\''
+				+ ", email='" + email + '\'' + ", password='" + password + '\'' + ", verified=" + isVerified
+				+ ", poolId='" + poolId + '\'' + ", uid='" + uid + '\'' + ", address=" + address + ", creditScore="
+				+ creditScore + ", role='" + role + '\'' + ", profileCompleted='" + isProfileCompleted + '\'' + '}';
+	}
 }
