@@ -20,6 +20,31 @@ class ProductCard extends Component {
         })
     }
 
+    addToCart = (e) => { 
+        e.preventDefault();
+        let cartItem = {
+            id: this.props.product.id,
+            name: this.props.product.name,
+            quantity: this.state.quantity,
+            price: this.props.product.price
+        };
+        let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+        if (cart.length > 0) {
+            let existingCartItem = cart.find(element => element.id === this.props.product.id);
+            if (existingCartItem) {
+                existingCartItem.quantity = parseInt(cartItem.quantity, 10);
+            } else {
+                cart.push(cartItem);
+            }
+        } else {
+            cart.push(cartItem);
+        }
+        this.setState({
+            quantity: cartItem.quantity
+        })
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
     render() {
         return (
             <Card bg="white" style={{ width: "15rem", margin: "1rem" }}>
@@ -33,7 +58,7 @@ class ProductCard extends Component {
                         <input type="number" defaultValue="0" name="quanity" min = "0" className="mt-auto" onChange={this.handleChange}></input>
                     </Col>
                     <Col>
-                        <Button variant="primary" name={this.props.product.id} quantity= {this.state.quantity} onClick={this.onAddToCartClick}>Add to Cart</Button>
+                        <Button variant="primary" name={this.props.product.id} quantity={this.state.quantity} onClick={this.addToCart}>Add to Cart</Button>
                     </Col>
                 </Card.Body>
             </Card>
