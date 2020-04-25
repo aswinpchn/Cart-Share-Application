@@ -72,6 +72,8 @@ class Login extends Component {
           .post(backendurl, data)
           .then((response) => {
             console.log(response.data);
+
+            localStorage.setItem("role", response.data.role);
             this.setState({ isSignedIn: true });
           })
           .catch((error) => {

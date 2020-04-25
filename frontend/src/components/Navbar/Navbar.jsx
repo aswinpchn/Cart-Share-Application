@@ -27,26 +27,20 @@ class Navigationbar extends Component {
       });
   };
 
+  onSearchClick = (e) => {
+    e.preventDefault();
+
+    window.location.href = "/main/admin/search";
+  }
+
   render() {
-    let isAuthenticated = false;
-    let username;
-    let token = sessionStorage.getItem("token");
-    let decodedtoken = "";
-    if (token) {
-      isAuthenticated = true;
-      decodedtoken = decode(token);
+    let role;
+    let uid = localStorage.getItem("uid");
+    if (uid) {
+      role = localStorage.getItem("role");
     }
 
-    var loginButton, logoutButton, menuButtons, orders, profile;
-
-    loginButton = (
-      <div className="collapse navbar-collapse navbar-right" id="navbarNav">
-        <Nav className="mr-auto"></Nav>
-        <Link to="/login" className="nav-link text-dark t-font-size-14">
-          <i className="fas fa-user"></i>&nbsp;Login
-        </Link>
-      </div>
-    );
+    var logoutButton, menuButtons, profile, searchButton;
 
     logoutButton = (
       <div className="collapse navbar-collapse navbar-right" id="navbarNav">
@@ -61,37 +55,20 @@ class Navigationbar extends Component {
       </div>
     );
 
-    profile = (
-      <Link className="nav-link text-dark t-font-size-14" to="/profile">
-        <i className="fas fa-id-card"></i> Profile
-      </Link>
+    searchButton = (
+      <div className="collapse navbar-collapse navbar-right" id="navbarNav">
+        <Nav className="mr-auto"></Nav>
+        <Link
+          className="nav-link text-dark t-font-size-14"
+          to="/"
+          onClick={this.onSearchClick}
+        >
+          Search
+        </Link>
+      </div>
     );
 
-    if (isAuthenticated && decodedtoken.data.role === "pooler") {
-      username = (
-        <Dropdown>
-          <Dropdown.Toggle
-            variant="link"
-            className="nav-link text-dark t-font-size-14"
-            id="dropdown-basic"
-          >
-            <i className="fas fa-user" /> Hi, {decodedtoken.data.name}!
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item>{profile}</Dropdown.Item>
-            <Dropdown.Item>{logoutButton}</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      );
-
-      menuButtons = (
-        <div className="collapse navbar-collapse navbar-right" id="navbarNav">
-          <Nav className="mr-auto"></Nav>
-          <Nav.Link>{orders}</Nav.Link>
-          <Nav.Link>{username}</Nav.Link>
-        </div>
-      );
-    } else if (isAuthenticated && decodedtoken.data.role === "admin") {
+    if (role === "pooler") {
       menuButtons = (
         <div className="collapse navbar-collapse navbar-right" id="navbarNav">
           <Nav className="mr-auto"></Nav>
@@ -99,8 +76,15 @@ class Navigationbar extends Component {
           <Nav.Link>{logoutButton}</Nav.Link>
         </div>
       );
-    } else {
-      menuButtons = logoutButton;
+    } else if (role === "admin") {
+      menuButtons = (
+        <div className="collapse navbar-collapse navbar-right" id="navbarNav">
+          <Nav className="mr-auto"></Nav>
+          <Nav.Link>Test</Nav.Link>
+          <Nav.Link>{searchButton}</Nav.Link>
+          <Nav.Link>{logoutButton}</Nav.Link>
+        </div>
+      );
     }
 
     return (

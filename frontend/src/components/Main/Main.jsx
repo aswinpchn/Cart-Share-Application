@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import Home from "../Home/Home";
 import ProductList from "../AdminStore/ProductList";
+import Search from "../AppEntry/Search";
 
 class Main extends Component {
   render() {
@@ -14,6 +15,7 @@ class Main extends Component {
           <Switch>
             <Route path="/main/home" component={Home} />
             <Route path="/main/productList" component={ProductList} />
+            <Route path="/main/admin/search" component={Search} />
           </Switch>
         </BrowserRouter>
       </div>
