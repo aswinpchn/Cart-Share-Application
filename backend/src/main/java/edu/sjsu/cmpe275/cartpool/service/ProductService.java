@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import edu.sjsu.cmpe275.cartpool.dto.Product;
 import edu.sjsu.cmpe275.cartpool.dto.Store;
 import edu.sjsu.cmpe275.cartpool.repository.ProductRepository;
 import edu.sjsu.cmpe275.cartpool.repository.StoreRepository;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ProductService {
@@ -27,6 +29,14 @@ public class ProductService {
 			return productRespository.findByStore(store.get());
 		}
 		return new ArrayList<>();
+	}
+
+	public Product createProduct(Product product) {
+		Optional<Product> productExists = productRespository.findProductByStoreAndSku(product.getStore(), product.getSku());
+		if(productExists.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Product already exists with same store and sku");
+		}
+		return productRespository.save(product);
 	}
 
 }
