@@ -7,7 +7,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.css";
 import "./App.css";
 import firebase from "firebase";
-import Test from "./components/AppEntry/Test";
+import Search from "./components/AppEntry/Search";
 
 // firebase.initializeApp({
 //     apiKey: 'AIzaSyAsxkjbgvkJeKFIN2jMVszfhdyaWB7am7g',
@@ -28,7 +28,6 @@ class App extends Component {
                 component={UserDetailsForm}
               />
               <Route path="/main" component={Main} />
-              <Route exact path="/Test" component={Test} />
             </Switch>
           </BrowserRouter>
         </div>
