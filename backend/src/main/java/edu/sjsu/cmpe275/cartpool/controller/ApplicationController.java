@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import edu.sjsu.cmpe275.cartpool.dto.*;
-import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -113,5 +112,19 @@ public class ApplicationController {
 			return productService.createProduct(product);
 		}
 		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found");
+	}
+
+	@PostMapping("/product/edit/{productId}")
+	@ResponseBody
+	public Product editproduct(@PathVariable("productId") long productId, @Valid @RequestBody EditProductRequestBodyModel editProductRequestBodyModel) {
+		Product product = new Product();
+		product.setId(productId);
+		product.setName(editProductRequestBodyModel.getName());
+		product.setDescription(editProductRequestBodyModel.getDescription());
+		product.setBrand(editProductRequestBodyModel.getBrand());
+		product.setPrice(editProductRequestBodyModel.getPrice());
+		product.setUnit(editProductRequestBodyModel.getUnit());
+
+		return productService.editProduct(product);
 	}
 }
