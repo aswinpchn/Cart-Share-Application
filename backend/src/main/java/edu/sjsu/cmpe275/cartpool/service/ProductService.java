@@ -39,4 +39,14 @@ public class ProductService {
 		return productRespository.save(product);
 	}
 
+	public Product editProduct(Product product) {
+		Optional<Product> productExists = productRespository.findById(product.getId());
+		if(productExists.isPresent()) {
+			Product currentProduct = productExists.get();
+			product.setStore(currentProduct.getStore());
+			product.setSku(currentProduct.getSku());
+			return productRespository.save(product);
+		}
+		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+	}
 }
