@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.sjsu.cmpe275.cartpool.Constants;
 import edu.sjsu.cmpe275.cartpool.dto.Address;
+import edu.sjsu.cmpe275.cartpool.dto.CreateProductRequestBodyModel;
 import edu.sjsu.cmpe275.cartpool.dto.CreateStoreRequestBodyModel;
 import edu.sjsu.cmpe275.cartpool.dto.CreateUserRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.EditProductRequestBodyModel;
 import edu.sjsu.cmpe275.cartpool.dto.Product;
 import edu.sjsu.cmpe275.cartpool.dto.Store;
 import edu.sjsu.cmpe275.cartpool.dto.UpdateStoreRequestBodyModel;
