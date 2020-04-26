@@ -163,7 +163,7 @@ public class ApplicationController {
 			product.setPrice(createProductRequestBody.getPrice());
 			product.setUnit(createProductRequestBody.getUnit());
 
-			return productService.createProduct(product);
+			return productService.createProduct(product, createProductRequestBody.getImage());
 		}
 		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found");
 	}
