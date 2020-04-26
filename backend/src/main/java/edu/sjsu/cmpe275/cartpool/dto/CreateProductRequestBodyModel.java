@@ -1,5 +1,7 @@
 package edu.sjsu.cmpe275.cartpool.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class CreateProductRequestBodyModel {
 
     private long storeId;
@@ -17,6 +19,8 @@ public class CreateProductRequestBodyModel {
     private double price;
 
     private String unit;
+    
+    private MultipartFile image;
 
     public long getStoreId() {
         return storeId;
@@ -82,7 +86,15 @@ public class CreateProductRequestBodyModel {
         this.unit = unit;
     }
 
-    @Override
+    public MultipartFile getImage() {
+		return image;
+	}
+
+	public void setImage(MultipartFile image) {
+		this.image = image;
+	}
+
+	@Override
     public String toString() {
         return "CreateProductRequestBodyModel{" +
                 "storeId='" + storeId + '\'' +
