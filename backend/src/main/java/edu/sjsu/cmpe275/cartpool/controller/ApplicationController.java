@@ -17,24 +17,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import edu.sjsu.cmpe275.cartpool.Constants;
 import edu.sjsu.cmpe275.cartpool.dto.Address;
+import edu.sjsu.cmpe275.cartpool.dto.CreateProductRequestBodyModel;
 import edu.sjsu.cmpe275.cartpool.dto.CreateStoreRequestBodyModel;
 import edu.sjsu.cmpe275.cartpool.dto.CreateUserRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.EditProductRequestBodyModel;
 import edu.sjsu.cmpe275.cartpool.dto.Product;
 import edu.sjsu.cmpe275.cartpool.dto.Store;
 import edu.sjsu.cmpe275.cartpool.dto.UpdateStoreRequestBodyModel;
 import edu.sjsu.cmpe275.cartpool.dto.UpdateUserProfileRequestBodyModel;
 import edu.sjsu.cmpe275.cartpool.dto.User;
+import edu.sjsu.cmpe275.cartpool.repository.StoreRepository;
 import edu.sjsu.cmpe275.cartpool.service.ProductService;
 import edu.sjsu.cmpe275.cartpool.service.StoreService;
 import edu.sjsu.cmpe275.cartpool.service.UserService;
-
-import edu.sjsu.cmpe275.cartpool.repository.StoreRepository;
-import edu.sjsu.cmpe275.cartpool.Constants;
-import org.springframework.web.server.ResponseStatusException;
-
 
 @Controller
 @RequestMapping(path = "/cartpool")
@@ -93,7 +92,6 @@ public class ApplicationController {
 		return userService.updateUserProfile(user);
 	}
 
-
 	@PostMapping("/user/register")
 	@ResponseBody
 	public User createUser(@Valid @RequestBody CreateUserRequestBodyModel createUserRequestBody) {
@@ -145,18 +143,17 @@ public class ApplicationController {
 		return storeService.deleteStore(id);
 	}
 
-
 	@PostMapping("/product/add")
 	@ResponseBody
 	public Product addProduct(@Valid @RequestBody CreateProductRequestBodyModel createProductRequestBody) {
-		System.out.println("in api:    "+ createProductRequestBody);
+		System.out.println("in api:    " + createProductRequestBody);
 
 		Optional<Store> storeObj = storeRepository.findStoreById(createProductRequestBody.getStoreId());
 
-		if(storeObj.isPresent()) {
+		if (storeObj.isPresent()) {
 			Store store = storeObj.get();
 			System.out.println("store => " + store);
-			
+
 			Product product = new Product();
 			product.setStore(store);
 			product.setSku(createProductRequestBody.getSku());
@@ -173,7 +170,8 @@ public class ApplicationController {
 
 	@PostMapping("/product/edit/{productId}")
 	@ResponseBody
-	public Product editproduct(@PathVariable("productId") long productId, @Valid @RequestBody EditProductRequestBodyModel editProductRequestBodyModel) {
+	public Product editproduct(@PathVariable("productId") long productId,
+			@Valid @RequestBody EditProductRequestBodyModel editProductRequestBodyModel) {
 		Product product = new Product();
 		product.setId(productId);
 		product.setName(editProductRequestBodyModel.getName());
