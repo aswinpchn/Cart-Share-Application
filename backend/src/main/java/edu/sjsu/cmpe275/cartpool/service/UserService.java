@@ -45,7 +45,7 @@ public class UserService {
 		existingUser.setAddress(user.getAddress());
 		existingUser.setNickName(user.getNickName());
 		existingUser.setScreenName(user.getScreenName());
-		existingUser.setProfileCompleted(true);
+		existingUser.setProfileCompleted(Constants.TRUE);
 		int code = (int) (Math.random() * ((214748364 - 1000) + 1)) + 1000;
 		existingUser.setValidationCode(code);
 		User response = userRepository.save(existingUser);

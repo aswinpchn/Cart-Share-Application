@@ -30,11 +30,11 @@ public class Product {
     this.store = store;
   }
 
-  public String getSku() {
+  public long getSku() {
     return sku;
   }
 
-  public void setSku(String sku) {
+  public void setSku(long sku) {
     this.sku = sku;
   }
 
@@ -70,11 +70,11 @@ public class Product {
     this.brand = brand;
   }
 
-  public String getPrice() {
+  public double getPrice() {
     return price;
   }
 
-  public void setPrice(String price) {
+  public void setPrice(double price) {
     this.price = price;
   }
 
@@ -86,7 +86,7 @@ public class Product {
     this.unit = unit;
   }
 
-  private String sku;
+  private long sku;
 
   private String name;
 
@@ -96,7 +96,7 @@ public class Product {
 
   private String brand;
 
-  private String price;
+  private double price;
 
   private String unit;
 }
