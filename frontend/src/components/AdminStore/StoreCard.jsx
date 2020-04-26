@@ -57,7 +57,7 @@ class StoreCard extends Component {
               </Button>
               <Modal open={open} onClose={this.onCloseModal} center>
                 <p className="text-left tex-secondary  font-weight-bold">
-                  Retweet
+                  Edit Store Details
                 </p>
                 <StoreEditForm store={store} />
               </Modal>
