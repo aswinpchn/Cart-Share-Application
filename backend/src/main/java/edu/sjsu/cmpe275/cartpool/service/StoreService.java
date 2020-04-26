@@ -26,7 +26,7 @@ public class StoreService {
 	public Store createStore(Store store) {
 		if (storeRepository.existsByName(store.getName())) {
 			Store existingStore = storeRepository.findStoreByName(store.getName());
-			return existingStore;
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Store already exists");
 		}
 		return storeRepository.save(store);
 	}

@@ -1,16 +1,19 @@
 import React, { Component } from "react";
-import { Col } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import Modal from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import StoreInfoForm from "../AdminStore/StoreInfoForm";
 import StoreCard from "../AdminStore/StoreCard";
+import { properties } from "../../properties";
+import axios from "axios";
+const backendurl = properties.backendhost;
 
 class AdminHome extends Component {
   constructor(props) {
     super(props);
     this.state = {
       storeID: "",
-      storeName: "",
+      name: "",
       storeImage: "",
       stores: [],
       open: false,
@@ -23,15 +26,10 @@ class AdminHome extends Component {
   }
 
   getStores = async () => {
-    const stores = [
-      {
-        storeName: "Costco",
-        storeID: 1,
-      },
-      { storeName: "Target", storeID: 2 },
-    ];
+    let response = await axios.get(backendurl + "store/all");
+    console.log("the response is " + response.data);
     this.setState({
-      stores: stores,
+      stores: response.data,
     });
   };
 
@@ -44,12 +42,26 @@ class AdminHome extends Component {
   };
 
   render() {
+    let stores = [];
     const { open } = this.state;
+
+    if (this.state.stores.length) {
+      stores = this.state.stores.map((store, storeIndex) => {
+        return (
+          <Col key={storeIndex} sm={3}>
+            <StoreCard store={store} />
+          </Col>
+        );
+      });
+    }
+
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div className="row">
-          <div className="col s12 center-align">
-            <h2>Welcome Admin</h2>
+          <div className="col s12 center-align background light-blue">
+            <h2 className="text-center text-white font-italic font-family-sans-serif">
+              Welcome Admin
+            </h2>
           </div>
         </div>
 
@@ -68,17 +80,14 @@ class AdminHome extends Component {
             </Modal>
           </div>
         </li>
-        <h3>
-          <p>Existing Stores</p>
-        </h3>
-        {this.state.stores &&
-          this.state.stores.map((store, storeIndex) => {
-            return (
-              <Col key={storeIndex} sm={3}>
-                <StoreCard store={store} />
-              </Col>
-            );
-          })}
+
+        <div className=" container">
+          <div className="container">
+            <div>
+              <Row>{stores}</Row>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

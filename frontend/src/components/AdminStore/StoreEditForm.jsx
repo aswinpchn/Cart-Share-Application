@@ -22,7 +22,17 @@ class StoreInfoForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount() {}
+  componentWillMount() {
+    let { store } = this.props;
+    this.setState({
+      storeName: store.name,
+      streetDetails: store.address.street,
+      aptDetails: store.address.street,
+      cityName: store.address.city,
+      stateName: store.address.state,
+      zipCode: store.address.zip,
+    });
+  }
 
   handleChange(e) {
     this.setState({
@@ -41,34 +51,35 @@ class StoreInfoForm extends Component {
     //console.log("errors -" + errors);
     //if (errors) return;
     const data = {
-      name: this.state.storeName,
+      name: this.props.store.name,
       street: this.state.streetDetails + "," + this.state.aptDetails,
       city: this.state.cityName,
       state: this.state.stateName,
       zip: this.state.zipCode,
     };
 
-    console.log("Data for creating store is" + data);
+    console.log("Data for updating store is" + data);
     axios
-      .post(backendurl + "/store/create", data)
+      .post(backendurl + "/store/updateStore", data)
       .then((response) => {
         if (response.status === 200) {
           this.setState({
-            text: "Store Created",
+            text: "Store Updated",
           });
         }
       })
       .catch((error) => {
-        console.log("Error occured while creating store " + error);
+        console.log("Error occured while updating store " + error);
         this.setState({
-          errors: "Creation of store failed: " + error,
+          errors: "Update failed: " + error,
         });
       });
   };
 
   render() {
     const { text, errors } = this.state;
-
+    const { store } = this.props;
+    const { address } = store;
     return (
       <div>
         <Form>
@@ -78,9 +89,8 @@ class StoreInfoForm extends Component {
               <Form.Control
                 type="text"
                 name="storeName"
-                value={this.state.storeName}
-                placeholder="Enter Store Name"
-                onChange={this.handleChange}
+                value={store.name}
+                disabled="true"
               />
             </Form.Group>
           </Form.Row>
@@ -90,7 +100,7 @@ class StoreInfoForm extends Component {
             <Form.Control
               type="text"
               name="streetDetails"
-              value={this.state.streetDetails}
+              defaultValue={address.street}
               placeholder="1234 Main St"
               onChange={this.handleChange}
             />
@@ -101,7 +111,7 @@ class StoreInfoForm extends Component {
             <Form.Control
               type="text"
               name="aptDetails"
-              value={this.state.aptDetails}
+              defaultValue={address.street}
               placeholder="Apartment, studio, or floor"
               onChange={this.handleChange}
             />
@@ -113,7 +123,7 @@ class StoreInfoForm extends Component {
               <Form.Control
                 type="text"
                 name="cityName"
-                value={this.state.cityName}
+                defaultValue={address.city}
                 onChange={this.handleChange}
               />
             </Form.Group>
@@ -122,7 +132,7 @@ class StoreInfoForm extends Component {
               <Form.Label>State</Form.Label>
               <Form.Control
                 as="select"
-                value="Choose..."
+                defaultValue="Choose..."
                 onChange={this.handleChange}
               >
                 <option>CA</option>
@@ -135,7 +145,7 @@ class StoreInfoForm extends Component {
               <Form.Label>Zip</Form.Label>
               <Form.Control
                 name="zipCode"
-                value={this.state.zipCode}
+                defaultValue={address.zip}
                 onChange={this.handleChange}
               />
             </Form.Group>
@@ -146,7 +156,7 @@ class StoreInfoForm extends Component {
             onClick={this.handleSubmit}
             type="submit"
           >
-            Proceed
+            Update
           </Button>
           <br />
           <p className="text-danger"> {errors}</p>
