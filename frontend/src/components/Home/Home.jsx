@@ -1,20 +1,20 @@
 import React, { Component } from "react";
-import {Redirect, withRouter} from "react-router-dom";
+import { Redirect, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import PoolerHome from "./PoolerHome";
 import AdminHome from "./AdminHome";
 import decode from "jwt-decode";
 import axios from "axios";
-import {properties} from "../../properties";
+import { properties } from "../../properties";
 // import firebase from 'firebase';
 
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      role : null,
+      role: null,
       profileCompleted: null,
-      responseStatus : false
+      responseStatus: false,
     };
   }
 
@@ -40,25 +40,27 @@ class Home extends Component {
 
     try {
       axios.defaults.withCredentials = true;
-      const backendurl = properties.backendhost + 'user/?email=' + localStorage.getItem("email")
+      const backendurl =
+        properties.backendhost + "user/?email=" + localStorage.getItem("email");
       //console.log(backendurl);
       let response = await axios.get(backendurl);
 
       console.log(response);
 
-      if(response.data.profileCompleted) {
+      if (response.data.profileCompleted) {
         this.setState({
           role: response.data.role,
           profileCompleted: response.data.profileCompleted,
-          responseStatus: true
+          responseStatus: true,
         });
-      } else { // redirect them
+      } else {
+        // redirect them
         this.setState({
-          profileCompleted : response.data.profileCompleted,
-          responseStatus: true
+          profileCompleted: response.data.profileCompleted,
+          responseStatus: true,
         });
       }
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
   }
@@ -68,24 +70,31 @@ class Home extends Component {
 
     let redirectVar;
 
-    if(this.state.responseStatus && !this.state.profileCompleted) {
+    if (this.state.responseStatus && !this.state.profileCompleted) {
       console.log(this.state.responseStatus);
       console.log(this.state.profileCompleted);
       console.log("Into redirect");
-      //redirectVar = <Redirect to="/UserDetailsForm" />;
-      window.location.href = "/UserDetailsForm";
+      redirectVar = <Redirect to="/main/userDetailsForm" />;
     }
 
-    if (this.state.responseStatus && this.state.profileCompleted && this.state.role === "admin") {
+    if (
+      this.state.responseStatus &&
+      this.state.profileCompleted &&
+      this.state.role === "admin"
+    ) {
       homeComponent = <AdminHome />;
-    } else if (this.state.responseStatus && this.state.profileCompleted && this.state.role === "pooler") {
+    } else if (
+      this.state.responseStatus &&
+      this.state.profileCompleted &&
+      this.state.role === "pooler"
+    ) {
       homeComponent = <PoolerHome />;
     }
     // else {
     //   this.props.history.push("/");
     // }
 
-  // return <div><button onClick={this.logout}>Logout</button></div>
+    // return <div><button onClick={this.logout}>Logout</button></div>
     return (
       <div>
         {redirectVar}
