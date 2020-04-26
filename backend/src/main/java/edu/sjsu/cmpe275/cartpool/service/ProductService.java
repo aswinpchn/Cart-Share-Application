@@ -19,10 +19,10 @@ public class ProductService {
 
 	@Autowired
 	private ProductRepository productRespository;
-	
+
 	@Autowired
 	private StoreRepository storeRespository;
-	
+
 	public List<Product> getProductsByStore(long storeId) {
 		Optional<Store> store = storeRespository.findById(storeId);
 		if (store.isPresent()) {
