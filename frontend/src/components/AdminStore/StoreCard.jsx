@@ -55,6 +55,7 @@ class StoreCard extends Component {
               >
                 <i className="text-secondary fa fa-edit" />
               </Button>
+
               <Modal open={open} onClose={this.onCloseModal} center>
                 <p className="text-left tex-secondary  font-weight-bold">
                   Edit Store Details
