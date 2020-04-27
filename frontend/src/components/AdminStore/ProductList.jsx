@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Col } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import Modal from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import ProductInfoForm from "./ProductInfoForm";
@@ -81,14 +81,18 @@ class ProductList extends Component {
         <h3>
           <p>Existing Products</p>
         </h3>
+        <Row>
         {this.state.products &&
           this.state.products.map((product, productIndex) => {
             return (
+              
               <Col key={productIndex} sm={3}>
                 <ProductCard product={product} />
-              </Col>
+                </Col>
+               
             );
           })}
+        </Row>
       </div>
     );
   }
