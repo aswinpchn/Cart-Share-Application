@@ -29,7 +29,7 @@ class ProductCard extends Component {
       <Card bg="white" style={{ width: "15rem", margin: "1rem" }}>
         <Card.Body>
           <Card.Img variant="top" src="holder.js/100px160" />
-            <Row>
+            
               <Col sm={30}>
                 <Card.Title>{product.name}</Card.Title>
                 <Card.Text>
@@ -48,8 +48,7 @@ class ProductCard extends Component {
                   {product.unit}
                 </Card.Text>
               </Col>
-            </Row>
-            <Row>
+           <Row>
             <Col sm={20}>
               <Button
                 onClick={this.onOpenModal}
@@ -74,7 +73,7 @@ class ProductCard extends Component {
                 <i className="text-secondary fa fa-trash" />
               </Button>
             </Col>
-          </Row>
+           </Row>
         </Card.Body>
       </Card>
     );
