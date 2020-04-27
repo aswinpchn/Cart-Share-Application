@@ -16,7 +16,7 @@ class Main extends Component {
           <Switch>
             <Route path="/main/userDetailsForm" component={UserDetailsForm} />
             <Route path="/main/home" component={Home} />
-            <Route path="/main/productList" component={ProductList} />
+            <Route path="/main/productList/:storeId" component={ProductList} />
             <Route path="/main/admin/search" component={Search} />
           </Switch>
         </BrowserRouter>

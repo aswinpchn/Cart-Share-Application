@@ -34,7 +34,7 @@ class StoreCard extends Component {
             <Col sm={10}>
               <Link
                 to={{
-                  pathname: "/main/productList",
+                  pathname: "/main/productList/" + store.id,
                   state: {
                     storeID: store.id,
                     storeName: store.name,
