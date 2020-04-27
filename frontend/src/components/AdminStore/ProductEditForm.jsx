@@ -1,49 +1,53 @@
 import React, { Component } from "react";
 import { Col, Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import axios from 'axios';
+import axios from "axios";
 import { properties } from "../../properties";
+const backendurl = properties.backendhost;
 
-class ProductInfoForm extends Component {
+class ProductEditForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      storeId: "",
-      sku: "",
-      name: "",
-      description: "",
-      image: "",
-      brand: "",
-      price: "",
-      unit: "",
-      errors: false,
-      success: false,
-      errorMessage: "",
-      successMessage: ""
-    };
-  }
-  componentDidMount() {
-    this.setState({
-      storeId : this.props.storeId
-    });
+        storeId: "",
+        sku: "",
+        name: "",
+        description: "",
+        image: "",
+        brand: "",
+        price: "",
+        unit: "",
+        errors: false,
+        errorMessage: "",
+        successMessage: false
+      };
     this.handleChange = this.handleChange.bind(this);
-    console.log("this--->", this, this.props)
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentWillMount() {
+    let { product } = this.props;
+    this.setState({
+        name: product.name,
+        description: product.description,
+        brand: product.brand,
+        price: product.price,
+        unit: product.unit
+    });
+    console.log("this--->", this.props)
   }
 
   handleChange(e) {
-    console.log("e.target.value-->", e.target.name, e.target.value)
     this.setState({
       [e.target.name]: e.target.value,
     });
   }
 
   handleSubmit = (e) => {
-    //prevent page from refresh
     e.preventDefault();
+    
     console.log(this.state)
     const data = {
-      storeId: this.state.storeId,
-      sku: this.state.sku,
       name: this.state.name,
       description: this.state.description,
       image: this.state.image,
@@ -52,76 +56,39 @@ class ProductInfoForm extends Component {
       unit: this.state.unit,
     };
     console.log("data-->", data)
-
-    // axios call to set profile
-    const backendurl = properties.backendhost + "product/add";
     axios
-      .post(backendurl, data)
+      .post(backendurl + "product/edit/" + this.props.product.id, data)
       .then((response) => {
-        console.log(response);
-        console.log(response.data);
-        if(response.status == 200) {
+        if (response.status === 200) {
           this.setState({
-            errors: false,
-            errorMessage: "",
-            success: true,
-            successMessage: "Product added successfully."
-          })
-          // window.location.reload();
+            success : true,
+            successMessage : "Product successfully edited."
+          });
         }
       })
       .catch((error) => {
-        console.log("Error in adding new product", error, error.message);
-        if(error.message.includes("404")) {
-          this.setState({
-            success: false,
-            successMessage: "",
-            errors: true,
-            errorMessage: "Store not found."
-          })
-        } else if(error.message.includes("409")) {
-          this.setState({
-            success: false,
-            successMessage: "",
-            errors: true,
-            errorMessage: "Product already exists with same store and sku."
-          })
-        } else {
-          this.setState({
-            success: false,
-            successMessage: "",
-            errors: true,
-            errorMessage: "Server Error. Please try again."
-          })
-        }
+        console.log("Error occured while updating product ", error, error.message);
+        this.setState({
+          errors: true,
+          errorMessage: error.message
+        });
       });
   };
 
   render() {
+    const { product } = this.props;
+    console.log("product==>", product);
     return (
       <div>
-        <Form onSubmit={this.handleSubmit}>
+        <Form>
         <Form.Row>
-            <Form.Group as={Col} controlId="sku">
-              <Form.Label>Product SKU</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter store keeping unit number(SKU)"
-                name="sku"
-                value={this.state.sku}
-                onChange={this.handleChange}
-                required
-              />
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
             <Form.Group as={Col} controlId="name">
               <Form.Label>Product Name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter Product Name"
                 name="name"
-                value={this.state.name}
+                defaultValue={product.name}
                 onChange={this.handleChange}
                 required
               />
@@ -135,7 +102,7 @@ class ProductInfoForm extends Component {
                 type="text"
                 placeholder="Enter Brand"
                 name="brand"
-                value={this.state.brand}
+                defaultValue={product.brand}
                 onChange={this.handleChange}
                 required
               />
@@ -149,7 +116,7 @@ class ProductInfoForm extends Component {
                 type="number"
                 placeholder="Enter price"
                 name="price"
-                value={this.state.price}
+                defaultValue={product.price}
                 onChange={this.handleChange}
                 required
               />
@@ -160,7 +127,7 @@ class ProductInfoForm extends Component {
                 type="text"
                 placeholder="Enter Unit"
                 name="unit"
-                value={this.state.unit}
+                defaultValue={product.unit}
                 onChange={this.handleChange}
                 required
               />
@@ -173,15 +140,20 @@ class ProductInfoForm extends Component {
               as="textarea"
               placeholder="Enter Product Description"
               name="description"
-              value={this.state.description}
+              defaultValue={product.description}
               onChange={this.handleChange}
               required
             />
           </Form.Group>
 
-          <Button className="btn btn-primary" type="submit">
-            Submit
+          <Button
+            className="btn btn-primary"
+            onClick={this.handleSubmit}
+            type="submit"
+          >
+            Update
           </Button>
+          <br />
           <div>{this.state.errors && <p className="red-text text-darken-1">
             {this.state.errorMessage}</p>}</div>
           <div>{this.state.success && <p className="green-text text-darken-1">
@@ -192,4 +164,4 @@ class ProductInfoForm extends Component {
   }
 }
 
-export default ProductInfoForm;
+export default ProductEditForm;
