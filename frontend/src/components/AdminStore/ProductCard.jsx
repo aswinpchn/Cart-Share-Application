@@ -28,7 +28,7 @@ class ProductCard extends Component {
     return (
       <Card bg="white" style={{ width: "15rem", margin: "1rem" }}>
         <Card.Body>
-          <Card.Img variant="top" src="holder.js/100px160" />
+          <Card.Img variant="top" src={product.imageURL} />
             
               <Col sm={30}>
                 <Card.Title>{product.name}</Card.Title>

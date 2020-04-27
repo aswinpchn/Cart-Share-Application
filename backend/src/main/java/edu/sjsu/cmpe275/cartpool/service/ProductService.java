@@ -51,7 +51,7 @@ public class ProductService {
 		try {
 			saveUploadedFile(image);
 			String url = awsS3Service.uploadFile(UPLOAD_FOLDER + image.getOriginalFilename(),
-					product.getStore() + "-" + product.getSku());
+					product.getStore().getId() + "-" + product.getSku());
 			product.setImageURL(url);
 		} catch (IOException e) {
 			// Log that image could not be saved

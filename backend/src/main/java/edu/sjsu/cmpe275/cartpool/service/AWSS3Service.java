@@ -24,6 +24,6 @@ public class AWSS3Service {
 
 	public String uploadFile(String file, String productId) {
 		s3client.putObject(bucketName, productId, new File(file));
-		return s3client.getUrl(bucketName, productId).getPath();
+		return s3client.getUrl(bucketName, productId).toString();
 	}
 }
