@@ -1,14 +1,18 @@
 import React, { Component } from "react";
-import { Col } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import Modal from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import ProductInfoForm from "./ProductInfoForm";
 import ProductCard from "./ProductCard";
+import { properties } from "../../properties";
+import axios from "axios";
+const backendurl = properties.backendhost;
 
 class ProductList extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      storeId: "",
       productID: "",
       sku: "",
       name: "",
@@ -22,37 +26,26 @@ class ProductList extends Component {
       blockScroll: true,
       errors: "",
     };
+    console.log("idd--->", this.props, this.props.match.params.storeId);
+
   }
   componentDidMount() {
     this.getProducts();
+    this.setState({
+      storeId : this.props.match.params.storeId
+    })
   }
 
   getProducts = async () => {
-    const products = [
-      {
-        sku: 1,
-        name: "Milk",
-        description: "Organic Milk",
-        brand: "Dairy Farm",
-        price: "8",
-        unit: "Gallon",
-      },
-      {
-        sku: 2,
-        name: "Bread",
-        description: "Organic wheat bread",
-        brand: "Orowheat",
-        price: "9",
-        unit: "Grams",
-      },
-    ];
+    let response = await axios.get(backendurl + "product/" +this.props.match.params.storeId);
+    console.log("the response products are " + response.data);
     this.setState({
-      products: products,
+      products: response.data,
     });
   };
 
   onOpenModal = () => {
-    this.setState({ open: true, blockScroll: false });
+    this.setState({ open: true, blockScroll: false,  });
   };
 
   onCloseModal = () => {
@@ -81,21 +74,25 @@ class ProductList extends Component {
               <h4 className="text-center tex-secondary">
                 Enter Product Details
               </h4>
-              <ProductInfoForm />
+              <ProductInfoForm storeId={this.state.storeId}/>
             </Modal>
           </div>
         </li>
         <h3>
           <p>Existing Products</p>
         </h3>
+        <Row>
         {this.state.products &&
           this.state.products.map((product, productIndex) => {
             return (
+              
               <Col key={productIndex} sm={3}>
                 <ProductCard product={product} />
-              </Col>
+                </Col>
+               
             );
           })}
+        </Row>
       </div>
     );
   }
