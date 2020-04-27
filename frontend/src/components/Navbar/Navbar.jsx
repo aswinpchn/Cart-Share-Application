@@ -80,8 +80,8 @@ class Navigationbar extends Component {
       menuButtons = (
         <div className="collapse navbar-collapse navbar-right" id="navbarNav">
           <Nav className="mr-auto"></Nav>
-          <Nav.Link>Test</Nav.Link>
-          <Nav.Link>{searchButton}</Nav.Link>
+          <Nav.Link href="/main/home">Home</Nav.Link>
+          <Nav.Link href="/main/admin/search">Search</Nav.Link>
           <Nav.Link>{logoutButton}</Nav.Link>
         </div>
       );
