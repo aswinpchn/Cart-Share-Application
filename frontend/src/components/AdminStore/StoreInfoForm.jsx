@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Col, Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import axios from "axios";
-import { properties } from "../../properties";
-const backendurl = properties.backendhost;
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { createStore } from "../_actions/storeActions";
 
 class StoreInfoForm extends Component {
   constructor(props) {
@@ -11,9 +11,8 @@ class StoreInfoForm extends Component {
     this.state = {
       storeName: "",
       streetDetails: "",
-      aptDetails: "",
       cityName: "",
-      stateName: "",
+      stateName: "CA",
       zipCode: "",
       errors: "",
       text: null,
@@ -24,11 +23,27 @@ class StoreInfoForm extends Component {
 
   componentDidMount() {}
 
-  handleChange(e) {
+  componentDidUpdate(prevProps) {
+    if (this.props.store && this.props.store !== prevProps.store) {
+      if (this.props.store.responseStatus === 200) {
+        this.setState({
+          text: "Store Created",
+        });
+      }
+    }
+    if (this.props.errors !== prevProps.errors) {
+      console.log("errors are" + this.props.errors);
+      if (this.props.errors) {
+        this.setState({ text: "", errors: this.props.errors.message });
+      }
+    }
+  }
+
+  handleChange = (e) => {
     this.setState({
       [e.target.name]: e.target.value,
     });
-  }
+  };
 
   handleSubmit = (e) => {
     //prevent page from refresh
@@ -37,33 +52,15 @@ class StoreInfoForm extends Component {
       text: "",
       errors: "",
     });
-    //const errors = this.validate();
-    //console.log("errors -" + errors);
-    //if (errors) return;
     const data = {
       name: this.state.storeName,
-      street: this.state.streetDetails + "," + this.state.aptDetails,
+      street: this.state.streetDetails,
       city: this.state.cityName,
       state: this.state.stateName,
       zip: this.state.zipCode,
     };
 
-    console.log("Data for creating store is" + data);
-    axios
-      .post(backendurl + "/store/create", data)
-      .then((response) => {
-        if (response.status === 200) {
-          this.setState({
-            text: "Store Created",
-          });
-        }
-      })
-      .catch((error) => {
-        console.log("Error occured while creating store " + error);
-        this.setState({
-          errors: "Creation of store failed: " + error,
-        });
-      });
+    this.props.createStore(data);
   };
 
   render() {
@@ -95,18 +92,6 @@ class StoreInfoForm extends Component {
               onChange={this.handleChange}
             />
           </Form.Group>
-
-          <Form.Group controlId="aptDetails">
-            <Form.Label>Address 2</Form.Label>
-            <Form.Control
-              type="text"
-              name="aptDetails"
-              value={this.state.aptDetails}
-              placeholder="Apartment, studio, or floor"
-              onChange={this.handleChange}
-            />
-          </Form.Group>
-
           <Form.Row>
             <Form.Group as={Col} controlId="cityName">
               <Form.Label>City</Form.Label>
@@ -122,7 +107,8 @@ class StoreInfoForm extends Component {
               <Form.Label>State</Form.Label>
               <Form.Control
                 as="select"
-                value="Choose..."
+                name="stateName"
+                value={this.state.stateName}
                 onChange={this.handleChange}
               >
                 <option>CA</option>
@@ -158,4 +144,12 @@ class StoreInfoForm extends Component {
   }
 }
 
-export default StoreInfoForm;
+StoreInfoForm.propTypes = {
+  store: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+};
+const mapStateToProps = (state) => ({
+  store: state.storeState,
+  errors: state.errorState,
+});
+export default connect(mapStateToProps, { createStore })(StoreInfoForm);

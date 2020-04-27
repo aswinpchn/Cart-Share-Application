@@ -4,35 +4,25 @@ import Modal from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import StoreInfoForm from "../AdminStore/StoreInfoForm";
 import StoreCard from "../AdminStore/StoreCard";
-import { properties } from "../../properties";
-import axios from "axios";
-const backendurl = properties.backendhost;
+import { getStores } from "../_actions/storeActions";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import Spinner from "../common/Spinner";
 
 class AdminHome extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      storeID: "",
-      name: "",
-      storeImage: "",
-      stores: [],
-      open: false,
-      blockScroll: true,
-      errors: "",
-    };
-  }
-  componentDidMount() {
-    this.getStores();
-  }
-
-  getStores = async () => {
-    let response = await axios.get(backendurl + "store/all");
-    console.log("the response is " + response.data);
-    this.setState({
-      stores: response.data,
-    });
+  state = {
+    storeID: "",
+    name: "",
+    storeImage: "",
+    stores: [],
+    open: false,
+    blockScroll: true,
+    errors: "",
   };
 
+  componentDidMount() {
+    this.props.getStores();
+  }
   onOpenModal = () => {
     this.setState({ open: true, blockScroll: false });
   };
@@ -42,11 +32,14 @@ class AdminHome extends Component {
   };
 
   render() {
-    let stores = [];
     const { open } = this.state;
+    const { stores, loading } = this.props.storeState;
+    let storeContent;
 
-    if (this.state.stores.length) {
-      stores = this.state.stores.map((store, storeIndex) => {
+    if (stores === null || loading) {
+      storeContent = <Spinner />;
+    } else {
+      storeContent = stores.map((store, storeIndex) => {
         return (
           <Col key={storeIndex} sm={3}>
             <StoreCard store={store} />
@@ -84,7 +77,7 @@ class AdminHome extends Component {
         <div className=" container">
           <div className="container">
             <div>
-              <Row>{stores}</Row>
+              <Row>{storeContent}</Row>
             </div>
           </div>
         </div>
@@ -93,4 +86,12 @@ class AdminHome extends Component {
   }
 }
 
-export default AdminHome;
+AdminHome.propTypes = {
+  errors: PropTypes.object.isRequired,
+  stores: PropTypes.array,
+};
+const mapStateToProps = (state) => ({
+  storeState: state.storeState,
+  errors: state.errorState,
+});
+export default connect(mapStateToProps, { getStores })(AdminHome);
