@@ -37,26 +37,30 @@ class ProductInfoForm extends Component {
     });
   }
 
+  onImageChange = (event) => {
+    this.setState({
+      image: event.target.files[0]
+    });
+  }
+
   handleSubmit = (e) => {
     //prevent page from refresh
     e.preventDefault();
-    console.log(this.state)
-    const data = {
-      storeId: this.state.storeId,
-      sku: this.state.sku,
-      name: this.state.name,
-      description: this.state.description,
-      image: this.state.image,
-      brand: this.state.brand,
-      price: this.state.price,
-      unit: this.state.unit,
-    };
+    let data = new FormData();
+    data.append('storeId', this.state.storeId);
+    data.append('sku', this.state.sku);
+    data.append('name', this.state.name);
+    data.append('image', this.state.image);
+    data.append('brand', this.state.brand);
+    data.append('price', this.state.price);
+    data.append('unit', this.state.unit);
     console.log("data-->", data)
 
     // axios call to set profile
     const backendurl = properties.backendhost + "product/add";
+    const config = { headers: { 'Content-Type': 'multipart/form-data' } };
     axios
-      .post(backendurl, data)
+      .post(backendurl, data, config)
       .then((response) => {
         console.log(response);
         console.log(response.data);
@@ -175,6 +179,16 @@ class ProductInfoForm extends Component {
               name="description"
               value={this.state.description}
               onChange={this.handleChange}
+              required
+            />
+          </Form.Group>
+
+          <Form.Group as={Col} controlId="image">
+            <Form.Label>Image</Form.Label>
+            <Form.Control
+              type="file"
+              name="image"
+              onChange={this.onImageChange}
               required
             />
           </Form.Group>
