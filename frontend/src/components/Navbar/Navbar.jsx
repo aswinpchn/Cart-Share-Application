@@ -4,6 +4,7 @@ import { Route, withRouter } from "react-router-dom";
 import { Navbar, Nav, Dropdown } from "react-bootstrap";
 import decode from "jwt-decode";
 import firebase from "firebase";
+import DropdownButton from "react-bootstrap/DropdownButton";
 
 class Navigationbar extends Component {
   constructor(props) {
@@ -73,6 +74,12 @@ class Navigationbar extends Component {
         <div className="collapse navbar-collapse navbar-right" id="navbarNav">
           <Nav className="mr-auto"></Nav>
           <Nav.Link>Test</Nav.Link>
+          <Nav.Link href="/main/home">Home</Nav.Link>
+          <DropdownButton id="dropdown-basic-button" title="Pool">
+            <Dropdown.Item href="/main/pooler/currentPool">Current Pool</Dropdown.Item>
+            <Dropdown.Item href="/main/pooler/createPool">Create Pool</Dropdown.Item>
+            <Dropdown.Item href="/main/pooler/deletePool">Delete Pool</Dropdown.Item>
+          </DropdownButton>
           <Nav.Link>{logoutButton}</Nav.Link>
         </div>
       );
