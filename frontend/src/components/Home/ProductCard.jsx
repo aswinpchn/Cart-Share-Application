@@ -9,11 +9,6 @@ class ProductCard extends Component {
         };
     }
 
-    onAddToCartClick = async (e) => {
-        e.preventDefault();
-        console.log(e.target); 
-    }
-
     handleChange = async (e) => {
         this.setState({
             quantity: e.target.value
@@ -35,7 +30,7 @@ class ProductCard extends Component {
         if (cart.length > 0) {
             let existingCartItem = cart.find(element => element.id === this.props.product.id);
             if (existingCartItem) {
-                existingCartItem.quantity = existingCartItem.quantity + parseInt(cartItem.quantity, 10);
+                existingCartItem.quantity = parseInt(existingCartItem.quantity, 10) + parseInt(cartItem.quantity, 10);
             } else {
                 cart.push(cartItem);
             }
