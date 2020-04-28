@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Card, Col, Row, Button } from "react-bootstrap";
 import Modal from "react-responsive-modal";
 import StoreEditForm from "./StoreEditForm";
+import { connect } from "react-redux";
+import { deleteStore } from "../_actions/storeActions";
 
 class StoreCard extends Component {
   constructor(props) {
@@ -22,6 +24,10 @@ class StoreCard extends Component {
   onCloseModal = () => {
     this.setState({ open: false });
   };
+
+  onDeleteClick(id) {
+    this.props.deleteStore(id);
+  }
 
   render() {
     const { store } = this.props;
@@ -65,7 +71,7 @@ class StoreCard extends Component {
             </Col>
             <Col sm={20}>
               <Button
-                onClick={this.deleteStore}
+                onClick={this.onDeleteClick.bind(this, store.id)}
                 type="button"
                 className="btn btn-light mr-1"
               >
@@ -79,4 +85,8 @@ class StoreCard extends Component {
   }
 }
 
-export default StoreCard;
+const mapStateToProps = (state) => ({
+  storeState: state.storeState,
+  errors: state.errorState,
+});
+export default connect(mapStateToProps, { deleteStore })(StoreCard);
