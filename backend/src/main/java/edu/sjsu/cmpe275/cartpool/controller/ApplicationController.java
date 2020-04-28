@@ -180,7 +180,7 @@ public class ApplicationController {
 		product.setBrand(editProductRequestBodyModel.getBrand());
 		product.setPrice(editProductRequestBodyModel.getPrice());
 		product.setUnit(editProductRequestBodyModel.getUnit());
-
+		product.setImageURL(editProductRequestBodyModel.getImageURL());
 		return productService.editProduct(product);
 	}
 
