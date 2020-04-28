@@ -4,8 +4,10 @@ import {
   GET_ERRORS,
   GET_STORES,
   UPDATE_STORE,
+  DELETE_STORE,
 } from "./types";
 import axios from "axios";
+import swal from "sweetalert";
 import { properties } from "../../properties";
 const backendurl = properties.backendhost;
 
@@ -16,6 +18,7 @@ export const setStoreLoading = () => {
   };
 };
 
+// Create Store
 export const createStore = (data) => (dispatch) => {
   axios
     .post(backendurl + "store/create", data)
@@ -36,6 +39,7 @@ export const createStore = (data) => (dispatch) => {
     });
 };
 
+// Get all Stores
 export const getStores = () => (dispatch) => {
   dispatch(setStoreLoading());
   axios
@@ -54,6 +58,7 @@ export const getStores = () => (dispatch) => {
     });
 };
 
+// Edit Store
 export const updateStore = (data) => (dispatch) => {
   axios
     .post(backendurl + "/store/updateStore", data)
@@ -63,10 +68,30 @@ export const updateStore = (data) => (dispatch) => {
           type: UPDATE_STORE,
           payload: response.status,
         });
+        swal("Store Updated");
         dispatch(getStores());
       }
     })
     .catch((error) => {
+      dispatch({
+        type: GET_ERRORS,
+        payload: error.response.data,
+      });
+    });
+};
+
+// Delete Store
+export const deleteStore = (id) => (dispatch) => {
+  axios
+    .delete(backendurl + `store/${id}`)
+    .then((response) => {
+      dispatch({
+        type: DELETE_STORE,
+        payload: id,
+      });
+    })
+    .catch((error) => {
+      console.log("the error is" + error);
       dispatch({
         type: GET_ERRORS,
         payload: error.response.data,

@@ -3,6 +3,7 @@ import {
   STORE_LOADING,
   GET_STORES,
   UPDATE_STORE,
+  DELETE_STORE,
 } from "../_actions/types";
 
 const initialState = {
@@ -33,6 +34,11 @@ export const storeReducer = (state = { ...initialState }, action) => {
         ...state,
         stores: action.payload,
         loading: false,
+      };
+    case DELETE_STORE:
+      return {
+        ...state,
+        stores: state.stores.filter((store) => store.id !== action.payload),
       };
     default:
       return { ...state };
