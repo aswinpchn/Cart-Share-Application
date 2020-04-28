@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -77,4 +75,30 @@ public class ProductService {
 			Files.write(path, bytes);
 		}
 	}
+
+  public Set<Product> searchProducts(String searchString) {
+
+		Set<Product> result = new HashSet<>();
+
+		try {
+			Optional<Store> store =  storeRespository.findStoreById(Long.parseLong(searchString));
+
+			if(store.isPresent())
+				result.addAll(productRespository.findByStore(store.get()));
+		} catch (NumberFormatException e) {
+
+		}
+
+		try {
+			Long sku = Long.parseLong(searchString);
+
+			result.addAll(productRespository.findBySku(sku));
+		} catch (NumberFormatException e) {
+
+		}
+
+		result.addAll(productRespository.findByNameContaining(searchString));
+
+		return result;
+  }
 }

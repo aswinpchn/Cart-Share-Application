@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { InputGroup, FormControl } from 'react-bootstrap';
+import {InputGroup, FormControl, Col, Row} from 'react-bootstrap';
+import axios from "axios";
+import {properties} from "../../properties";
+import ProductCard from "../AdminStore/ProductCard";
+const backendurl = properties.backendhost;
 // import Login from "./Login";
 
 class Search extends Component {
@@ -11,10 +15,24 @@ class Search extends Component {
     }
   }
 
-  onSearchTextChange = (e) => {
-    this.setState({
-      searchText: e.target.value
-    });
+
+  onSearchTextChange = async (e) => {
+    let value = e.target.value;
+    if(value !== "") {
+      let response = await axios.get(backendurl + "search/" + value);
+
+      console.log(response);
+      console.log(value);
+
+      this.setState({
+        products: response.data,
+        searchText: value
+      });
+    } else {
+      this.setState({
+        searchText: value
+      });
+    }
   }
 
   render() {
@@ -32,6 +50,18 @@ class Search extends Component {
         <br />
         <div>
           <h3>Results: </h3>
+          <Row>
+            {this.state.products &&
+            this.state.products.map((product, productIndex) => {
+              return (
+
+                <Col key={productIndex} sm={3}>
+                  <ProductCard product={product} />
+                </Col>
+
+              );
+            })}
+          </Row>
         </div>
       </div>
     );
