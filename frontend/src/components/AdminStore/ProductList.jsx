@@ -27,17 +27,18 @@ class ProductList extends Component {
       errors: "",
     };
     console.log("idd--->", this.props, this.props.match.params.storeId);
-
   }
   componentDidMount() {
     this.getProducts();
     this.setState({
-      storeId : this.props.match.params.storeId
-    })
+      storeId: this.props.match.params.storeId,
+    });
   }
 
   getProducts = async () => {
-    let response = await axios.get(backendurl + "product/" +this.props.match.params.storeId);
+    let response = await axios.get(
+      backendurl + "product/" + this.props.match.params.storeId
+    );
     console.log("the response products are " + response.data);
     this.setState({
       products: response.data,
@@ -45,7 +46,7 @@ class ProductList extends Component {
   };
 
   onOpenModal = () => {
-    this.setState({ open: true, blockScroll: false,  });
+    this.setState({ open: true, blockScroll: false });
   };
 
   onCloseModal = () => {
@@ -57,8 +58,10 @@ class ProductList extends Component {
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div className="row">
-          <div className="col s12 center-align">
-            <h2>Welcome Admin</h2>
+          <div className="col s12 center-align background light-blue">
+            <h2 className="text-center text-white font-italic font-family-sans-serif">
+              Welcome Admin
+            </h2>
           </div>
         </div>
         <li className="list-group-item border border-white">
@@ -74,24 +77,20 @@ class ProductList extends Component {
               <h4 className="text-center tex-secondary">
                 Enter Product Details
               </h4>
-              <ProductInfoForm storeId={this.state.storeId}/>
+              <ProductInfoForm storeId={this.state.storeId} />
             </Modal>
           </div>
         </li>
-        <h3>
-          <p>Existing Products</p>
-        </h3>
+
         <Row>
-        {this.state.products &&
-          this.state.products.map((product, productIndex) => {
-            return (
-              
-              <Col key={productIndex} sm={3}>
-                <ProductCard product={product} />
+          {this.state.products &&
+            this.state.products.map((product, productIndex) => {
+              return (
+                <Col key={productIndex} sm={3}>
+                  <ProductCard product={product} />
                 </Col>
-               
-            );
-          })}
+              );
+            })}
         </Row>
       </div>
     );
