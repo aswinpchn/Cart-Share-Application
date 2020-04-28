@@ -9,11 +9,6 @@ class ProductCard extends Component {
         };
     }
 
-    onAddToCartClick = async (e) => {
-        e.preventDefault();
-        console.log(e.target); 
-    }
-
     handleChange = async (e) => {
         this.setState({
             quantity: e.target.value
@@ -35,7 +30,7 @@ class ProductCard extends Component {
         if (cart.length > 0) {
             let existingCartItem = cart.find(element => element.id === this.props.product.id);
             if (existingCartItem) {
-                existingCartItem.quantity = existingCartItem.quantity + parseInt(cartItem.quantity, 10);
+                existingCartItem.quantity = parseInt(existingCartItem.quantity, 10) + parseInt(cartItem.quantity, 10);
             } else {
                 cart.push(cartItem);
             }
@@ -52,11 +47,11 @@ class ProductCard extends Component {
         return (
             <Card bg="white" style={{ width: "15rem", margin: "1rem" }}>
                 <Card.Body>
-                    <Card.Img variant="top" src="holder.js/100px160" />
+                    <Card.Img variant="top" src={this.props.product.imageURL} />
                     <Col sm={10}>
                         <Card.Title>{this.props.product.name}</Card.Title>
                         <Card.Text><b>Description: </b>{this.props.product.description}</Card.Text>
-                        <Card.Text><b>Price</b>${this.props.product.price}</Card.Text>
+                        <Card.Text><b>Price: </b>${this.props.product.price} per {this.props.product.unit}</Card.Text>
                         <Card.Text><b>Quantity: </b></Card.Text>
                         <input type="number" defaultValue="0" name="quanity" min = "0" className="mt-auto" onChange={this.handleChange}></input>
                     </Col>
