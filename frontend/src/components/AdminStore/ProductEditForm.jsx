@@ -14,6 +14,7 @@ class ProductEditForm extends Component {
         name: "",
         description: "",
         image: "",
+        imageURL: "",
         brand: "",
         price: "",
         unit: "",
@@ -32,7 +33,8 @@ class ProductEditForm extends Component {
         description: product.description,
         brand: product.brand,
         price: product.price,
-        unit: product.unit
+        unit: product.unit,
+        imageURL: product.imageURL
     });
     console.log("this--->", this.props)
   }
@@ -51,6 +53,7 @@ class ProductEditForm extends Component {
       name: this.state.name,
       description: this.state.description,
       image: this.state.image,
+      imageURL: this.state.imageURL,
       brand: this.state.brand,
       price: this.state.price,
       unit: this.state.unit,
