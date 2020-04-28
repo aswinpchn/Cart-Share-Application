@@ -2,6 +2,7 @@ package edu.sjsu.cmpe275.cartpool.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -69,6 +70,12 @@ public class ApplicationController {
 	@ResponseBody
 	public User getUserByEmail(@RequestParam String email) {
 		return userService.getUserByEmail(email);
+	}
+
+	@GetMapping("/search/{searchString}")
+	@ResponseBody
+	public Set<Product> search(@PathVariable("searchString") String searchString) {
+		return productService.searchProducts(searchString);
 	}
 
 	@GetMapping("/user/verify")
