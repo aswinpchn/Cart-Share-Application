@@ -8,8 +8,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import edu.sjsu.cmpe275.cartpool.dto.*;
 import edu.sjsu.cmpe275.cartpool.repository.PoolRepository;
+import edu.sjsu.cmpe275.cartpool.repository.PoolRequestRepository;
 import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,9 +19,15 @@ public class PoolService {
 
     @Autowired
     private PoolRepository poolRepository;
+    
+    @Autowired
+    private PoolRequestRepository poolRequestRepository;
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private EmailService emailService;
 
     @Transactional
     public Pool createPool(Pool pool) {
@@ -35,5 +43,56 @@ public class PoolService {
         userRepository.save(user);
 
         return poolRepository.save(pool);
+    }
+    
+    @Transactional
+    public String joinPool(JoinPoolRequestBodyModel modelRequest) {
+    	String poolName = modelRequest.getPoolName();
+    	String userScreenName = modelRequest.getUserScreenName();
+    	String referrerScreenName = modelRequest.getReferrerScreenName();
+    	PoolRequest poolRequest = new PoolRequest();
+    	poolRequest.setPoolName(poolName);
+    	poolRequest.setUserScreenName(userScreenName);
+    	poolRequest.setReferrerName(referrerScreenName);
+    	poolRequestRepository.save(poolRequest);
+    	User referrer = userRepository.findByScreenName(referrerScreenName);
+    	emailService.sendEmailToPoolReferrer(referrer.getEmail(), poolRequest);
+    	return "Thank you for applying for pool. Please wait while we approve your request!";
+    }
+    
+    @Transactional
+    public List<PoolRequest> getPoolRequests(String referrerScreenName) {
+    	return poolRequestRepository.findByReferrerScreenName(referrerScreenName);
+    }
+    
+    @Transactional
+    public String approveReferralRequest(long requestId) {
+    	PoolRequest poolRequest = poolRequestRepository.findById(requestId).get();
+    	String poolName = poolRequest.getPoolName();
+    	Pool pool = poolRepository.findByName(poolName);
+    	User leader = pool.getLeader();
+    	
+    	User newPooler = userRepository.findByScreenName(poolRequest.getUserScreenName());
+    	if (poolRequest.getReferrerScreenName().equals(leader.getScreenName())) {
+    		newPooler.setPoolId(pool.getPoolId());
+    		userRepository.save(newPooler);
+    		return "Thank you. The user is now a member of the pool";
+    	} else {
+    		poolRequest.setLeaderScreenName(pool.getLeader().getScreenName());
+    		poolRequestRepository.save(poolRequest);
+    		emailService.sendEmailToPoolLeader(leader.getEmail(), poolRequest);
+    		return "Thank you for approving your referral. Please wait for pool leader to approve the request";
+    	}
+    	
+    }
+    
+    @Transactional
+    public String approveJoinRequestForLeader(long requestId) {
+    	PoolRequest poolRequest = poolRequestRepository.findById(requestId).get();
+    	String poolName = poolRequest.getPoolName();
+    	Pool pool = poolRepository.findByName(poolName);
+    	User newPooler = userRepository.findByScreenName(poolRequest.getUserScreenName());
+    	newPooler.setPoolId(pool.getPoolId());
+    	return "Thank you. The user is now a member of the pool";
     }
 }

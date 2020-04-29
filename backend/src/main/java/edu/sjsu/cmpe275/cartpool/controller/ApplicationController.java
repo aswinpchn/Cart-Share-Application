@@ -209,4 +209,27 @@ public class ApplicationController {
 		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User(Leader) not found");
 	}
 
+	@PostMapping("/pool/join")
+	@ResponseBody
+	public String joinPool(@Valid @RequestBody JoinPoolRequestBodyModel requestModel) {
+		return poolService.joinPool(requestModel);
+	}
+	
+	@GetMapping("/pool/joinrequest/{referrerScreenName}")
+	@ResponseBody
+	public List<PoolRequest> getPoolRequests(@PathVariable("referrerScreenName") String referrerScreenName) {
+		return poolService.getPoolRequests(referrerScreenName);
+	}
+	
+	@PostMapping("/pool/referral/approvejoinrequest/{requestId}")
+	@ResponseBody
+	public String approveReferralRequest(@PathVariable("requestId") long requestId) {
+		return poolService.approveReferralRequest(requestId);
+	}
+	
+	@PostMapping("/pool/leader/approvejoinrequest/{requestId}")
+	@ResponseBody
+	public String approveJoinRequestForLeader(@PathVariable("requestId") long requestId) {
+		return poolService.approveJoinRequestForLeader(requestId);
+	}
 }
