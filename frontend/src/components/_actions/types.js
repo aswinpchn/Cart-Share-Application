@@ -5,3 +5,8 @@ export const STORE_LOADING = "STORE_LOADING";
 export const GET_STORES = "GET_STORES";
 export const UPDATE_STORE = "UPDATE_STORE";
 export const DELETE_STORE = "DELETE_STORE";
+export const GET_PRODUCTS = "GET_PRODUCTS";
+export const PRODUCT_LOADING = "PRODUCT_LOADING";
+export const CREATE_PRODUCT = "CREATE_PRODUCT";
+export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
+

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Col, Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import axios from "axios";
-import { properties } from "../../properties";
-const backendurl = properties.backendhost;
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { updateProduct } from "../_actions/productActions";
 
 class ProductEditForm extends Component {
   constructor(props) {
@@ -18,9 +18,8 @@ class ProductEditForm extends Component {
         brand: "",
         price: "",
         unit: "",
-        errors: false,
-        errorMessage: "",
-        successMessage: false
+        errors: "",
+        text: null,
       };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -39,6 +38,25 @@ class ProductEditForm extends Component {
     console.log("this--->", this.props)
   }
 
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.productState &&
+      this.props.productState !== prevProps.productState
+    ) {
+      if (this.props.productState.responseStatus === 200) {
+        this.setState({
+          text: "Product Updated",
+        });
+      }
+    }
+    if (this.props.errors !== prevProps.errors) {
+      console.log("errors are" + this.props.errors);
+      if (this.props.errors) {
+        this.setState({ text: "", errors: this.props.errors.message });
+      }
+    }
+  }
+
   handleChange(e) {
     this.setState({
       [e.target.name]: e.target.value,
@@ -46,10 +64,17 @@ class ProductEditForm extends Component {
   }
 
   handleSubmit = (e) => {
+    //prevent page from refresh
     e.preventDefault();
+
+    this.setState({
+      text: "",
+      errors: "",
+    });
     
     console.log(this.state)
     const data = {
+      id: this.props.product.id,
       name: this.state.name,
       description: this.state.description,
       image: this.state.image,
@@ -58,28 +83,13 @@ class ProductEditForm extends Component {
       price: this.state.price,
       unit: this.state.unit,
     };
-    console.log("data-->", data)
-    axios
-      .post(backendurl + "product/edit/" + this.props.product.id, data)
-      .then((response) => {
-        if (response.status === 200) {
-          this.setState({
-            success : true,
-            successMessage : "Product successfully edited."
-          });
-        }
-      })
-      .catch((error) => {
-        console.log("Error occured while updating product ", error, error.message);
-        this.setState({
-          errors: true,
-          errorMessage: error.message
-        });
-      });
+    console.log("Data for updating product is" + data);
+    this.props.updateProduct(data);
   };
 
   render() {
     const { product } = this.props;
+    const { text, errors } = this.state;
     console.log("product==>", product);
     return (
       <div>
@@ -157,14 +167,21 @@ class ProductEditForm extends Component {
             Update
           </Button>
           <br />
-          <div>{this.state.errors && <p className="red-text text-darken-1">
-            {this.state.errorMessage}</p>}</div>
-          <div>{this.state.success && <p className="green-text text-darken-1">
-          {this.state.successMessage}</p>}</div>
+          <p className="text-danger"> {errors}</p>
+          <p className="text-success"> {text}</p>
+          <br />
         </Form>
       </div>
     );
   }
 }
 
-export default ProductEditForm;
+ProductEditForm.propTypes = {
+  productState: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+};
+const mapStateToProps = (state) => ({
+  productState: state.productState,
+  errors: state.errorState,
+});
+export default connect(mapStateToProps, { updateProduct })(ProductEditForm);

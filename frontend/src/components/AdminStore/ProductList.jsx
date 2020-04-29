@@ -4,9 +4,10 @@ import Modal from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import ProductInfoForm from "./ProductInfoForm";
 import ProductCard from "./ProductCard";
-import { properties } from "../../properties";
-import axios from "axios";
-const backendurl = properties.backendhost;
+import { getProducts } from "../_actions/productActions";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import Spinner from "../common/Spinner";
 
 class ProductList extends Component {
   constructor(props) {
@@ -26,24 +27,14 @@ class ProductList extends Component {
       blockScroll: true,
       errors: "",
     };
-    console.log("idd--->", this.props, this.props.match.params.storeId);
+    console.log("Store Id--->", this.props, this.props.match.params.storeId);
   }
   componentDidMount() {
-    this.getProducts();
     this.setState({
       storeId: this.props.match.params.storeId,
     });
+    this.props.getProducts(this.props.match.params.storeId);
   }
-
-  getProducts = async () => {
-    let response = await axios.get(
-      backendurl + "product/" + this.props.match.params.storeId
-    );
-    console.log("the response products are " + response.data);
-    this.setState({
-      products: response.data,
-    });
-  };
 
   onOpenModal = () => {
     this.setState({ open: true, blockScroll: false });
@@ -54,7 +45,22 @@ class ProductList extends Component {
   };
 
   render() {
+    console.log("this.props-->", )
     const { open } = this.state;
+    const { products, loading } = this.props.productState;
+    let productContent;
+    if (products === null || loading) {
+      productContent = <Spinner />;
+    } else {
+      productContent = products.map((product, productIndex) => {
+        return (
+          <Col key={productIndex} sm={3}>
+            <ProductCard product={product} />
+          </Col>
+        );
+      });
+    }
+
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div className="row">
@@ -82,19 +88,24 @@ class ProductList extends Component {
           </div>
         </li>
 
-        <Row>
-          {this.state.products &&
-            this.state.products.map((product, productIndex) => {
-              return (
-                <Col key={productIndex} sm={3}>
-                  <ProductCard product={product} />
-                </Col>
-              );
-            })}
-        </Row>
+        <div className=" container">
+          <div className="container">
+            <div>
+              <Row>{productContent}</Row>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 }
 
-export default ProductList;
+ProductList.propTypes = {
+  errors: PropTypes.object.isRequired,
+  products: PropTypes.array,
+};
+const mapStateToProps = (state) => ({
+  productState: state.productState,
+  errors: state.errorState,
+});
+export default connect(mapStateToProps, { getProducts })(ProductList);
