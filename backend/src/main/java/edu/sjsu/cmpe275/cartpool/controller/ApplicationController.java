@@ -221,6 +221,12 @@ public class ApplicationController {
 		return poolService.getPoolRequests(referrerScreenName);
 	}
 	
+	@GetMapping("/pool/leader/joinrequest/{leaderScreenName}")
+	@ResponseBody
+	public List<PoolRequest> getPoolRequestsForLeader(@PathVariable("leaderScreenName") String leaderScreenName) {
+		return poolService.getPoolRequestsForLeader(leaderScreenName);
+	}
+	
 	@PostMapping("/pool/referral/approvejoinrequest/{requestId}")
 	@ResponseBody
 	public String approveReferralRequest(@PathVariable("requestId") long requestId) {

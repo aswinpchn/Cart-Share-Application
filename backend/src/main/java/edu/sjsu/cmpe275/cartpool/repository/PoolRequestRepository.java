@@ -8,4 +8,5 @@ import edu.sjsu.cmpe275.cartpool.dto.PoolRequest;
 
 public interface PoolRequestRepository extends JpaRepository<PoolRequest, Long> {
 	public List<PoolRequest> findByReferrerScreenName(String referrerScreenName);
+	public List<PoolRequest> findByLeaderScreenName(String leaderScreenName);
 }

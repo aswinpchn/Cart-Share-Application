@@ -66,6 +66,11 @@ public class PoolService {
     }
     
     @Transactional
+    public List<PoolRequest> getPoolRequestsForLeader(String leaderScreenName) {
+    	return poolRequestRepository.findByLeaderScreenName(leaderScreenName);
+    }
+    
+    @Transactional
     public String approveReferralRequest(long requestId) {
     	PoolRequest poolRequest = poolRequestRepository.findById(requestId).get();
     	String poolName = poolRequest.getPoolName();
