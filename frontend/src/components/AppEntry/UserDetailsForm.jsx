@@ -56,6 +56,9 @@ class UserDetailsForm extends Component {
       .post(backendurl, data)
       .then((response) => {
         console.log(response.data);
+        console.log("the screen name of user is " + response.data.screenName);
+        localStorage.setItem("screenName", response.data.screenName);
+        localStorage.setItem("nickName", response.data.nickName);
         this.setState({
           profileUpdated: true,
         });

@@ -15,6 +15,7 @@ class Home extends Component {
       role: null,
       profileCompleted: null,
       responseStatus: false,
+      verified: false,
     };
   }
 
@@ -47,18 +48,15 @@ class Home extends Component {
 
       console.log(response);
 
-      if (response.data.profileCompleted) {
+      if (response.data) {
         this.setState({
           role: response.data.role,
           profileCompleted: response.data.profileCompleted,
+          verified: response.data.verified,
           responseStatus: true,
         });
       } else {
-        // redirect them
-        this.setState({
-          profileCompleted: response.data.profileCompleted,
-          responseStatus: true,
-        });
+        console.log("Error while retrieving response");
       }
     } catch (error) {
       console.log(error);
@@ -80,12 +78,14 @@ class Home extends Component {
     if (
       this.state.responseStatus &&
       this.state.profileCompleted &&
+      this.state.verified &&
       this.state.role === "admin"
     ) {
       homeComponent = <AdminHome />;
     } else if (
       this.state.responseStatus &&
       this.state.profileCompleted &&
+      this.state.verified &&
       this.state.role === "pooler"
     ) {
       homeComponent = <PoolerHome />;
