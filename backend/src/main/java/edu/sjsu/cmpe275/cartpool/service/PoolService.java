@@ -31,7 +31,7 @@ public class PoolService {
 
     @Transactional
     public Pool createPool(Pool pool) {
-        Optional<Pool> poolExists = poolRepository.findByNameOrPoolId(pool.getName(), pool.getPoolId());
+        Optional<Pool> poolExists = poolRepository.findByNameAndPoolId(pool.getName(), pool.getPoolId());
 
         if (poolExists.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Pool already exists with same pool id or name");
@@ -70,17 +70,16 @@ public class PoolService {
     	PoolRequest poolRequest = poolRequestRepository.findById(requestId).get();
     	String poolName = poolRequest.getPoolName();
     	Pool pool = poolRepository.findByName(poolName);
-    	User leader = pool.getLeader();
-    	
+    	Optional<User> leader = userRepository.findById(pool.getLeaderId());
     	User newPooler = userRepository.findByScreenName(poolRequest.getUserScreenName());
-    	if (poolRequest.getReferrerScreenName().equals(leader.getScreenName())) {
+    	if (poolRequest.getReferrerScreenName().equals(leader.get().getScreenName())) {
     		newPooler.setPoolId(pool.getPoolId());
     		userRepository.save(newPooler);
     		return "Thank you. The user is now a member of the pool";
     	} else {
-    		poolRequest.setLeaderScreenName(pool.getLeader().getScreenName());
+    		poolRequest.setLeaderScreenName(leader.get().getScreenName());
     		poolRequestRepository.save(poolRequest);
-    		emailService.sendEmailToPoolLeader(leader.getEmail(), poolRequest);
+    		emailService.sendEmailToPoolLeader(leader.get().getEmail(), poolRequest);
     		return "Thank you for approving your referral. Please wait for pool leader to approve the request";
     	}
     	
