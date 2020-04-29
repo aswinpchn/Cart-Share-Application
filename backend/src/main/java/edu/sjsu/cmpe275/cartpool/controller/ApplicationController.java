@@ -6,36 +6,20 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import edu.sjsu.cmpe275.cartpool.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.sjsu.cmpe275.cartpool.Constants;
-import edu.sjsu.cmpe275.cartpool.dto.Address;
-import edu.sjsu.cmpe275.cartpool.dto.CreateProductRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.CreateStoreRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.CreateUserRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.EditProductRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.Product;
-import edu.sjsu.cmpe275.cartpool.dto.Store;
-import edu.sjsu.cmpe275.cartpool.dto.UpdateStoreRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.UpdateUserProfileRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.User;
 import edu.sjsu.cmpe275.cartpool.repository.StoreRepository;
+import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
 import edu.sjsu.cmpe275.cartpool.service.ProductService;
 import edu.sjsu.cmpe275.cartpool.service.StoreService;
 import edu.sjsu.cmpe275.cartpool.service.UserService;
+import edu.sjsu.cmpe275.cartpool.service.PoolService;
 
 @Controller
 @RequestMapping(path = "/cartpool")
@@ -52,7 +36,13 @@ public class ApplicationController {
 	private ProductService productService;
 
 	@Autowired
+	private PoolService poolService;
+
+	@Autowired
 	private StoreRepository storeRepository;
+
+	@Autowired
+	private UserRepository userRepository;
 
 	@GetMapping("/store/all")
 	@ResponseBody
@@ -191,4 +181,55 @@ public class ApplicationController {
 		return productService.editProduct(product);
 	}
 
+	@PostMapping("/pool/create")
+	@ResponseBody
+	public Pool createPool(@Valid @RequestBody CreatePoolRequestBodyModel createPoolRequestBodyModel) {
+		System.out.println("createPoolRequestBodyModel:    " + createPoolRequestBodyModel);
+
+		Optional<User> userObj = userRepository.findById(createPoolRequestBodyModel.getLeaderId());
+
+		if (userObj.isPresent()) {
+			User user = userObj.get();
+			System.out.println("user => " + user);
+
+			if(user.getPoolId() == null) {
+				Pool pool = new Pool();
+				pool.setPoolId(createPoolRequestBodyModel.getPoolId());
+				pool.setName(createPoolRequestBodyModel.getName());
+				pool.setNeighborhoodName(createPoolRequestBodyModel.getNeighborhoodName());
+				pool.setDescription(createPoolRequestBodyModel.getDescription());
+				pool.setZip(createPoolRequestBodyModel.getZip());
+				pool.setLeaderId(createPoolRequestBodyModel.getLeaderId());
+
+				return poolService.createPool(pool);
+			} else {
+				throw new ResponseStatusException(HttpStatus.CONFLICT, "User is already associated with an existing pool");
+			}
+		}
+		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User(Leader) not found");
+	}
+
+	@PostMapping("/pool/join")
+	@ResponseBody
+	public String joinPool(@Valid @RequestBody JoinPoolRequestBodyModel requestModel) {
+		return poolService.joinPool(requestModel);
+	}
+	
+	@GetMapping("/pool/joinrequest/{referrerScreenName}")
+	@ResponseBody
+	public List<PoolRequest> getPoolRequests(@PathVariable("referrerScreenName") String referrerScreenName) {
+		return poolService.getPoolRequests(referrerScreenName);
+	}
+	
+	@PostMapping("/pool/referral/approvejoinrequest/{requestId}")
+	@ResponseBody
+	public String approveReferralRequest(@PathVariable("requestId") long requestId) {
+		return poolService.approveReferralRequest(requestId);
+	}
+	
+	@PostMapping("/pool/leader/approvejoinrequest/{requestId}")
+	@ResponseBody
+	public String approveJoinRequestForLeader(@PathVariable("requestId") long requestId) {
+		return poolService.approveJoinRequestForLeader(requestId);
+	}
 }
