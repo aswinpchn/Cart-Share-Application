@@ -25,6 +25,7 @@ class Navigationbar extends Component {
       })
       .catch(function (error) {
         // An error happened.
+        console.log("Error occurred while logging out");
       });
   };
 
@@ -32,7 +33,7 @@ class Navigationbar extends Component {
     e.preventDefault();
 
     window.location.href = "/main/admin/search";
-  }
+  };
 
   render() {
     let role;
@@ -76,9 +77,18 @@ class Navigationbar extends Component {
           <Nav.Link>Test</Nav.Link>
           <Nav.Link href="/main/home">Home</Nav.Link>
           <DropdownButton id="dropdown-basic-button" title="Pool">
-            <Dropdown.Item href="/main/pooler/currentPool">Current Pool</Dropdown.Item>
-            <Dropdown.Item href="/main/pooler/createPool">Create Pool</Dropdown.Item>
-            <Dropdown.Item href="/main/pooler/deletePool">Delete Pool</Dropdown.Item>
+            <Dropdown.Item href="/main/pooler/currentPool">
+              Current Pool
+            </Dropdown.Item>
+            <Dropdown.Item href="/main/pooler/createPool">
+              Create Pool
+            </Dropdown.Item>
+            <Dropdown.Item href="/main/pooler/poolRequests">
+              Review Pool Requests
+            </Dropdown.Item>
+            <Dropdown.Item href="/main/pooler/deletePool">
+              Delete Pool
+            </Dropdown.Item>
           </DropdownButton>
           <Nav.Link>{logoutButton}</Nav.Link>
         </div>
