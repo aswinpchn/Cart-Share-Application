@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface PoolRepository extends JpaRepository<Pool, String> {
     public Optional<Pool> findByNameAndPoolId(String name, String poolId);
+    public Pool findByName(String name);
 }
 
