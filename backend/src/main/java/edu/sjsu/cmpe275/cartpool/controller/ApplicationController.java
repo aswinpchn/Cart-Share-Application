@@ -199,7 +199,7 @@ public class ApplicationController {
 				pool.setNeighborhoodName(createPoolRequestBodyModel.getNeighborhoodName());
 				pool.setDescription(createPoolRequestBodyModel.getDescription());
 				pool.setZip(createPoolRequestBodyModel.getZip());
-				pool.setLeader(user);
+				pool.setLeaderId(createPoolRequestBodyModel.getLeaderId());
 
 				return poolService.createPool(pool);
 			} else {

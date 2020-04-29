@@ -31,13 +31,13 @@ public class PoolService {
 
     @Transactional
     public Pool createPool(Pool pool) {
-        Optional<Pool> poolExists = poolRepository.findByNameAndPoolId(pool.getName(), pool.getPoolId());
+        Optional<Pool> poolExists = poolRepository.findByNameOrPoolId(pool.getName(), pool.getPoolId());
 
         if (poolExists.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Pool already exists with same pool id or name");
         }
 
-        Optional<User> leader = userRepository.findById(pool.getLeader().getId());
+        Optional<User> leader = userRepository.findById(pool.getLeaderId());
         User user = leader.get();
         user.setPoolId(pool.getPoolId());
         userRepository.save(user);

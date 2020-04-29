@@ -22,9 +22,7 @@ public class Pool {
 
     private String zip;
 
-    @OneToOne(fetch = FetchType.EAGER, optional = true)
-    @JoinColumn(name = "user_id")
-    private User leader;
+    private long leaderId;
 
     public long getId() {
         return id;
@@ -74,11 +72,11 @@ public class Pool {
         this.zip = zip;
     }
 
-    public User getLeader() {
-        return leader;
+    public long getLeaderId() {
+        return leaderId;
     }
 
-    public void setLeader(User leader) {
-        this.leader = leader;
+    public void setLeaderId(long leaderId) {
+        this.leaderId = leaderId;
     }
 }
