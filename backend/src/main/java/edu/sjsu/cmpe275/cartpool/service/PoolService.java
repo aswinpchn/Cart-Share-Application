@@ -17,6 +17,9 @@ import edu.sjsu.cmpe275.cartpool.repository.PoolRepository;
 import edu.sjsu.cmpe275.cartpool.repository.PoolRequestRepository;
 import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 public class PoolService {
 
@@ -53,6 +56,12 @@ public class PoolService {
 		String poolName = modelRequest.getPoolName();
 		String userScreenName = modelRequest.getUserScreenName();
 		String referrerScreenName = modelRequest.getReferrerScreenName();
+		
+		User newPooler = userRepository.findByScreenName(userScreenName);
+		if (newPooler.getPoolId() != null || !newPooler.getPoolId().isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot join more than one pool at a time");
+		}
+		
 		User referrer = userRepository.findByScreenName(referrerScreenName);
 		String referrerPoolId = referrer.getPoolId();
 		Pool pool = poolRepository.findByName(poolName);
@@ -96,6 +105,9 @@ public class PoolService {
 		Pool pool = poolRepository.findByName(poolName);
 		Optional<User> leader = userRepository.findById(pool.getLeaderId());
 		User newPooler = userRepository.findByScreenName(poolRequest.getUserScreenName());
+		if (newPooler.getPoolId() != null || !newPooler.getPoolId().isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot join more than one pool at a time");
+		}
 		if (poolRequest.getReferrerScreenName().equals(leader.get().getScreenName())) {
 			newPooler.setPoolId(pool.getPoolId());
 			userRepository.save(newPooler);
@@ -122,9 +134,12 @@ public class PoolService {
 	@Transactional
 	public String approveJoinRequestForLeader(long requestId) {
 		PoolRequest poolRequest = poolRequestRepository.findById(requestId).get();
+		User newPooler = userRepository.findByScreenName(poolRequest.getUserScreenName());
+		if (newPooler.getPoolId() != null || !newPooler.getPoolId().isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot join more than one pool at a time");
+		}
 		String poolName = poolRequest.getPoolName();
 		Pool pool = poolRepository.findByName(poolName);
-		User newPooler = userRepository.findByScreenName(poolRequest.getUserScreenName());
 		newPooler.setPoolId(pool.getPoolId());
 		return "Thank you. The user is now a member of the pool";
 	}
