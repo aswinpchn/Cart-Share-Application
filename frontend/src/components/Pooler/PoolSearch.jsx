@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import {InputGroup, FormControl, Col, Row} from 'react-bootstrap';
 import axios from "axios";
 import {properties} from "../../properties";
-import ProductCard from "../AdminStore/ProductCard";
+import PoolCard from './PoolCard';
 const backendurl = properties.backendhost;
 // import Login from "./Login";
 
-class Search extends Component {
+class PoolSearch extends Component {
 
   constructor(props) {
     super(props);
@@ -19,13 +19,12 @@ class Search extends Component {
   onSearchTextChange = async (e) => {
     let value = e.target.value;
     if(value !== "") {
-      let response = await axios.get(backendurl + "product/search/" + value);
-
+      let response = await axios.get(backendurl + "pool/search/" + value);
       console.log(response);
       console.log(value);
 
       this.setState({
-        products: response.data,
+        pools: response.data,
         searchText: value
       });
     } else {
@@ -36,6 +35,7 @@ class Search extends Component {
   }
 
   render() {
+    const { user } = this.props;
     console.log(this.state.searchText);
     return (
       <div>
@@ -51,12 +51,12 @@ class Search extends Component {
         <div>
           <h3>Results: </h3>
           <Row>
-            {this.state.products &&
-            this.state.products.map((product, productIndex) => {
+            {this.state.pools &&
+            this.state.pools.map((pool, poolIndex) => {
+              user.poolName?pool.disabled = false: pool.disabled = true;
               return (
-
-                <Col key={productIndex} sm={3}>
-                  <ProductCard product={product} />
+                <Col key={poolIndex} sm={3}>
+                  <PoolCard pool={pool} />
                 </Col>
 
               );
@@ -68,4 +68,4 @@ class Search extends Component {
   }
 }
 
-export default Search;
+export default PoolSearch;

@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import edu.sjsu.cmpe275.cartpool.dto.*;
+import edu.sjsu.cmpe275.cartpool.repository.PoolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -44,6 +45,9 @@ public class ApplicationController {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private PoolRepository poolRepository;
+
 	@GetMapping("/store/all")
 	@ResponseBody
 	public List<Store> getAllStores() {
@@ -62,9 +66,9 @@ public class ApplicationController {
 		return userService.getUserByEmail(email);
 	}
 
-	@GetMapping("/search/{searchString}")
+	@GetMapping("/product/search/{searchString}")
 	@ResponseBody
-	public Set<Product> search(@PathVariable("searchString") String searchString) {
+	public Set<Product> productSearch(@PathVariable("searchString") String searchString) {
 		return productService.searchProducts(searchString);
 	}
 
@@ -207,6 +211,18 @@ public class ApplicationController {
 			}
 		}
 		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User(Leader) not found");
+	}
+
+	@GetMapping("/pool")
+	@ResponseBody
+	public Pool getPoolByPoolId(@RequestParam String poolId) {
+		return poolRepository.findByPoolId(poolId);
+	}
+
+	@GetMapping("/pool/search/{searchString}")
+	@ResponseBody
+	public Set<Pool> poolSearch(@PathVariable("searchString") String searchString) {
+		return poolRepository.findByNameContainingOrNeighborhoodNameContainingOrZipContaining(searchString, searchString, searchString);
 	}
 
 	@PostMapping("/pool/join")
