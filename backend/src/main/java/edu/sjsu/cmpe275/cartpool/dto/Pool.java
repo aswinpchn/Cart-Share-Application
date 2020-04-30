@@ -79,4 +79,17 @@ public class Pool {
     public void setLeaderId(long leaderId) {
         this.leaderId = leaderId;
     }
+
+    @Override
+    public String toString() {
+        return "Pool{" +
+                "id=" + id +
+                ", poolId='" + poolId + '\'' +
+                ", name='" + name + '\'' +
+                ", neighborhoodName='" + neighborhoodName + '\'' +
+                ", description='" + description + '\'' +
+                ", zip='" + zip + '\'' +
+                ", leaderId=" + leaderId +
+                '}';
+    }
 }

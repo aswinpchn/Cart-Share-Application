@@ -289,4 +289,10 @@ public class ApplicationController {
 	public String approveJoinRequestForLeader(@PathVariable("requestId") long requestId) {
 		return poolService.approveJoinRequestForLeader(requestId);
 	}
+
+	@DeleteMapping("/pool/delete/{poolId}")
+	@ResponseBody
+	public Pool deletePool(@PathVariable("poolId") String poolId) {
+		return poolService.deletePool(poolId);
+	}
 }

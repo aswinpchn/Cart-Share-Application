@@ -3,6 +3,7 @@ package edu.sjsu.cmpe275.cartpool.service;
 import java.util.List;
 import java.util.Optional;
 
+import edu.sjsu.cmpe275.cartpool.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -37,10 +38,9 @@ public class PoolService {
 
 	@Transactional
 	public Pool createPool(Pool pool) {
-		Optional<Pool> poolExists = poolRepository.findByNameAndPoolId(pool.getName(), pool.getPoolId());
-
+		Optional<Pool> poolExists = poolRepository.findByNameOrPoolId(pool.getName(), pool.getPoolId());
 		if (poolExists.isPresent()) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "Pool already exists with same pool id or name");
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Pool already exists with same pool id or name. Try another.");
 		}
 
 		Optional<User> leader = userRepository.findById(pool.getLeaderId());
@@ -145,5 +145,30 @@ public class PoolService {
 		poolRequestRepository.save(poolRequest);
 		userRepository.save(newPooler);
 		return "Thank you. The user is now a member of the pool";
+	}
+
+	@Transactional
+	public Pool deletePool(String poolId) {
+		Pool pool = poolRepository.findByPoolId(poolId);
+		if (pool == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pool not found");
+		}
+
+		List<User> poolers = userRepository.findAllByPoolId(poolId);
+		int numberOfPoolers = poolers.size();
+
+		if(numberOfPoolers == Constants.ONE) {
+			long userId = poolers.get(0).getId();
+			long leaderId = pool.getLeaderId();
+			if(userId == leaderId) {
+				poolRepository.deleteByPoolIdAndId(poolId, pool.getId());
+				poolers.get(0).setPoolId(null);
+				userRepository.save(poolers.get(0));
+				return pool;
+			}
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Inconsistent data");
+		} else {
+			throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Pool cannot be deleted because of the associated poolers");
+		}
 	}
 }
