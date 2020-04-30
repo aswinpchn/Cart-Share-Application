@@ -13,6 +13,7 @@ public final class Constants {
 	public static final boolean TRUE = true;
 	public static final boolean FALSE = false;
 	public static final Integer ZERO = 0;
+	public static final Integer ONE = 1;
 	public static final String POOLER_ROLE = "pooler";
 	public static final String ADMIN_ROLE = "admin";
 	public static final String DOMAIN = "sjsu.edu";
