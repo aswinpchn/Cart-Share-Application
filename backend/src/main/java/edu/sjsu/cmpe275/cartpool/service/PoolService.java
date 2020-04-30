@@ -141,6 +141,9 @@ public class PoolService {
 		String poolName = poolRequest.getPoolName();
 		Pool pool = poolRepository.findByName(poolName);
 		newPooler.setPoolId(pool.getPoolId());
+		poolRequest.setStatus("Approved");
+		poolRequestRepository.save(poolRequest);
+		userRepository.save(newPooler);
 		return "Thank you. The user is now a member of the pool";
 	}
 
