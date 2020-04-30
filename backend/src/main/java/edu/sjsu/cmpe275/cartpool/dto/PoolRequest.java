@@ -21,6 +21,8 @@ public class PoolRequest {
 	private String referrerScreenName;
 	
 	private String leaderScreenName;
+	
+	private String status;
 
 	public long getId() {
 		return id;
@@ -64,5 +66,13 @@ public class PoolRequest {
 
 	public void setReferrerScreenName(String referrerScreenName) {
 		this.referrerScreenName = referrerScreenName;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 }
