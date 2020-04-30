@@ -63,6 +63,7 @@ class Login extends Component {
         console.log("setting local storage");
         localStorage.setItem("email", user.email);
         localStorage.setItem("uid", user.uid);
+
         var data = { email: user.email, uid: user.uid };
         // make a axios call for checking if user existence
         const backendurl = properties.backendhost + "user/register";
