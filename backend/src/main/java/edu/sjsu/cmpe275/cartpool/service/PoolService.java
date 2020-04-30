@@ -92,6 +92,7 @@ public class PoolService {
 			return "Thank you. The user is now a member of the pool";
 		} else {
 			poolRequest.setLeaderScreenName(leader.get().getScreenName());
+			poolRequest.setStatus("Pending_Leader_Approval");
 			poolRequestRepository.save(poolRequest);
 			emailService.sendEmailToPoolLeader(leader.get().getEmail(), poolRequest);
 			return "Thank you for approving your referral. Please wait for pool leader to approve the request";
