@@ -19,7 +19,6 @@ class UserDetailsForm extends Component {
       screenName: "",
       nickName: "",
       streetDetails: "",
-      aptDetails: "",
       cityName: "",
       stateName: "",
       zipCode: "",
@@ -43,7 +42,7 @@ class UserDetailsForm extends Component {
       email: localStorage.getItem("email"),
       screenName: this.state.screenName,
       nickName: this.state.nickName,
-      street: this.state.streetDetails + this.aptDetails,
+      street: this.state.streetDetails,
       city: this.state.cityName,
       state: this.state.stateName,
       zip: this.state.zipCode,
@@ -56,9 +55,7 @@ class UserDetailsForm extends Component {
       .post(backendurl, data)
       .then((response) => {
         console.log(response.data);
-        console.log("the screen name of user is " + response.data.screenName);
-        localStorage.setItem("screenName", response.data.screenName);
-        localStorage.setItem("nickName", response.data.nickName);
+
         this.setState({
           profileUpdated: true,
         });
@@ -155,17 +152,6 @@ class UserDetailsForm extends Component {
                       name="streetDetails"
                       value={this.state.streetDetails}
                       placeholder="1234 Main St"
-                      onChange={this.handleChange}
-                    />
-                  </Form.Group>
-
-                  <Form.Group controlId="aptDetails">
-                    <Form.Label>Address 2</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="aptDetails"
-                      value={this.state.aptDetails}
-                      placeholder="Apartment, studio, or floor"
                       onChange={this.handleChange}
                     />
                   </Form.Group>
