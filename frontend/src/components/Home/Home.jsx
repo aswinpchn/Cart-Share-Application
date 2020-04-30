@@ -45,10 +45,11 @@ class Home extends Component {
         properties.backendhost + "user/?email=" + localStorage.getItem("email");
       //console.log(backendurl);
       let response = await axios.get(backendurl);
-
       console.log(response);
-
       if (response.data) {
+        console.log("the screen name of user is " + response.data.screenName);
+        localStorage.setItem("screenName", response.data.screenName);
+        localStorage.setItem("nickName", response.data.nickName);
         this.setState({
           role: response.data.role,
           profileCompleted: response.data.profileCompleted,
