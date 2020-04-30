@@ -1,19 +1,23 @@
 package edu.sjsu.cmpe275.cartpool.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import edu.sjsu.cmpe275.cartpool.dto.*;
+import edu.sjsu.cmpe275.cartpool.dto.JoinPoolRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.Pool;
+import edu.sjsu.cmpe275.cartpool.dto.PoolRequest;
+import edu.sjsu.cmpe275.cartpool.dto.User;
 import edu.sjsu.cmpe275.cartpool.repository.PoolRepository;
 import edu.sjsu.cmpe275.cartpool.repository.PoolRequestRepository;
 import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -73,6 +77,15 @@ public class PoolService {
 		poolRequestRepository.save(poolRequest);
 		emailService.sendEmailToPoolReferrer(referrer.getEmail(), poolRequest);
 		return "Thank you for applying for pool. Please wait while we approve your request!";
+	}
+
+	@Transactional
+	public String getApproverType(long userId) {
+		Optional<Pool> pool = poolRepository.findByLeaderId(userId);
+		if (pool.isPresent()) {
+			return "Leader";
+		}
+		return "Referrer";
 	}
 
 	@Transactional

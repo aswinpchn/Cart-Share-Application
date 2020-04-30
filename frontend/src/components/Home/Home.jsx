@@ -50,6 +50,7 @@ class Home extends Component {
         console.log("the screen name of user is " + response.data.screenName);
         localStorage.setItem("screenName", response.data.screenName);
         localStorage.setItem("nickName", response.data.nickName);
+        localStorage.setItem("userId", response.data.id);
         this.setState({
           role: response.data.role,
           profileCompleted: response.data.profileCompleted,
