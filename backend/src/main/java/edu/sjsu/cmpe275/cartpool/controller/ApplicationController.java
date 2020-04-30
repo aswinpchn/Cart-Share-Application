@@ -160,7 +160,6 @@ public class ApplicationController {
 			product.setBrand(createProductRequestBody.getBrand());
 			product.setPrice(createProductRequestBody.getPrice());
 			product.setUnit(createProductRequestBody.getUnit());
-
 			return productService.createProduct(product, createProductRequestBody.getImage());
 		}
 		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found");
@@ -231,6 +230,12 @@ public class ApplicationController {
 	@ResponseBody
 	public String approveReferralRequest(@PathVariable("requestId") long requestId) {
 		return poolService.approveReferralRequest(requestId);
+	}
+	
+	@PostMapping("/pool/rejectjoinrequest/{requestId}")
+	@ResponseBody
+	public String rejectJoinRequest(@PathVariable("requestId") long requestId) {
+		return poolService.rejectJoinRequest(requestId);
 	}
 	
 	@PostMapping("/pool/leader/approvejoinrequest/{requestId}")
