@@ -293,7 +293,6 @@ public class ApplicationController {
 	@DeleteMapping("/pool/delete/{poolId}")
 	@ResponseBody
 	public Pool deletePool(@PathVariable("poolId") String poolId) {
-		System.out.println("poolId to delete:    " + poolId);
 		return poolService.deletePool(poolId);
 	}
 }

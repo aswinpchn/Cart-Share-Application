@@ -147,21 +147,17 @@ public class PoolService {
 	@Transactional
 	public Pool deletePool(String poolId) {
 		Pool pool = poolRepository.findByPoolId(poolId);
-		System.out.println("Pool==>" + pool);
 		if (pool == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pool not found");
 		}
 
 		List<User> poolers = userRepository.findAllByPoolId(poolId);
 		int numberOfPoolers = poolers.size();
-		System.out.println("Size-->" + poolers.size());
 
 		if(numberOfPoolers == Constants.ONE) {
 			long userId = poolers.get(0).getId();
 			long leaderId = pool.getLeaderId();
-			System.out.println("Idss-->" + userId + " " + leaderId);
 			if(userId == leaderId) {
-				System.out.println("dshkhjds " + pool.getId());
 				poolRepository.deleteByPoolIdAndId(poolId, pool.getId());
 				poolers.get(0).setPoolId(null);
 				userRepository.save(poolers.get(0));
