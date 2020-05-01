@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "pool_order")
 public class Order {
@@ -13,7 +15,6 @@ public class Order {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id; 
 	
-	/*
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonIgnoreProperties({"orders"})
 	@JoinColumn(name = "pooler_id")
@@ -22,7 +23,7 @@ public class Order {
 	@ManyToOne(fetch = FetchType.EAGER, optional = true)
 	@JsonIgnoreProperties({"orders"})
 	@JoinColumn(name = "delivery_pooler_id", nullable = true)
-	private User delivery_pooler;*/
+	private User delivery_pooler;
 	
 	private String status;
 	
@@ -43,7 +44,6 @@ public class Order {
 		this.id = id;
 	}
 
-	/*
 	public User getPooler() {
 		return pooler;
 	}
@@ -58,7 +58,7 @@ public class Order {
 
 	public void setDelivery_pooler(User delivery_pooler) {
 		this.delivery_pooler = delivery_pooler;
-	}*/
+	}
 
 	public String getStatus() {
 		return status;
