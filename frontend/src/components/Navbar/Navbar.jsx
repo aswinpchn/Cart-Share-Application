@@ -87,6 +87,12 @@ class Navigationbar extends Component {
               Review Pool Requests
             </Dropdown.Item>
           </DropdownButton>
+          <Nav.Link href="/main/cart">
+            {" "}
+            <i class="fa fa-shopping-cart" aria-hidden="true">
+              Cart{" "}
+            </i>
+          </Nav.Link>
           <Nav.Link>{logoutButton}</Nav.Link>
         </div>
       );

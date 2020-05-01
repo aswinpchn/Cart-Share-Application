@@ -8,6 +8,7 @@ import UserDetailsForm from "../AppEntry/UserDetailsForm";
 import CurrentPool from "../Pooler/CurrentPool";
 import CreatePool from "../Pooler/CreatePool";
 import PoolRequests from "../Pooler/PoolRequests";
+import Cart from "../Cart/cart";
 
 class Main extends Component {
   render() {
@@ -24,6 +25,7 @@ class Main extends Component {
             <Route path="/main/pooler/currentPool" component={CurrentPool} />
             <Route path="/main/pooler/createPool" component={CreatePool} />
             <Route path="/main/pooler/poolRequests" component={PoolRequests} />
+            <Route path="/main/cart" component={Cart} />
           </Switch>
         </BrowserRouter>
       </div>
