@@ -24,11 +24,13 @@ public class OrderDetail {
 	@JoinColumn(name = "order_id")
 	private Order order;
 	
-	/**
-	 * TODO:Add Product mapping
-	 */
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "product_id")
+	private Product product;
 	
 	private long quantity;
+	
+	private double price;
 
 	public long getId() {
 		return id;
@@ -52,5 +54,21 @@ public class OrderDetail {
 
 	public void setQuantity(long quantity) {
 		this.quantity = quantity;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
 	}
 }
