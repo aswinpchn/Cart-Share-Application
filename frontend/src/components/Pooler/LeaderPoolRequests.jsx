@@ -105,18 +105,22 @@ class LeaderPoolRequests extends Component {
               </tr>
             </thead>
             <tbody>
-              {poolRequests.map((poolRequest, index) => {
-                console.log("the pool req rec is " + poolRequest);
-                return (
-                  <tr key={index}>
-                    <th className="text-center" scope="row">
-                      {poolRequest.userScreenName}
-                    </th>
-                    <td className="text-center">{poolRequest.id}</td>
-                    <td className="text-center">{poolRequest.poolName}</td>
-                    <td className="text-center">{poolRequest.status}</td>
-                    <td className="text-center">
-                      {poolRequest.status === "Pending_Leader_Approval" ? (
+              {poolRequests
+                .filter(
+                  (poolRequest) =>
+                    poolRequest.status === "Pending_Leader_Approval"
+                )
+                .map((poolRequest, index) => {
+                  console.log("the pool req rec is " + poolRequest);
+                  return (
+                    <tr key={index}>
+                      <th className="text-center" scope="row">
+                        {poolRequest.userScreenName}
+                      </th>
+                      <td className="text-center">{poolRequest.id}</td>
+                      <td className="text-center">{poolRequest.poolName}</td>
+                      <td className="text-center">{poolRequest.status}</td>
+                      <td className="text-center">
                         <tr className="text-center">
                           <td>
                             <Button
@@ -160,13 +164,10 @@ class LeaderPoolRequests extends Component {
                             )}
                           </td>
                         </tr>
-                      ) : (
-                        ""
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>
