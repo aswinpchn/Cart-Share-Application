@@ -89,7 +89,7 @@ class Navigationbar extends Component {
           </DropdownButton>
           <Nav.Link href="/main/cart">
             {" "}
-            <i class="fa fa-shopping-cart" aria-hidden="true">
+            <i className="fa fa-shopping-cart" aria-hidden="true">
               Cart{" "}
             </i>
           </Nav.Link>
