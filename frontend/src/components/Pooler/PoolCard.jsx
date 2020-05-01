@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Card, Col, Row, Button } from "react-bootstrap";
 import Modal from "react-responsive-modal";
 import JoinPoolForm from "./JoinPoolForm";
+import { connect } from "react-redux";
 
 class PoolCard extends Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class PoolCard extends Component {
     const { open } = this.state;
     // console.log(pool);
     return (
-      <Card bg="white" style={{ width: "20rem", margin: "1rem" }}>
+      <Card bg="white" style={{ width: "15rem", margin: "1rem" }}>
         <Card.Body>
           <Col sm={30}>
             <Card.Title>{pool.name}</Card.Title>
@@ -51,14 +52,15 @@ class PoolCard extends Component {
                 <Button
                   onClick={this.onOpenModal}
                   type="button"
-                  className="btn btn-light mr-1">
-                  <i className="text-secondary fa fa-edit" />
+                  className="btn btn-primary"
+                  >
+                  Join pool
                 </Button>
                 <Modal open={open} onClose={this.onCloseModal} center>
                   <p className="text-left tex-secondary  font-weight-bold">
                     Join Pool Form!
                   </p>
-                  <JoinPoolForm />
+                  <JoinPoolForm pool={pool} />
                 </Modal>
               </Col>
             </Row>:
@@ -72,4 +74,7 @@ class PoolCard extends Component {
   }
 }
 
-export default PoolCard;
+const mapStateToProps = (state) => ({
+});
+
+export default connect(mapStateToProps)(PoolCard);
