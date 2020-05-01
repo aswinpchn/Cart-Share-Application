@@ -7,7 +7,6 @@ import Search from "../AppEntry/Search";
 import UserDetailsForm from "../AppEntry/UserDetailsForm";
 import CurrentPool from "../Pooler/CurrentPool";
 import CreatePool from "../Pooler/CreatePool";
-import DeletePool from "../Pooler/DeletePool";
 import PoolRequests from "../Pooler/PoolRequests";
 
 class Main extends Component {
@@ -24,7 +23,6 @@ class Main extends Component {
             <Route path="/main/admin/search" component={Search} />
             <Route path="/main/pooler/currentPool" component={CurrentPool} />
             <Route path="/main/pooler/createPool" component={CreatePool} />
-            <Route path="/main/pooler/deletePool" component={DeletePool} />
             <Route path="/main/pooler/poolRequests" component={PoolRequests} />
           </Switch>
         </BrowserRouter>

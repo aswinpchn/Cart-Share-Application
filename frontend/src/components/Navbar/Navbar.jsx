@@ -86,9 +86,6 @@ class Navigationbar extends Component {
             <Dropdown.Item href="/main/pooler/poolRequests">
               Review Pool Requests
             </Dropdown.Item>
-            <Dropdown.Item href="/main/pooler/deletePool">
-              Delete Pool
-            </Dropdown.Item>
           </DropdownButton>
           <Nav.Link>{logoutButton}</Nav.Link>
         </div>
