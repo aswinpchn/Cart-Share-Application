@@ -63,7 +63,10 @@ class ProductCard extends Component {
                         <input type="number" defaultValue="0" name="quanity" min = "0" className="mt-auto" onChange={this.handleChange}></input>
                     </Col>
                     <Col>
-                        <Button variant="primary" name={this.props.product.id} quantity={this.state.quantity} onClick={this.addToCart}>Add to Cart</Button>
+                        {this.props.AddtoCart ? (
+                        <Button variant="primary" name={this.props.product.id} quantity={this.state.quantity} onClick={this.addToCart}>Add to Cart</Button>) : (
+                              ""
+                        )}
                     </Col>
                 </Card.Body>
             </Card>
