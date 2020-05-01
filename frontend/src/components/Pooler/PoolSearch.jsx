@@ -42,7 +42,7 @@ class PoolSearch extends Component {
         <br />
         <InputGroup className="mb-3 col-sm-4">
           <FormControl
-            placeholder="Enter Search Query!"
+            placeholder="Enter Search Query to search for pools!"
             value={this.state.searchText}
             onChange={this.onSearchTextChange}
           />
