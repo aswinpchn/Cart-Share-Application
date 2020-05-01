@@ -16,12 +16,10 @@ public class Order {
 	private long id; 
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JsonIgnoreProperties({"orders"})
 	@JoinColumn(name = "pooler_id")
 	private User pooler;
 	
 	@ManyToOne(fetch = FetchType.EAGER, optional = true)
-	@JsonIgnoreProperties({"orders"})
 	@JoinColumn(name = "delivery_pooler_id", nullable = true)
 	private User delivery_pooler;
 	
@@ -33,7 +31,7 @@ public class Order {
 	
 	private double price;
 
-	@OneToMany(fetch = FetchType.EAGER,mappedBy = "order")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
 	private List<OrderDetail> orderDetails;
 
 	public long getId() {

@@ -30,6 +30,7 @@ public class OrderDetail {
 	
 	private long quantity;
 	
+	// Per unit price of the product
 	private double price;
 
 	public long getId() {
