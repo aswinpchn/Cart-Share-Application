@@ -12,29 +12,27 @@ class PoolerHome extends Component {
       selectedStore: "",
       storeId: "",
       stores: [],
-      products: []
+      products: [],
+      userIsPooler: false
     };
   }
 
   componentDidMount() {
-    console.log("In pooler home ----------------");
     this.getStores();
   }
 
   getStores = async () => {
     axios.defaults.withCredentials = true;
     const backendurl = properties.backendhost + 'store/all'
-    let token = localStorage.getItem('token');
     axios.get(backendurl, {
       headers: {
-        'Authorization': "bearer " + token,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }
     }).then((response) => {
       if (response) {
         this.setState({
-          stores: response.data
+          stores: response.data   
         })
       }
     });
@@ -43,17 +41,30 @@ class PoolerHome extends Component {
   getProducts = async () => {
     const storeId = this.state.storeId;
     axios.defaults.withCredentials = true;
-    const backendurl = properties.backendhost + `product/${storeId}`;
-    let token = localStorage.getItem('token');
-    axios.get(backendurl, {
+    const getProductsUrl = properties.backendhost + `product/${storeId}`;
+    const email = localStorage.getItem('email');
+    const getUserDetailsUrl = properties.backendhost + `user?email=${email}`
+    let userIsPooler = false;
+    axios.get(getUserDetailsUrl, {
       headers: {
-        'Authorization': "bearer " + token,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then((response) => {
+      if (response) {
+        userIsPooler = true
+      }
+    });
+
+    axios.get(getProductsUrl, {
+      headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }
     }).then((response) => {
       if (response) {
         this.setState({
+          userIsPooler: userIsPooler,
           products: response.data
         })
       }
@@ -84,7 +95,7 @@ class PoolerHome extends Component {
       products = this.state.products.map(product => {
         return (
           <Col key={product.id} sm={3}>
-            <ProductCard product={product} store={this.state.storeId} />
+            <ProductCard product={product} store={this.state.storeId} showAddToCart={this.state.userIsPooler} />
           </Col>
         )
       })
