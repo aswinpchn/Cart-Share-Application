@@ -20,6 +20,12 @@ class ProductCard extends Component {
             return;
         }
         e.preventDefault();
+        let existing_cart_store_id = localStorage.getItem('cart_store_id');
+        let current_cart_store_id = this.props.store;
+        if (existing_cart_store_id != null && existing_cart_store_id != current_cart_store_id) {
+            window.alert("Cannot add products from multiple store. Clear the cart to add products from other store");
+            return;
+        }
         let cartItem = {
             id: this.props.product.id,
             name: this.props.product.name,
@@ -41,6 +47,7 @@ class ProductCard extends Component {
             quantity: cartItem.quantity
         })
         localStorage.setItem('cart', JSON.stringify(cart));
+        localStorage.setItem('cart_store_id', current_cart_store_id);
     }
 
     render() {
