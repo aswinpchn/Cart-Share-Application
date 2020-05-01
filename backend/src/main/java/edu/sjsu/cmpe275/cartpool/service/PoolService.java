@@ -58,11 +58,17 @@ public class PoolService {
 		String referrerScreenName = modelRequest.getReferrerScreenName();
 		
 		User newPooler = userRepository.findByScreenName(userScreenName);
-		if (newPooler.getPoolId() != null || !newPooler.getPoolId().isEmpty()) {
+		if (newPooler.getPoolId() != null && !newPooler.getPoolId().isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot join more than one pool at a time");
 		}
 		
 		User referrer = userRepository.findByScreenName(referrerScreenName);
+
+		if(referrer == null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+							"Invalid referrer. The referrer doesn't exist");
+		}
+
 		String referrerPoolId = referrer.getPoolId();
 		Pool pool = poolRepository.findByName(poolName);
 		if (!(referrerPoolId.equals(pool.getPoolId()))) {
