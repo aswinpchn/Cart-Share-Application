@@ -91,9 +91,6 @@ class ReferrerPoolRequests extends Component {
                   Pooler Screen Name
                 </th>
                 <th className="text-center font-weight-bold" scope="col">
-                  Pool ID
-                </th>
-                <th className="text-center font-weight-bold" scope="col">
                   Pool Name
                 </th>
                 <th className="text-center font-weight-bold" scope="col">
@@ -114,7 +111,6 @@ class ReferrerPoolRequests extends Component {
                       <th className="text-center" scope="row">
                         {poolRequest.userScreenName}
                       </th>
-                      <td className="text-center">{poolRequest.id}</td>
                       <td className="text-center">{poolRequest.poolName}</td>
                       <td className="text-center">{poolRequest.status}</td>
                       <td className="text-center">
