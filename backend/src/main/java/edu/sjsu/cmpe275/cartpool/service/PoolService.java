@@ -58,7 +58,7 @@ public class PoolService {
 		String referrerScreenName = modelRequest.getReferrerScreenName();
 		
 		User newPooler = userRepository.findByScreenName(userScreenName);
-		if (newPooler.getPoolId() != null && !newPooler.getPoolId().isEmpty()) {
+		if (newPooler.getPoolId() != null) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot join more than one pool at a time");
 		}
 		
@@ -111,8 +111,8 @@ public class PoolService {
 		Pool pool = poolRepository.findByName(poolName);
 		Optional<User> leader = userRepository.findById(pool.getLeaderId());
 		User newPooler = userRepository.findByScreenName(poolRequest.getUserScreenName());
-		if (newPooler.getPoolId() != null || !newPooler.getPoolId().isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot join more than one pool at a time");
+		if (newPooler.getPoolId() != null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The pooler already joined another pool. This referral is canceled");
 		}
 		if (poolRequest.getReferrerScreenName().equals(leader.get().getScreenName())) {
 			newPooler.setPoolId(pool.getPoolId());
@@ -141,8 +141,8 @@ public class PoolService {
 	public String approveJoinRequestForLeader(long requestId) {
 		PoolRequest poolRequest = poolRequestRepository.findById(requestId).get();
 		User newPooler = userRepository.findByScreenName(poolRequest.getUserScreenName());
-		if (newPooler.getPoolId() != null || !newPooler.getPoolId().isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot join more than one pool at a time");
+		if (newPooler.getPoolId() != null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The pooler already joined another pool.");
 		}
 		String poolName = poolRequest.getPoolName();
 		Pool pool = poolRepository.findByName(poolName);
