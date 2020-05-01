@@ -84,7 +84,7 @@ class PoolerHome extends Component {
       products = this.state.products.map(product => {
         return (
           <Col key={product.id} sm={3}>
-            <ProductCard product={product} />
+            <ProductCard product={product} store={this.state.storeId} />
           </Col>
         )
       })
