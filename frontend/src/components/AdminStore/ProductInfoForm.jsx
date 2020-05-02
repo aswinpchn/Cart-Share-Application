@@ -4,6 +4,8 @@ import Button from "react-bootstrap/Button";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { createProduct } from "../_actions/productActions";
+import axios from 'axios';
+import { properties } from '../../properties';
 
 class ProductInfoForm extends Component {
   constructor(props) {
@@ -13,7 +15,6 @@ class ProductInfoForm extends Component {
       sku: "",
       name: "",
       description: "",
-      image: "",
       brand: "",
       price: "",
       unit: "",
@@ -73,49 +74,49 @@ class ProductInfoForm extends Component {
     console.log("data-->", data)
 
     this.props.createProduct(data);
-
-  //   const backendurl = properties.backendhost + "product/add";
-  //   const config = { headers: { 'Content-Type': 'multipart/form-data' } };
-  //   axios
-  //     .post(backendurl, data, config)
-  //     .then((response) => {
-  //       console.log(response);
-  //       console.log(response.data);
-  //       if(response.status == 200) {
-  //         this.setState({
-  //           errors: false,
-  //           errorMessage: "",
-  //           success: true,
-  //           successMessage: "Product added successfully."
-  //         })
-  //         // window.location.reload();
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log("Error in adding new product", error, error.message);
-  //       if(error.message.includes("404")) {
-  //         this.setState({
-  //           success: false,
-  //           successMessage: "",
-  //           errors: true,
-  //           errorMessage: "Store not found."
-  //         })
-  //       } else if(error.message.includes("409")) {
-  //         this.setState({
-  //           success: false,
-  //           successMessage: "",
-  //           errors: true,
-  //           errorMessage: "Product already exists with same store and sku."
-  //         })
-  //       } else {
-  //         this.setState({
-  //           success: false,
-  //           successMessage: "",
-  //           errors: true,
-  //           errorMessage: "Server Error. Please try again."
-  //         })
-  //       }
-  //     });
+     /*
+     const backendurl = properties.backendhost + "product/add";
+     const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+     axios
+       .post(backendurl, data, config)
+       .then((response) => {
+         console.log(response);
+         console.log(response.data);
+         if(response.status == 200) {
+           this.setState({
+             errors: false,
+             errorMessage: "",
+             success: true,
+             successMessage: "Product added successfully."
+           })
+           // window.location.reload();
+         }
+       })
+       .catch((error) => {
+         console.log("Error in adding new product", error, error.message);
+         if(error.message.includes("404")) {
+           this.setState({
+             success: false,
+             successMessage: "",
+             errors: true,
+             errorMessage: "Store not found."
+           })
+         } else if(error.message.includes("409")) {
+           this.setState({
+             success: false,
+             successMessage: "",
+             errors: true,
+             errorMessage: "Product already exists with same store and sku."
+           })
+         } else {
+           this.setState({
+             success: false,
+             successMessage: "",
+             errors: true,
+             errorMessage: "Server Error. Please try again."
+           })
+         }
+       });*/
   };
 
   render() {

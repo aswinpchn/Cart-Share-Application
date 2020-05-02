@@ -29,7 +29,7 @@ export const createProduct = (data) => (dispatch) => {
                     type: CREATE_PRODUCT,
                     payload: response.status,
                 });
-                dispatch(getProducts());
+                dispatch(getProducts(response.data.storeId));
             }
         })
         .catch((error) => {

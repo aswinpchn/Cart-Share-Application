@@ -6,8 +6,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import edu.sjsu.cmpe275.cartpool.dto.*;
-import edu.sjsu.cmpe275.cartpool.repository.PoolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.sjsu.cmpe275.cartpool.Constants;
@@ -38,6 +37,7 @@ import edu.sjsu.cmpe275.cartpool.dto.Store;
 import edu.sjsu.cmpe275.cartpool.dto.UpdateStoreRequestBodyModel;
 import edu.sjsu.cmpe275.cartpool.dto.UpdateUserProfileRequestBodyModel;
 import edu.sjsu.cmpe275.cartpool.dto.User;
+import edu.sjsu.cmpe275.cartpool.repository.PoolRepository;
 import edu.sjsu.cmpe275.cartpool.repository.StoreRepository;
 import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
 import edu.sjsu.cmpe275.cartpool.service.PoolService;
@@ -170,7 +170,7 @@ public class ApplicationController {
 
 	@PostMapping("/product/add")
 	@ResponseBody
-	public Product addProduct(@Valid @ModelAttribute CreateProductRequestBodyModel createProductRequestBody) {
+	public CreateProductRequestBodyModel addProduct(@Valid @ModelAttribute CreateProductRequestBodyModel createProductRequestBody) {
 		System.out.println("in api:    " + createProductRequestBody);
 
 		Optional<Store> storeObj = storeRepository.findStoreById(createProductRequestBody.getStoreId());
@@ -187,7 +187,8 @@ public class ApplicationController {
 			product.setBrand(createProductRequestBody.getBrand());
 			product.setPrice(createProductRequestBody.getPrice());
 			product.setUnit(createProductRequestBody.getUnit());
-			return productService.createProduct(product, createProductRequestBody.getImage());
+			productService.createProduct(product, createProductRequestBody.getImage());
+			return createProductRequestBody;
 		}
 		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found");
 	}
