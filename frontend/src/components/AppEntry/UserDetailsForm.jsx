@@ -54,8 +54,7 @@ class UserDetailsForm extends Component {
     axios
       .post(backendurl, data)
       .then((response) => {
-        console.log(response.data);
-
+        window.alert('Thank you for registering. Please verify your email address to use the cartpool');
         this.setState({
           profileUpdated: true,
         });
