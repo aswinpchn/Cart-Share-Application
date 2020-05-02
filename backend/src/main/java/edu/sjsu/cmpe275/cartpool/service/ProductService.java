@@ -46,13 +46,15 @@ public class ProductService {
 		if (productExists.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Product already exists with same store and sku");
 		}
-		try {
-			saveUploadedFile(image);
-			String url = awsS3Service.uploadFile(UPLOAD_FOLDER + image.getOriginalFilename(),
-					product.getStore().getId() + "-" + product.getSku());
-			product.setImageURL(url);
-		} catch (IOException e) {
-			// Log that image could not be saved
+		if (image != null) {
+			try {
+				saveUploadedFile(image);
+				String url = awsS3Service.uploadFile(UPLOAD_FOLDER + image.getOriginalFilename(),
+						product.getStore().getId() + "-" + product.getSku());
+				product.setImageURL(url);
+			} catch (IOException e) {
+				// Log that image could not be saved
+			}
 		}
 		return productRespository.save(product);
 	}
@@ -76,14 +78,14 @@ public class ProductService {
 		}
 	}
 
-  public Set<Product> searchProducts(String searchString) {
+	public Set<Product> searchProducts(String searchString) {
 
 		Set<Product> result = new HashSet<>();
 
 		try {
-			Optional<Store> store =  storeRespository.findStoreById(Long.parseLong(searchString));
+			Optional<Store> store = storeRespository.findStoreById(Long.parseLong(searchString));
 
-			if(store.isPresent())
+			if (store.isPresent())
 				result.addAll(productRespository.findByStore(store.get()));
 		} catch (NumberFormatException e) {
 
@@ -100,5 +102,5 @@ public class ProductService {
 		result.addAll(productRespository.findByNameContaining(searchString));
 
 		return result;
-  }
+	}
 }
