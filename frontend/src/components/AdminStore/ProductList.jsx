@@ -45,7 +45,7 @@ class ProductList extends Component {
   };
 
   render() {
-    console.log("this.props-->", )
+    console.log("this.props-->");
     const { open } = this.state;
     const { products, loading } = this.props.productState;
     let productContent;
@@ -64,7 +64,7 @@ class ProductList extends Component {
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div className="row">
-          <div className="col s12 center-align background light-blue">
+          <div className="col s12 center-align background blue">
             <h2 className="text-center text-white font-italic font-family-sans-serif">
               Welcome Admin
             </h2>

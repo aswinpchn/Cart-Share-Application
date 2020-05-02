@@ -6,7 +6,6 @@ import { properties } from "../../properties";
 const backendurl = properties.backendhost;
 
 class CreatePool extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -18,15 +17,15 @@ class CreatePool extends Component {
       zip: "",
       errors: "",
       text: null,
-    }
+    };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
     this.setState({
-      leaderId: localStorage.getItem("userId")
-    })
+      leaderId: localStorage.getItem("userId"),
+    });
   }
 
   handleChange(e) {
@@ -38,15 +37,15 @@ class CreatePool extends Component {
   handleSubmit = (e) => {
     //prevent page from refresh
     e.preventDefault();
-    let data = {}
-    console.log("this.state-->", this.state)
+    let data = {};
+    console.log("this.state-->", this.state);
     data.leaderId = parseInt(this.state.leaderId);
     data.poolId = this.state.poolId;
     data.name = this.state.name;
     data.description = this.state.description;
     data.neighborhoodName = this.state.neighborhoodName;
     data.zip = this.state.zip;
-    console.log("data-->", data)
+    console.log("data-->", data);
 
     axios
       .post(backendurl + "pool/create", data)
@@ -60,24 +59,24 @@ class CreatePool extends Component {
             description: "",
             neighborhoodName: "",
             zip: "",
-            errors: ""
-          })
+            errors: "",
+          });
         }
       })
       .catch((error) => {
         console.log("Error in adding new product", error, error.response);
         this.setState({
-          errors: error.response.data.message
-        })
+          errors: error.response.data.message,
+        });
       });
-  }
+  };
 
   render() {
     const { text, errors } = this.state;
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div className="row">
-          <div className="col s12 center-align background light-blue">
+          <div className="col s12 center-align background blue">
             <h2 className="text-center text-white font-italic font-family-sans-serif">
               Create Pool
             </h2>
@@ -155,9 +154,13 @@ class CreatePool extends Component {
               </Form.Group>
             </Form.Row>
 
-            <Button className="btn btn-primary" type="submit" onClick={this.handleSubmit}>
+            <Button
+              className="btn btn-primary"
+              type="submit"
+              onClick={this.handleSubmit}
+            >
               Submit
-          </Button>
+            </Button>
             <br />
             <p className="text-danger"> {errors}</p>
             <p className="text-success"> {text}</p>
