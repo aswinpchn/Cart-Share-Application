@@ -2,6 +2,8 @@ package edu.sjsu.cmpe275.cartpool.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class CreateProductRequestBodyModel {
 
     private long storeId;
@@ -20,6 +22,7 @@ public class CreateProductRequestBodyModel {
 
     private String unit;
     
+    @JsonIgnore
     private MultipartFile image;
 
     public long getStoreId() {
