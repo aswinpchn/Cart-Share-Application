@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Route, withRouter } from "react-router-dom";
-import { Navbar, Nav, Dropdown } from "react-bootstrap";
+import { Navbar, Nav, Dropdown, Button, Label } from "react-bootstrap";
 import decode from "jwt-decode";
 import firebase from "firebase";
 import DropdownButton from "react-bootstrap/DropdownButton";
@@ -9,7 +9,17 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 class Navigationbar extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      username: "",
+    };
+  }
+
+  componentDidMount() {
+    if (localStorage.getItem("screenName")) {
+      this.setState({
+        username: localStorage.getItem("screenName"),
+      });
+    }
   }
 
   onLogoutClick = (e) => {
@@ -36,6 +46,7 @@ class Navigationbar extends Component {
   };
 
   render() {
+    const { username } = this.state;
     let role;
     let uid = localStorage.getItem("uid");
     if (uid) {
@@ -73,8 +84,20 @@ class Navigationbar extends Component {
     if (role === "pooler") {
       menuButtons = (
         <div className="collapse navbar-collapse navbar-right" id="navbarNav">
-          <Nav className="mr-auto"></Nav>
-          <Nav.Link>Test</Nav.Link>
+          <Nav className="mr-auto">
+            <Navbar.Brand className="active" href="#">
+              <img
+                alt="CartPool"
+                src={require("../common/images/shoppingcart.png")}
+                width={40}
+              />
+            </Navbar.Brand>
+
+            <Nav.Item>
+              <h5 className="text-center text-bold font-">Hi {username}</h5>
+            </Nav.Item>
+          </Nav>
+
           <Nav.Link href="/main/home">Home</Nav.Link>
           <DropdownButton id="dropdown-basic-button" title="Pool">
             <Dropdown.Item href="/main/pooler/currentPool">
@@ -88,10 +111,12 @@ class Navigationbar extends Component {
             </Dropdown.Item>
           </DropdownButton>
           <Nav.Link href="/main/cart">
-            {" "}
-            <i className="fa fa-shopping-cart" aria-hidden="true">
-              Cart{" "}
-            </i>
+            <Button>
+              {" "}
+              <i className="fa fa-shopping-cart" aria-hidden="true">
+                Cart{" "}
+              </i>
+            </Button>
           </Nav.Link>
           <Nav.Link>{logoutButton}</Nav.Link>
         </div>

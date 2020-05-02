@@ -22,9 +22,12 @@ class ProductCard extends Component {
     e.preventDefault();
     let existing_cart_store_id = localStorage.getItem("cart_store_id");
     let current_cart_store_id = this.props.store;
+    console.log("the existing store id" + existing_cart_store_id);
+    console.log("the current cart store id" + current_cart_store_id);
     if (
       existing_cart_store_id !== null &&
-      existing_cart_store_id !== current_cart_store_id
+      existing_cart_store_id.toString().trim() !==
+        current_cart_store_id.toString().trim()
     ) {
       window.alert(
         "Cannot add products from multiple store. Clear the cart to add products from other store"
@@ -36,6 +39,7 @@ class ProductCard extends Component {
       name: this.props.product.name,
       quantity: this.state.quantity,
       price: this.props.product.price,
+      amount: eval("this.props.product.price * this.state.quantity"),
     };
     let cart = localStorage.getItem("cart")
       ? JSON.parse(localStorage.getItem("cart"))
