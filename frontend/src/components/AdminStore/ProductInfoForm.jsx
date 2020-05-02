@@ -67,7 +67,9 @@ class ProductInfoForm extends Component {
     data.append('storeId', this.state.storeId);
     data.append('sku', this.state.sku);
     data.append('name', this.state.name);
-    data.append('image', this.state.image);
+    if (this.state.image) {
+      data.append('image', this.state.image);
+    }
     data.append('brand', this.state.brand);
     data.append('price', this.state.price);
     data.append('unit', this.state.unit);
