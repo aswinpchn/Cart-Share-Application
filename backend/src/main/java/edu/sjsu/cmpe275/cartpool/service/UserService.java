@@ -54,6 +54,19 @@ public class UserService {
 	}
 
 	@Transactional
+	public User setUserProfile(User user) {
+		System.out.println("the email is" + user.getEmail());
+		User existingUser = userRepository.findByEmail(user.getEmail());
+		if (existingUser == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+		}
+		existingUser.setAddress(user.getAddress());
+		existingUser.setNickName(user.getNickName());
+		User response = userRepository.save(existingUser);
+		return response;
+	}
+
+	@Transactional
 	public User getUserByEmail(String email) {
 		User user = userRepository.findByEmail(email);
 		if (user == null) {

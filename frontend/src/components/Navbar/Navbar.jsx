@@ -110,6 +110,22 @@ class Navigationbar extends Component {
               Review Pool Requests
             </Dropdown.Item>
           </DropdownButton>
+
+          <DropdownButton id="dropdown-basic-button" title="Account">
+            <Dropdown.Item href="/main/pooler/account">
+              Your Account
+            </Dropdown.Item>
+            <Dropdown.Item href="/main/pooler/orders">
+              Your Orders
+            </Dropdown.Item>
+            <Dropdown.Item href="/main/pooler/pickup">
+              Pickup Orders
+            </Dropdown.Item>
+            <Dropdown.Item href="/main/pooler/deliveryTasks">
+              Your Delivery Tasks
+            </Dropdown.Item>
+          </DropdownButton>
+
           <Nav.Link href="/main/cart">
             <Button>
               {" "}
@@ -118,6 +134,7 @@ class Navigationbar extends Component {
               </i>
             </Button>
           </Nav.Link>
+
           <Nav.Link>{logoutButton}</Nav.Link>
         </div>
       );

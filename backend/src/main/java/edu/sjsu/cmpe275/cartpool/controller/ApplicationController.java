@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
@@ -111,6 +112,24 @@ public class ApplicationController {
 		address.setZip(request.getZip());
 		user.setAddress(address);
 		return userService.updateUserProfile(user);
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, value = "/user/setProfile")
+	@ResponseBody
+	public User setUserProfile(@Valid @RequestBody UpdateUserProfileRequestBodyModel request) {
+		System.out.println("in api:    " + request);
+		User user = new User();
+		Address address = new Address();
+		user.setEmail(request.getEmail());
+		user.setScreenName(request.getScreenName());
+		user.setNickName(request.getNickName());
+		address.setStreet(request.getStreet());
+		address.setCity(request.getCity());
+		address.setState(request.getState());
+		address.setZip(request.getZip());
+		user.setAddress(address);
+		System.out.println("the user is" + user);
+		return userService.setUserProfile(user);
 	}
 
 	@PostMapping("/user/register")

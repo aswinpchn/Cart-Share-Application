@@ -10,6 +10,10 @@ import CreatePool from "../Pooler/CreatePool";
 import PoolRequests from "../Pooler/PoolRequests";
 import Cart from "../Cart/cart";
 import Checkout from "../Pooler/Checkout";
+import Qrcode from "../Pickup/Qrcode";
+import Profile from "../Profile/Profile";
+import yourOrders from "../Orders/yourOrders";
+import deliveryTasks from "../deliveryTasks/deliveryTasks";
 
 class Main extends Component {
   render() {
@@ -28,6 +32,13 @@ class Main extends Component {
             <Route path="/main/pooler/poolRequests" component={PoolRequests} />
             <Route path="/main/cart" component={Cart} />
             <Route path="/main/checkout" component={Checkout} />
+            <Route path="/main/pooler/account" component={Profile} />
+            <Route path="/main/pooler/orders" component={yourOrders} />
+            <Route path="/main/pooler/pickup" component={Qrcode} />
+            <Route
+              path="/main/pooler/deliveryTasks"
+              component={deliveryTasks}
+            />
           </Switch>
         </BrowserRouter>
       </div>
