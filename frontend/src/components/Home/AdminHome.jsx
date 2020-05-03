@@ -16,7 +16,8 @@ class AdminHome extends Component {
     name: "",
     storeImage: "",
     stores: [],
-    open: false,
+    openStore: false,
+    openProduct: false,
     blockScroll: true,
     errors: "",
   };
@@ -24,16 +25,24 @@ class AdminHome extends Component {
   componentDidMount() {
     this.props.getStores();
   }
-  onOpenModal = () => {
-    this.setState({ open: true, blockScroll: false });
+  onOpenStoreModal = () => {
+    this.setState({ openStore: true, blockScroll: false });
   };
 
-  onCloseModal = () => {
-    this.setState({ open: false });
+  onCloseStoreModal = () => {
+    this.setState({ openStore: false });
+  };
+
+  onOpenProductModal = () => {
+    this.setState({ openProduct: true, blockScroll: false });
+  };
+
+  onCloseProductModal = () => {
+    this.setState({ openProduct: false });
   };
 
   render() {
-    const { open } = this.state;
+    const { openStore, openProduct } = this.state;
     const { stores, loading } = this.props.storeState;
     let storeContent;
 
@@ -59,32 +68,32 @@ class AdminHome extends Component {
           </div>
         </div>
 
-        <li className="list-group-item border border-white">
+        <li key="1" className="list-group-item border border-white">
           <button
             type="button"
             className="btn btn-primary"
-            onClick={this.onOpenModal}
+            onClick={this.onOpenStoreModal}
           >
             Create New Store
           </button>
           <div className="overflow-auto border">
-            <Modal open={open} onClose={this.onCloseModal} center>
+            <Modal open={openStore} onClose={this.onCloseStoreModal} center>
               <h4 className="text-center tex-secondary">Enter Store Details</h4>
               <StoreInfoForm />
             </Modal>
           </div>
         </li>
 
-        <li className="list-group-item border border-white">
+        <li key="2" className="list-group-item border border-white">
           <button
             type="button"
             className="btn btn-primary"
-            onClick={this.onOpenModal}
+            onClick={this.onOpenProductModal}
           >
             Create New Product
           </button>
           <div className="overflow-auto border">
-            <Modal open={open} onClose={this.onCloseModal} center>
+            <Modal open={openProduct} onClose={this.onCloseProductModal} center>
               <h4 className="text-center tex-secondary">
                 Enter Product Details
               </h4>
