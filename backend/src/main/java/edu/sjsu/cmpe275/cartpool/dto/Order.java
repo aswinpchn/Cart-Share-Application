@@ -21,7 +21,7 @@ public class Order {
 	
 	@ManyToOne(fetch = FetchType.EAGER, optional = true)
 	@JoinColumn(name = "delivery_pooler_id", nullable = true)
-	private User delivery_pooler;
+	private User deliveryPooler;
 	
 	private String status;
 	
@@ -52,12 +52,12 @@ public class Order {
 		this.pooler = pooler;
 	}
 
-	public User getDelivery_pooler() {
-		return delivery_pooler;
+	public User getDeliveryPooler() {
+		return deliveryPooler;
 	}
 
-	public void setDelivery_pooler(User delivery_pooler) {
-		this.delivery_pooler = delivery_pooler;
+	public void setDeliveryPooler(User deliveryPooler) {
+		this.deliveryPooler = deliveryPooler;
 	}
 
 	public String getStatus() {
@@ -106,5 +106,20 @@ public class Order {
 
 	public void setPoolId(String poolId) {
 		this.poolId = poolId;
+	}
+
+	@Override
+	public String toString() {
+		return "Order{" +
+				"id=" + id +
+				", pooler=" + pooler +
+				", deliveryPooler=" + deliveryPooler +
+				", status='" + status + '\'' +
+				", date=" + date +
+				", qrCode='" + qrCode + '\'' +
+				", price=" + price +
+				", poolId='" + poolId + '\'' +
+				", orderDetails=" + orderDetails +
+				'}';
 	}
 }
