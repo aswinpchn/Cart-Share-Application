@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import { Container, Button, Col, Row, Card } from "react-bootstrap";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
 
 class Cart extends Component {
   constructor(props) {
@@ -75,6 +73,11 @@ class Cart extends Component {
       });
     }
   };
+
+  handleSubmit = () => {
+    const { history } = this.props;
+    history.push('/main/checkout');
+  }
 
   render() {
     const { cart, cartprice } = this.state;
