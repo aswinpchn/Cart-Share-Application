@@ -76,6 +76,12 @@ public class ApplicationController {
 		return storeService.getAllStores();
 	}
 
+	@GetMapping("/store/{id}")
+	@ResponseBody
+	public Store getStore(@PathVariable("id") String id) {
+		return storeRepository.findById(Long.parseLong(id)).get();
+	}
+
 	@GetMapping("/product/{storeId}")
 	@ResponseBody
 	public List<Product> getProducts(@PathVariable("storeId") long storeId) {
