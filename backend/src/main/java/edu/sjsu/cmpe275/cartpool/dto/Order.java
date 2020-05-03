@@ -30,8 +30,10 @@ public class Order {
 	private String qrCode;
 	
 	private double price;
+	
+	private String poolId;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = {CascadeType.PERSIST})
 	private List<OrderDetail> orderDetails;
 
 	public long getId() {
@@ -96,5 +98,13 @@ public class Order {
 
 	public void setPrice(double price) {
 		this.price = price;
+	}
+
+	public String getPoolId() {
+		return poolId;
+	}
+
+	public void setPoolId(String poolId) {
+		this.poolId = poolId;
 	}
 }
