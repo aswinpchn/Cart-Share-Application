@@ -1,8 +1,11 @@
 package edu.sjsu.cmpe275.cartpool.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity(name = "product")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Without this thing, there is error in serializing product object. as desciption was null, it can't serialize. (https://stackoverflow.com/questions/45915851/could-not-write-json-no-serializer-found-for-class-org-json-jsonobject-and-no-p)
 public class Product {
 
   @Id
