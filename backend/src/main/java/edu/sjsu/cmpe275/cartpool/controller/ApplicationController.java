@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.sjsu.cmpe275.cartpool.Constants;
@@ -170,27 +169,29 @@ public class ApplicationController {
 
 	@PostMapping("/product/add")
 	@ResponseBody
-	public CreateProductRequestBodyModel addProduct(@Valid @ModelAttribute CreateProductRequestBodyModel createProductRequestBody) {
+	public CreateProductRequestBodyModel addProduct(
+			@Valid @ModelAttribute CreateProductRequestBodyModel createProductRequestBody) {
 		System.out.println("in api:    " + createProductRequestBody);
 
-		Optional<Store> storeObj = storeRepository.findStoreById(createProductRequestBody.getStoreId());
-
-		if (storeObj.isPresent()) {
-			Store store = storeObj.get();
-			System.out.println("store => " + store);
-
-			Product product = new Product();
-			product.setStore(store);
-			product.setSku(createProductRequestBody.getSku());
-			product.setName(createProductRequestBody.getName());
-			product.setDescription(createProductRequestBody.getDescription());
-			product.setBrand(createProductRequestBody.getBrand());
-			product.setPrice(createProductRequestBody.getPrice());
-			product.setUnit(createProductRequestBody.getUnit());
-			productService.createProduct(product, createProductRequestBody.getImage());
-			return createProductRequestBody;
+		for (long storeId : createProductRequestBody.getStores()) {
+			Optional<Store> storeObj = storeRepository.findStoreById(storeId);
+			if (storeObj.isPresent()) {
+				Store store = storeObj.get();
+				System.out.println("store => " + store);
+				Product product = new Product();
+				product.setStore(store);
+				product.setSku(createProductRequestBody.getSku());
+				product.setName(createProductRequestBody.getName());
+				product.setDescription(createProductRequestBody.getDescription());
+				product.setBrand(createProductRequestBody.getBrand());
+				product.setPrice(createProductRequestBody.getPrice());
+				product.setUnit(createProductRequestBody.getUnit());
+				productService.createProduct(product, createProductRequestBody.getImage());
+			} else {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found");
+			}
 		}
-		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found");
+		return createProductRequestBody;
 	}
 
 	@PostMapping("/product/edit/{productId}")
@@ -246,7 +247,8 @@ public class ApplicationController {
 	@GetMapping("/pool/search/{searchString}")
 	@ResponseBody
 	public Set<Pool> poolSearch(@PathVariable("searchString") String searchString) {
-		return poolRepository.findByNameContainingOrNeighborhoodNameContainingOrZipContaining(searchString, searchString, searchString);
+		return poolRepository.findByNameContainingOrNeighborhoodNameContainingOrZipContaining(searchString,
+				searchString, searchString);
 	}
 
 	@PostMapping("/pool/join")

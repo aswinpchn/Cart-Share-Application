@@ -8,6 +8,7 @@ import { getStores } from "../_actions/storeActions";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Spinner from "../common/Spinner";
+import ProductInfoForm from "../AdminStore/ProductInfoForm";
 
 class AdminHome extends Component {
   state = {
@@ -70,6 +71,24 @@ class AdminHome extends Component {
             <Modal open={open} onClose={this.onCloseModal} center>
               <h4 className="text-center tex-secondary">Enter Store Details</h4>
               <StoreInfoForm />
+            </Modal>
+          </div>
+        </li>
+
+        <li className="list-group-item border border-white">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={this.onOpenModal}
+          >
+            Create New Product
+          </button>
+          <div className="overflow-auto border">
+            <Modal open={open} onClose={this.onCloseModal} center>
+              <h4 className="text-center tex-secondary">
+                Enter Product Details
+              </h4>
+              <ProductInfoForm stores={stores} />
             </Modal>
           </div>
         </li>

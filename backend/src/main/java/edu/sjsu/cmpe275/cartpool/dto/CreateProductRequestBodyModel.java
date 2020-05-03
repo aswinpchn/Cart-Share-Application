@@ -6,7 +6,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class CreateProductRequestBodyModel {
 
+	@JsonIgnore
     private long storeId;
+	
+	private long[] stores;
 
     private long sku;
 
@@ -37,7 +40,15 @@ public class CreateProductRequestBodyModel {
         return sku;
     }
 
-    public void setSku(long sku) {
+    public long[] getStores() {
+		return stores;
+	}
+
+	public void setStores(long[] stores) {
+		this.stores = stores;
+	}
+
+	public void setSku(long sku) {
         this.sku = sku;
     }
 
