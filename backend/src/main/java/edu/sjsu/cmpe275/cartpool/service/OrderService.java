@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -25,7 +26,7 @@ public class OrderService {
 	@Autowired
 	private OrderRepository orderRepository;
 
-	public Boolean createDeferredOrder(DeferredOrderRequestModel deferredOrderRequestModel) {
+	public Order createDeferredOrder(DeferredOrderRequestModel deferredOrderRequestModel) {
 		System.out.println(deferredOrderRequestModel.toString());
 
 		if (!userRepository.findById(deferredOrderRequestModel.getPoolerId()).isPresent()) {
@@ -45,6 +46,7 @@ public class OrderService {
 		order.setPrice(deferredOrderRequestModel.getPrice());
 		order.setPoolId(deferredOrderRequestModel.getPoolId());
 		order.setStatus("Pending");
+		order.setDate(Calendar.getInstance().getTime());
 
 		List<OrderDetail> orderDetails = new ArrayList<>();
 		for (int i = 0; i < deferredOrderRequestModel.getItems().size(); i++) {
@@ -57,6 +59,6 @@ public class OrderService {
 		}
 		order.setOrderDetails(orderDetails);
 		orderRepository.save(order);
-		return true;
+		return order;
 	}
 }
