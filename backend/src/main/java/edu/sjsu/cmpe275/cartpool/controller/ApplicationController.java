@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import edu.sjsu.cmpe275.cartpool.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -23,23 +24,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.sjsu.cmpe275.cartpool.Constants;
-import edu.sjsu.cmpe275.cartpool.dto.Address;
-import edu.sjsu.cmpe275.cartpool.dto.CreatePoolRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.CreateProductRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.CreateStoreRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.CreateUserRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.EditProductRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.JoinPoolRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.Pool;
-import edu.sjsu.cmpe275.cartpool.dto.PoolRequest;
-import edu.sjsu.cmpe275.cartpool.dto.Product;
-import edu.sjsu.cmpe275.cartpool.dto.Store;
-import edu.sjsu.cmpe275.cartpool.dto.UpdateStoreRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.UpdateUserProfileRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.User;
 import edu.sjsu.cmpe275.cartpool.repository.PoolRepository;
 import edu.sjsu.cmpe275.cartpool.repository.StoreRepository;
 import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
+import edu.sjsu.cmpe275.cartpool.service.OrderService;
 import edu.sjsu.cmpe275.cartpool.service.PoolService;
 import edu.sjsu.cmpe275.cartpool.service.ProductService;
 import edu.sjsu.cmpe275.cartpool.service.StoreService;
@@ -61,6 +49,9 @@ public class ApplicationController {
 
 	@Autowired
 	private PoolService poolService;
+
+	@Autowired
+	private OrderService orderService;
 
 	@Autowired
 	private StoreRepository storeRepository;
@@ -322,5 +313,11 @@ public class ApplicationController {
 	@ResponseBody
 	public Pool deletePool(@PathVariable("poolId") String poolId) {
 		return poolService.deletePool(poolId);
+	}
+
+	@PostMapping("/order/defer")
+	@ResponseBody
+	public Order createDeferredOrder(@Valid @RequestBody DeferredOrderRequestModel deferredOrderRequestModel) {
+		return orderService.createDeferredOrder(deferredOrderRequestModel);
 	}
 }
