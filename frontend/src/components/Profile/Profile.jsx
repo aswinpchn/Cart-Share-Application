@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import Modal from "react-responsive-modal";
 import { Col, Form, ListGroup } from "react-bootstrap";
 import axios from "axios";
+import ProfileInfoForm from "../Profile/ProfileInfoForm";
 import { properties } from "../../properties";
 const backendurl = properties.backendhost;
 
@@ -11,7 +13,20 @@ class Profile extends Component {
     email: "",
     poolId: "",
     contributionCredit: "",
-    address: "",
+    street: "",
+    city: "",
+    state: "",
+    zip: "",
+    open: false,
+    blockScroll: true,
+  };
+
+  onOpenModal = () => {
+    this.setState({ open: true, blockScroll: false });
+  };
+
+  onCloseModal = () => {
+    this.setState({ open: false });
   };
 
   componentDidMount() {
@@ -26,7 +41,10 @@ class Profile extends Component {
           email: response.data.email,
           poolId: response.data.poolId,
           contributionCredit: response.data.creditScore,
-          address: response.data.address,
+          street: response.data.address.street,
+          city: response.data.address.city,
+          state: response.data.address.state,
+          zip: response.data.address.zip,
         });
       })
       .catch((error) => {
@@ -41,7 +59,11 @@ class Profile extends Component {
       email,
       poolId,
       contributionCredit,
-      address,
+      street,
+      city,
+      state,
+      zip,
+      open,
     } = this.state;
     return (
       <div>
@@ -85,21 +107,44 @@ class Profile extends Component {
                   <label className="text-primary">Address: </label>
                   <br />
                   <span className="text-secondary text-center">
-                    Street: {address.street}
+                    Street: {street}
                   </span>
                   <br />
                   <span className="text-secondary text-center">
-                    City: {address.city}
+                    City: {city}
                   </span>
                   <br />
                   <span className="text-secondary text-center">
-                    State: {address.state}
+                    State: {state}
                   </span>
                   <br />
-                  <span className="text-secondary text-center">
-                    Zip: {address.zip}
-                  </span>
+                  <span className="text-secondary text-center">Zip: {zip}</span>
                 </li>
+                <li className="list-group-item border border-white">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.onOpenModal}
+                  >
+                    Update
+                  </button>
+                </li>
+                <div className="overflow-auto">
+                  <Modal open={open} onClose={this.onCloseModal} center>
+                    <h4 className="text-center tex-secondary">
+                      Update Your Profile Details
+                    </h4>
+                    <ProfileInfoForm
+                      email={email}
+                      screenName={screenName}
+                      nickName={nickName}
+                      street={street}
+                      city={city}
+                      state={state}
+                      zip={zip}
+                    />
+                  </Modal>
+                </div>
               </ul>
             </div>
           </form>
