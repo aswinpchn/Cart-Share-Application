@@ -24,6 +24,9 @@ public class OrderService {
 
 	@Autowired
 	private OrderRepository orderRepository;
+	
+	@Autowired
+	private EmailService emailService;
 
 	public Boolean createDeferredOrder(DeferredOrderRequestModel deferredOrderRequestModel) {
 		System.out.println(deferredOrderRequestModel.toString());
@@ -57,6 +60,7 @@ public class OrderService {
 		}
 		order.setOrderDetails(orderDetails);
 		orderRepository.save(order);
+		emailService.sendEmailAfterOrderDeferredPickup(order);
 		return true;
 	}
 }
