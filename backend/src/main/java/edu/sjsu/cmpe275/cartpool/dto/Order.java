@@ -34,6 +34,7 @@ public class Order {
 	private String poolId;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = {CascadeType.PERSIST})
+	@JsonIgnoreProperties({"order"})
 	private List<OrderDetail> orderDetails;
 
 	public long getId() {

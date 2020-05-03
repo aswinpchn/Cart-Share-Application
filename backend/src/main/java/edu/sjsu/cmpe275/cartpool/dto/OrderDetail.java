@@ -26,6 +26,7 @@ public class OrderDetail {
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "product_id")
+	@JsonIgnoreProperties({"store"})
 	private Product product;
 	
 	private long quantity;

@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -28,10 +30,11 @@ public class OrderService {
 	@Autowired
 	private EmailService emailService;
 
-	public Boolean createDeferredOrder(DeferredOrderRequestModel deferredOrderRequestModel) {
+	public Order createDeferredOrder(DeferredOrderRequestModel deferredOrderRequestModel) {
 		System.out.println(deferredOrderRequestModel.toString());
 
-		if (!userRepository.findById(deferredOrderRequestModel.getPoolerId()).isPresent()) {
+		Optional<User> pooler = userRepository.findById(deferredOrderRequestModel.getPoolerId());
+		if (!pooler.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Pooler with this userId found");
 		}
 
@@ -48,6 +51,7 @@ public class OrderService {
 		order.setPrice(deferredOrderRequestModel.getPrice());
 		order.setPoolId(deferredOrderRequestModel.getPoolId());
 		order.setStatus("Pending");
+		order.setDate(Calendar.getInstance().getTime());
 
 		List<OrderDetail> orderDetails = new ArrayList<>();
 		for (int i = 0; i < deferredOrderRequestModel.getItems().size(); i++) {
@@ -60,7 +64,7 @@ public class OrderService {
 		}
 		order.setOrderDetails(orderDetails);
 		orderRepository.save(order);
-		emailService.sendEmailAfterOrderDeferredPickup(order);
-		return true;
+		emailService.sendEmailAfterOrderDeferredPickup(order, pooler.get().getEmail());
+		return order;
 	}
 }

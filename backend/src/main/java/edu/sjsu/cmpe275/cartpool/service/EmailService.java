@@ -75,7 +75,7 @@ public class EmailService {
 		}
 	}
 	
-	public boolean sendEmailAfterOrderDeferredPickup(Order order) {
+	public boolean sendEmailAfterOrderDeferredPickup(Order order, String toAddress) {
 		Context context = new Context();
 		context.setVariable("orderId", order.getId());
 		context.setVariable("orderDate", order.getDate());
@@ -85,7 +85,7 @@ public class EmailService {
 		MimeMessage message = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
 		try {
-			helper.setTo("viditavijaykumar.daga@sjsu.edu");
+			helper.setTo(toAddress);
 			helper.setSubject("CartPool Order Confirmation");
 			helper.setText(content, true);
 			javaMailSender.send(message);

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import edu.sjsu.cmpe275.cartpool.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -17,26 +18,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.sjsu.cmpe275.cartpool.Constants;
-import edu.sjsu.cmpe275.cartpool.dto.Address;
-import edu.sjsu.cmpe275.cartpool.dto.CreatePoolRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.CreateProductRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.CreateStoreRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.CreateUserRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.DeferredOrderRequestModel;
-import edu.sjsu.cmpe275.cartpool.dto.EditProductRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.JoinPoolRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.Pool;
-import edu.sjsu.cmpe275.cartpool.dto.PoolRequest;
-import edu.sjsu.cmpe275.cartpool.dto.Product;
-import edu.sjsu.cmpe275.cartpool.dto.Store;
-import edu.sjsu.cmpe275.cartpool.dto.UpdateStoreRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.UpdateUserProfileRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.User;
 import edu.sjsu.cmpe275.cartpool.repository.PoolRepository;
 import edu.sjsu.cmpe275.cartpool.repository.StoreRepository;
 import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
@@ -125,6 +112,24 @@ public class ApplicationController {
 		address.setZip(request.getZip());
 		user.setAddress(address);
 		return userService.updateUserProfile(user);
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, value = "/user/setProfile")
+	@ResponseBody
+	public User setUserProfile(@Valid @RequestBody UpdateUserProfileRequestBodyModel request) {
+		System.out.println("in api:    " + request);
+		User user = new User();
+		Address address = new Address();
+		user.setEmail(request.getEmail());
+		user.setScreenName(request.getScreenName());
+		user.setNickName(request.getNickName());
+		address.setStreet(request.getStreet());
+		address.setCity(request.getCity());
+		address.setState(request.getState());
+		address.setZip(request.getZip());
+		user.setAddress(address);
+		System.out.println("the user is" + user);
+		return userService.setUserProfile(user);
 	}
 
 	@PostMapping("/user/register")
@@ -312,7 +317,7 @@ public class ApplicationController {
 
 	@PostMapping("/order/defer")
 	@ResponseBody
-	public Boolean createDeferredOrder(@Valid @RequestBody DeferredOrderRequestModel deferredOrderRequestModel) {
+	public Order createDeferredOrder(@Valid @RequestBody DeferredOrderRequestModel deferredOrderRequestModel) {
 		return orderService.createDeferredOrder(deferredOrderRequestModel);
 	}
 }
