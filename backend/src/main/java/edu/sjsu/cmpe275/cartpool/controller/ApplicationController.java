@@ -6,10 +6,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import edu.sjsu.cmpe275.cartpool.dto.*;
-import edu.sjsu.cmpe275.cartpool.repository.OrderRepository;
-import edu.sjsu.cmpe275.cartpool.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -26,9 +22,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.sjsu.cmpe275.cartpool.Constants;
+import edu.sjsu.cmpe275.cartpool.dto.Address;
+import edu.sjsu.cmpe275.cartpool.dto.CreatePoolRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.CreateProductRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.CreateStoreRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.CreateUserRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.DeferredOrderRequestModel;
+import edu.sjsu.cmpe275.cartpool.dto.EditProductRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.JoinPoolRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.Pool;
+import edu.sjsu.cmpe275.cartpool.dto.PoolRequest;
+import edu.sjsu.cmpe275.cartpool.dto.Product;
+import edu.sjsu.cmpe275.cartpool.dto.Store;
+import edu.sjsu.cmpe275.cartpool.dto.UpdateStoreRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.UpdateUserProfileRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.User;
 import edu.sjsu.cmpe275.cartpool.repository.PoolRepository;
 import edu.sjsu.cmpe275.cartpool.repository.StoreRepository;
 import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
+import edu.sjsu.cmpe275.cartpool.service.OrderService;
+import edu.sjsu.cmpe275.cartpool.service.PoolService;
+import edu.sjsu.cmpe275.cartpool.service.ProductService;
+import edu.sjsu.cmpe275.cartpool.service.StoreService;
+import edu.sjsu.cmpe275.cartpool.service.UserService;
 
 @Controller
 @RequestMapping(path = "/cartpool")
@@ -58,9 +74,6 @@ public class ApplicationController {
 
 	@Autowired
 	private PoolRepository poolRepository;
-
-	@Autowired
-	private OrderRepository orderRepository;
 
 	@GetMapping("/store/all")
 	@ResponseBody
@@ -300,7 +313,6 @@ public class ApplicationController {
 	@PostMapping("/order/defer")
 	@ResponseBody
 	public Boolean createDeferredOrder(@Valid @RequestBody DeferredOrderRequestModel deferredOrderRequestModel) {
-
 		return orderService.createDeferredOrder(deferredOrderRequestModel);
 	}
 }
