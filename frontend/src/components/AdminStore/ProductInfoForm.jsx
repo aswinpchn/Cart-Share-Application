@@ -4,13 +4,13 @@ import Button from "react-bootstrap/Button";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { createProduct } from "../_actions/productActions";
-import axios from 'axios';
-import { properties } from '../../properties';
+import Select from "react-select";
 
 class ProductInfoForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      selectedStores: [],
       storeId: "",
       sku: "",
       name: "",
@@ -23,6 +23,7 @@ class ProductInfoForm extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onStoreChange = this.onStoreChange.bind(this);
   }
   componentDidMount() {
     this.setState({
@@ -59,12 +60,19 @@ class ProductInfoForm extends Component {
     });
   }
 
+  onStoreChange(opt) {
+    this.setState({
+      selectedStores: opt
+    });
+  }
+
   handleSubmit = (e) => {
     //prevent page from refresh
     e.preventDefault();
     let data = new FormData();
-    console.log("this.state.storeId-->", this.state.storeId)
-    data.append('storeId', this.state.storeId);
+    this.state.selectedStores.forEach((eachObj) => {
+      data.append('stores', eachObj.value);
+    })
     data.append('sku', this.state.sku);
     data.append('name', this.state.name);
     if (this.state.image) {
@@ -76,57 +84,43 @@ class ProductInfoForm extends Component {
     console.log("data-->", data)
 
     this.props.createProduct(data);
-     /*
-     const backendurl = properties.backendhost + "product/add";
-     const config = { headers: { 'Content-Type': 'multipart/form-data' } };
-     axios
-       .post(backendurl, data, config)
-       .then((response) => {
-         console.log(response);
-         console.log(response.data);
-         if(response.status == 200) {
-           this.setState({
-             errors: false,
-             errorMessage: "",
-             success: true,
-             successMessage: "Product added successfully."
-           })
-           // window.location.reload();
-         }
-       })
-       .catch((error) => {
-         console.log("Error in adding new product", error, error.message);
-         if(error.message.includes("404")) {
-           this.setState({
-             success: false,
-             successMessage: "",
-             errors: true,
-             errorMessage: "Store not found."
-           })
-         } else if(error.message.includes("409")) {
-           this.setState({
-             success: false,
-             successMessage: "",
-             errors: true,
-             errorMessage: "Product already exists with same store and sku."
-           })
-         } else {
-           this.setState({
-             success: false,
-             successMessage: "",
-             errors: true,
-             errorMessage: "Server Error. Please try again."
-           })
-         }
-       });*/
   };
 
   render() {
     const { text, errors } = this.state;
 
+    /*
+    let options = this.props.stores.map((option, index) => {
+      return (
+        <option value={option.id}>{option.name}</option>
+      );
+    });*/
+
+    let options = [];
+    if (this.props.stores.length) {
+      this.props.stores.forEach(function (store) {
+        options.push({
+          label: store.name,
+          value: store.id
+        })
+      });
+    }
+
     return (
       <div>
         <Form>
+          <Form.Row>
+            <Form.Group as={Col} controlId="store">
+              <Form.Label>Select Store</Form.Label>
+              <Select isMulti
+                onChange={this.onStoreChange}
+                options={options}
+                value={this.state.selectedStores}
+                required
+              />
+            </Form.Group>
+          </Form.Row>
+
         <Form.Row>
             <Form.Group as={Col} controlId="sku">
               <Form.Label>Product SKU</Form.Label>

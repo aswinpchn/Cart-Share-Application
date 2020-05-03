@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Row, Col } from "react-bootstrap";
-import Modal from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
-import ProductInfoForm from "./ProductInfoForm";
 import ProductCard from "./ProductCard";
 import { getProducts } from "../_actions/productActions";
 import PropTypes from "prop-types";
@@ -70,23 +68,6 @@ class ProductList extends Component {
             </h2>
           </div>
         </div>
-        <li className="list-group-item border border-white">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={this.onOpenModal}
-          >
-            Create New Product
-          </button>
-          <div className="overflow-auto border">
-            <Modal open={open} onClose={this.onCloseModal} center>
-              <h4 className="text-center tex-secondary">
-                Enter Product Details
-              </h4>
-              <ProductInfoForm storeId={this.state.storeId} />
-            </Modal>
-          </div>
-        </li>
 
         <div className=" container">
           <div className="container">
