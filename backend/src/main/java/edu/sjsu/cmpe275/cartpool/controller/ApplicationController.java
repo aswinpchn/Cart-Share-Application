@@ -50,8 +50,8 @@ public class ApplicationController {
 	@Autowired
 	private PoolService poolService;
 
-	@Autowired
-	private OrderService orderService;
+    @Autowired
+    private OrderService orderService;
 
 	@Autowired
 	private StoreRepository storeRepository;
@@ -319,5 +319,17 @@ public class ApplicationController {
 	@ResponseBody
 	public Order createDeferredOrder(@Valid @RequestBody DeferredOrderRequestModel deferredOrderRequestModel) {
 		return orderService.createDeferredOrder(deferredOrderRequestModel);
+	}
+	
+    @GetMapping("/orders/fellowpoolers/{userId}")
+    @ResponseBody
+    public List<Order> getFellowPoolerOrders(@PathVariable("userId") long userId) {
+        return orderService.getFellowPoolerOrders(userId);
+    }
+
+	@PostMapping("/order/self")
+	@ResponseBody
+	public Order createSelfPickupOrder(@Valid @RequestBody SelfPickupOrderRequestModel selfPickupOrderRequestModel) {
+		return orderService.createSelfPickupOrder(selfPickupOrderRequestModel);
 	}
 }

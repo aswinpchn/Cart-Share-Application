@@ -18,4 +18,6 @@ public final class Constants {
 	public static final String ADMIN_ROLE = "admin";
 	public static final String DOMAIN = "sjsu.edu";
 	public static final String BACKEND_URL = "http://localhost:3000";
+	public static final String PENDING = "Pending";
+	public static final String ASSIGNED = "Assigned";
 }
