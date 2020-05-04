@@ -16,6 +16,7 @@ class SelfPickup extends Component {
       orderListToShow: [],
       errors: "",
       text: null,
+      showConfirmOrder: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -65,7 +66,8 @@ class SelfPickup extends Component {
     ) {
       this.setState({
 				errors: `Please input value from range 0 - ${this.state.numberOfOrders}`,
-				orderListToShow: []
+        orderListToShow: [],
+        showConfirmOrder: false
       });
     } else {
       this.setState({
@@ -73,6 +75,8 @@ class SelfPickup extends Component {
           0,
           this.state.noOfOrdersToPickUp
         ),
+        showConfirmOrder: true,
+        errors: ""
       });
     }
 	};
@@ -140,7 +144,7 @@ class SelfPickup extends Component {
   }
 
   render() {
-    const { text, errors, orderListToShow } = this.state;
+    const { text, errors, orderListToShow, showConfirmOrder } = this.state;
 
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
@@ -300,15 +304,14 @@ class SelfPickup extends Component {
                 </table>
               </Col>
             </Row>
-						{ orderListToShow.length > 0 && <Row>
-              <Col md={{ span: 10, offset: 1 }}>
-                <Button
-                onClick={this.handleCreateOrder}>
-                  Confirm order and pickup
-                </Button>
-              </Col>
-            </Row>}
           </Container>
+        </div>
+        <div>
+          {showConfirmOrder && <button
+            type="button"
+            className="btn btn-primary"
+            onClick={this.handleCreateOrder}
+          >Confirm order and pickup</button>}
         </div>
       </div>
     );
