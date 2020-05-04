@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { createProduct } from "../_actions/productActions";
 import Select from "react-select";
+import Spinner from "../common/Spinner";
 
 class ProductInfoForm extends Component {
   constructor(props) {
@@ -27,9 +28,9 @@ class ProductInfoForm extends Component {
   }
   componentDidMount() {
     this.setState({
-      storeId : this.props.storeId
+      storeId: this.props.storeId,
     });
-    console.log("this--->", this, this.props)
+    console.log("this--->", this, this.props);
   }
 
   componentDidUpdate(prevProps) {
@@ -56,13 +57,13 @@ class ProductInfoForm extends Component {
 
   onImageChange = (event) => {
     this.setState({
-      image: event.target.files[0]
+      image: event.target.files[0],
     });
-  }
+  };
 
   onStoreChange(opt) {
     this.setState({
-      selectedStores: opt
+      selectedStores: opt,
     });
   }
 
@@ -71,23 +72,29 @@ class ProductInfoForm extends Component {
     e.preventDefault();
     let data = new FormData();
     this.state.selectedStores.forEach((eachObj) => {
-      data.append('stores', eachObj.value);
-    })
-    data.append('sku', this.state.sku);
-    data.append('name', this.state.name);
+      data.append("stores", eachObj.value);
+    });
+    data.append("sku", this.state.sku);
+    data.append("name", this.state.name);
     if (this.state.image) {
-      data.append('image', this.state.image);
+      data.append("image", this.state.image);
     }
-    data.append('brand', this.state.brand);
-    data.append('price', this.state.price);
-    data.append('unit', this.state.unit);
-    console.log("data-->", data)
+    data.append("brand", this.state.brand);
+    data.append("price", this.state.price);
+    data.append("unit", this.state.unit);
+    console.log("data-->", data);
 
     this.props.createProduct(data);
   };
 
   render() {
     const { text, errors } = this.state;
+
+    const { loading } = this.props.product;
+    let spinner;
+    if (loading) {
+      spinner = <Spinner />;
+    }
 
     /*
     let options = this.props.stores.map((option, index) => {
@@ -101,8 +108,8 @@ class ProductInfoForm extends Component {
       this.props.stores.forEach(function (store) {
         options.push({
           label: store.name,
-          value: store.id
-        })
+          value: store.id,
+        });
       });
     }
 
@@ -112,7 +119,8 @@ class ProductInfoForm extends Component {
           <Form.Row>
             <Form.Group as={Col} controlId="store">
               <Form.Label>Select Store</Form.Label>
-              <Select isMulti
+              <Select
+                isMulti
                 onChange={this.onStoreChange}
                 options={options}
                 value={this.state.selectedStores}
@@ -121,7 +129,7 @@ class ProductInfoForm extends Component {
             </Form.Group>
           </Form.Row>
 
-        <Form.Row>
+          <Form.Row>
             <Form.Group as={Col} controlId="sku">
               <Form.Label>Product SKU</Form.Label>
               <Form.Control
@@ -209,10 +217,15 @@ class ProductInfoForm extends Component {
             />
           </Form.Group>
 
-          <Button className="btn btn-primary" type="submit" onClick={this.handleSubmit}>
+          <Button
+            className="btn btn-primary"
+            type="submit"
+            onClick={this.handleSubmit}
+          >
             Submit
           </Button>
           <br />
+          {spinner}
           <p className="text-danger"> {errors}</p>
           <p className="text-success"> {text}</p>
           <br />
