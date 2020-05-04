@@ -47,6 +47,7 @@ class Checkout extends Component {
       order.tax = tax;
       order.convenienceFee = convenienceFee;
       order.finalOrderTotal = finalOrderTotal;
+      localStorage.setItem("finalOrderTotal", finalOrderTotal)
       //console.log(order);
 
       this.setState({
