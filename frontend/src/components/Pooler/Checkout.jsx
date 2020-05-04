@@ -47,6 +47,7 @@ class Checkout extends Component {
       order.tax = tax;
       order.convenienceFee = convenienceFee;
       order.finalOrderTotal = finalOrderTotal;
+      localStorage.setItem("finalOrderTotal", finalOrderTotal)
       //console.log(order);
 
       this.setState({
@@ -65,10 +66,56 @@ class Checkout extends Component {
       let userResponse = await axios.get(properties.backendhost + 'user/?email=' + localStorage.getItem("email"));
       //console.log(userResponse.data);
 
+      if(userResponse.data.creditScore <= -6) {
+        swal({
+          title: 'Should you proceed!',
+          text: 'Your contribution credit is: ' + userResponse.data.creditScore + ' You are in yellow zone,Please start picking up some orders',
+          icon: 'warning',
+          buttons: true,
+          dangerMode: true
+        }).then((proceed) => {
+          if(proceed) {
+            this.deferPickUp();
+          }else {
+            swal('You have decided not to proced.');
+          }
+        });
+      } else if(userResponse.data.creditScore <= -4) {
+        swal({
+          title: 'Should you proceed!',
+          text: 'Your contribution credit is: ' + userResponse.data.creditScore + ' You are in red zone,Please start picking up some orders',
+          icon: 'warning',
+          buttons: true,
+          dangerMode: true
+        }).then((proceed) => {
+          if(proceed) {
+            this.deferPickUp();
+          }else {
+            swal('You have decided not to proced.');
+          }
+        });
+      } else {
+        this.deferPickUp();
+      }
+
+
+    }catch (e) {
+      console.log(e.response);
+      swal(e.response.data.message);
+    }
+  }
+
+  deferPickUp = async () => {
+
+    try {
+      let userResponse = await axios.get(properties.backendhost + 'user/?email=' + localStorage.getItem("email"));
+      //console.log(userResponse.data);
+
       let postBody = {};
       postBody.poolerId = localStorage.getItem("userId");
       postBody.price = this.state.order.finalOrderTotal;
       postBody.poolId = userResponse.data.poolId;
+      postBody.storeId = localStorage.getItem("cart_store_id");
       postBody.items = [];
       for(let i = 0; i < this.state.cart.length; i++) {
         let item = {};
@@ -81,26 +128,11 @@ class Checkout extends Component {
 
       let orderResponse = await axios.post(properties.backendhost + 'order/defer', postBody);
       //console.log(orderResponse.data);
-      
-      if(orderResponse.data.pooler.creditScore <= -6) {
-        swal({
-          title: 'Order placed!',
-          text: 'Your contribution credit is: ' + orderResponse.data.pooler.creditScore + ' You are in red zone,Please start picking up some orders',
-          icon: 'error'
-        });
-      } else if(orderResponse.data.pooler.creditScore <= -4) {
-        swal({
-          title: 'Order placed!',
-          text: 'Your contribution credit is: ' + orderResponse.data.pooler.creditScore + ' You are in yellow zone, Please start picking up some orders',
-          icon: 'warning'
-        });
-      } else {
-        swal({
-          title: 'Order placed!',
-          text: 'Your contribution credit is: ' + orderResponse.data.pooler.creditScore + ' You are in green zone',
-          icon: 'success'
-        });
-      }
+
+      swal({
+        title: 'Order placed!',
+        icon: 'success'
+      });
 
       localStorage.removeItem("cart");
       localStorage.removeItem("cart_store_id");
@@ -110,6 +142,7 @@ class Checkout extends Component {
       console.log(e.response);
       swal(e.response.data.message);
     }
+
   }
 
   handleSelfPickupSubmit = () => {

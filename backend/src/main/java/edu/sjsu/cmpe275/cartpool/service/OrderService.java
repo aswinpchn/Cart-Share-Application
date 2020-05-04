@@ -30,12 +30,16 @@ public class OrderService {
 	private OrderRepository orderRepository;
 
 	@Autowired
+	private EmailService emailService;
+
+	@Autowired
 	private StoreRepository storeRepository;
 
 	public Order createDeferredOrder(DeferredOrderRequestModel deferredOrderRequestModel) {
 		System.out.println(deferredOrderRequestModel.toString());
 
-		if (!userRepository.findById(deferredOrderRequestModel.getPoolerId()).isPresent()) {
+		Optional<User> poolerObj = userRepository.findById(deferredOrderRequestModel.getPoolerId());
+		if (!poolerObj.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Pooler with this userId found");
 		}
 
@@ -47,15 +51,15 @@ public class OrderService {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No items in this order");
 		}
 
-		User pooler = userRepository.findById(deferredOrderRequestModel.getPoolerId()).get();
+		User pooler = poolerObj.get();
 		pooler.setCreditScore(pooler.getCreditScore() - 1);
 		userRepository.save(pooler);
-		
+
 		Optional<Store> store = storeRepository.findStoreById(deferredOrderRequestModel.getStoreId());
 		Store pickupStore = store.get();
 
 		Order order = new Order();
-		order.setPooler(userRepository.findById(deferredOrderRequestModel.getPoolerId()).get());
+		order.setPooler(pooler);
 		order.setPrice(deferredOrderRequestModel.getPrice());
 		order.setPoolId(deferredOrderRequestModel.getPoolId());
 		order.setStatus("Pending");
@@ -66,13 +70,15 @@ public class OrderService {
 		for (int i = 0; i < deferredOrderRequestModel.getItems().size(); i++) {
 			OrderDetail orderDetail = new OrderDetail();
 			orderDetail.setOrder(order);
-			orderDetail.setProduct(productRepository.getOne(deferredOrderRequestModel.getItems().get(i).getProductId()));
+			orderDetail
+					.setProduct(productRepository.getOne(deferredOrderRequestModel.getItems().get(i).getProductId()));
 			orderDetail.setPrice(deferredOrderRequestModel.getItems().get(i).getPrice());
 			orderDetail.setQuantity(deferredOrderRequestModel.getItems().get(i).getQuantity());
 			orderDetails.add(orderDetail);
 		}
 		order.setOrderDetails(orderDetails);
 		orderRepository.save(order);
+		emailService.sendEmailAfterOrderDeferredPickup(order, pooler.getEmail());
 		return order;
 	}
 
@@ -83,7 +89,8 @@ public class OrderService {
 		String poolId = user.getPoolId();
 		System.out.println("Pool Id-->" + poolId);
 
-		List<Order> orders = orderRepository.findAllByPoolIdAndDeliveryPoolerAndStatusOrderByDateAsc(poolId, null, Constants.PENDING);
+		List<Order> orders = orderRepository.findAllByPoolIdAndDeliveryPoolerAndStatusOrderByDateAsc(poolId, null,
+				Constants.PENDING);
 
 		return orders;
 	}
@@ -92,7 +99,8 @@ public class OrderService {
 	public Order createSelfPickupOrder(SelfPickupOrderRequestModel selfPickupOrderRequestModel) {
 		System.out.println(selfPickupOrderRequestModel.toString());
 
-		if (!userRepository.findById(selfPickupOrderRequestModel.getPoolerId()).isPresent()) {
+		Optional<User> userEntity = userRepository.findById(selfPickupOrderRequestModel.getPoolerId());
+		if (!userEntity.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Pooler with this userId found");
 		}
 
@@ -104,18 +112,20 @@ public class OrderService {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No items in this order");
 		}
 
-		User deliveryUser = userRepository.getOne(selfPickupOrderRequestModel.getPoolerId());
+		List<Long> listOfFellowOrderIds = selfPickupOrderRequestModel.getFellowPoolersOrders();
+
+		userEntity.get().setCreditScore(userEntity.get().getCreditScore() + listOfFellowOrderIds.size());
+		userRepository.save(userEntity.get());
 
 		Optional<Store> store = storeRepository.findStoreById(selfPickupOrderRequestModel.getStoreId());
 		Store pickupStore = store.get();
-
 		Order order = new Order();
-		order.setPooler(userRepository.findById(selfPickupOrderRequestModel.getPoolerId()).get());
+		order.setPooler(userEntity.get());
 		order.setPrice(selfPickupOrderRequestModel.getPrice());
 		order.setPoolId(selfPickupOrderRequestModel.getPoolId());
 		order.setStatus(Constants.ASSIGNED);
 		order.setDate(Calendar.getInstance().getTime());
-		order.setDeliveryPooler(deliveryUser);
+		order.setDeliveryPooler(userEntity.get());
 		order.setStoreName(pickupStore.getName());
 		order.setDate(Calendar.getInstance().getTime());
 
@@ -123,7 +133,8 @@ public class OrderService {
 		for (int i = 0; i < selfPickupOrderRequestModel.getItems().size(); i++) {
 			OrderDetail orderDetail = new OrderDetail();
 			orderDetail.setOrder(order);
-			orderDetail.setProduct(productRepository.getOne(selfPickupOrderRequestModel.getItems().get(i).getProductId()));
+			orderDetail
+					.setProduct(productRepository.getOne(selfPickupOrderRequestModel.getItems().get(i).getProductId()));
 			orderDetail.setPrice(selfPickupOrderRequestModel.getItems().get(i).getPrice());
 			orderDetail.setQuantity(selfPickupOrderRequestModel.getItems().get(i).getQuantity());
 			orderDetails.add(orderDetail);
@@ -131,14 +142,17 @@ public class OrderService {
 		order.setOrderDetails(orderDetails);
 		orderRepository.save(order);
 
-		List<Long> listOfFellowOrderIds = selfPickupOrderRequestModel.getFellowPoolersOrders();
-		for(long orderId : listOfFellowOrderIds) {
-			Order fellowOrder = orderRepository.getOne(orderId);
-			fellowOrder.setDeliveryPooler(deliveryUser);
-			fellowOrder.setStatus(Constants.ASSIGNED);
-			orderRepository.save(fellowOrder);
+		List<Order> listOfFellowPoolerOrders = new ArrayList<Order>();
+		if (listOfFellowOrderIds != null) {
+			for (long orderId : listOfFellowOrderIds) {
+				Order fellowOrder = orderRepository.getOne(orderId);
+				fellowOrder.setDeliveryPooler(userEntity.get());
+				fellowOrder.setStatus(Constants.ASSIGNED);
+				orderRepository.save(fellowOrder);
+				listOfFellowPoolerOrders.add(fellowOrder);
+			}
 		}
-
+		emailService.sendEmailAfterOrderSelfPickup(order, userEntity.get().getEmail(), listOfFellowPoolerOrders);
 		return order;
 	}
 }
