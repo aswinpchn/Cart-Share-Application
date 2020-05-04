@@ -112,6 +112,11 @@ public class OrderService {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No items in this order");
 		}
 
+		List<Long> listOfFellowOrderIds = selfPickupOrderRequestModel.getFellowPoolersOrders();
+
+		userEntity.get().setCreditScore(userEntity.get().getCreditScore() + listOfFellowOrderIds.size());
+		userRepository.save(userEntity.get());
+
 		Optional<Store> store = storeRepository.findStoreById(selfPickupOrderRequestModel.getStoreId());
 		Store pickupStore = store.get();
 		Order order = new Order();
@@ -138,7 +143,6 @@ public class OrderService {
 		orderRepository.save(order);
 
 		List<Order> listOfFellowPoolerOrders = new ArrayList<Order>();
-		List<Long> listOfFellowOrderIds = selfPickupOrderRequestModel.getFellowPoolersOrders();
 		if (listOfFellowOrderIds != null) {
 			for (long orderId : listOfFellowOrderIds) {
 				Order fellowOrder = orderRepository.getOne(orderId);
