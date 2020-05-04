@@ -12,7 +12,6 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-
   @ManyToOne(fetch = FetchType.EAGER, optional = true)
   @JoinColumn(name = "store_id")
   private Store store;

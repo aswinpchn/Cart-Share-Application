@@ -33,6 +33,8 @@ public class Order {
 	
 	private String poolId;
 
+	private String storeName;
+
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = {CascadeType.PERSIST})
 	@JsonIgnoreProperties({"order"})
 	private List<OrderDetail> orderDetails;
@@ -109,6 +111,14 @@ public class Order {
 		this.poolId = poolId;
 	}
 
+	public String getStoreName() {
+		return storeName;
+	}
+
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
+	}
+
 	@Override
 	public String toString() {
 		return "Order{" +
@@ -120,6 +130,7 @@ public class Order {
 				", qrCode='" + qrCode + '\'' +
 				", price=" + price +
 				", poolId='" + poolId + '\'' +
+				", storeName='" + storeName + '\'' +
 				", orderDetails=" + orderDetails +
 				'}';
 	}

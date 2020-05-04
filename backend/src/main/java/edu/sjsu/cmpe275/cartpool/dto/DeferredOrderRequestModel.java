@@ -10,6 +10,8 @@ public class DeferredOrderRequestModel {
 
   private String poolId;
 
+  private long storeId;
+
   private List<itemOrderRequestModel> items;
 
   @Override
@@ -18,6 +20,7 @@ public class DeferredOrderRequestModel {
             "poolerId=" + poolerId +
             ", price=" + price +
             ", poolId='" + poolId + '\'' +
+            ", storeId=" + storeId +
             ", items=" + items +
             '}';
   }
@@ -44,6 +47,14 @@ public class DeferredOrderRequestModel {
 
   public void setPoolId(String poolId) {
     this.poolId = poolId;
+  }
+
+  public long getStoreId() {
+    return storeId;
+  }
+
+  public void setStoreId(long storeId) {
+    this.storeId = storeId;
   }
 
   public List<itemOrderRequestModel> getItems() {
