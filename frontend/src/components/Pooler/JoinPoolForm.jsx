@@ -1,58 +1,67 @@
-import React, {Component} from "react";
-import {Col, Form} from "react-bootstrap";
+import React, { Component } from "react";
+import { Col, Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import axios from 'axios';
-import {properties} from "../../properties";
+import axios from "axios";
+import { properties } from "../../properties";
 import swal from "sweetalert";
+import Spinner from "../common/Spinner";
 
 class JoinPoolForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      loading: false,
     };
   }
 
   handleChange = (e) => {
     let name = e.target.name;
     this.setState({
-      name: e.target.value
+      name: e.target.value,
     });
-  }
+  };
 
   handleSubmit = async (e) => {
     // prevent page from refresh
     e.preventDefault();
 
     // Add code here for join Pool API.
+    this.setState({
+      loading: true,
+    });
 
     try {
       const { pool } = this.props;
-      let backendurl =
-        properties.backendhost + "pool/join";
+      let backendurl = properties.backendhost + "pool/join";
       let joinResponse = await axios.post(backendurl, {
-        userScreenName : localStorage.getItem("screenName"),
-        poolName : pool.name,
-        referrerScreenName : this.state.name
+        userScreenName: localStorage.getItem("screenName"),
+        poolName: pool.name,
+        referrerScreenName: this.state.name,
       });
       //console.log(joinResponse);
 
-      if(joinResponse.status == 200) {
+      if (joinResponse.status == 200) {
         swal(joinResponse.data);
+        this.setState({
+          loading: false,
+        });
       }
-    }catch (e) {
+    } catch (e) {
       console.log(e.response);
       swal(e.response.data.message);
     }
-
-
   };
 
   render() {
+    const { loading } = this.state;
     const { pool } = this.props;
     // console.log(pool);
     // console.log(this.state);
-    return(
+    let spinner;
+    if (loading) {
+      spinner = <Spinner />;
+    }
+    return (
       <div>
         <Form>
           <Form.Row>
@@ -74,6 +83,7 @@ class JoinPoolForm extends Component {
           >
             Join Group
           </Button>
+          {spinner}
         </Form>
       </div>
     );
