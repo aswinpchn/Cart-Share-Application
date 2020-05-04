@@ -332,4 +332,16 @@ public class ApplicationController {
 	public Order createSelfPickupOrder(@Valid @RequestBody SelfPickupOrderRequestModel selfPickupOrderRequestModel) {
 		return orderService.createSelfPickupOrder(selfPickupOrderRequestModel);
 	}
+
+	@GetMapping("/orders/{userId}")
+	@ResponseBody
+	public List<Order> getOrders(@PathVariable("userId") long userId) {
+		return orderService.getOrders(userId);
+	}
+
+	@PostMapping("/order/marknotdelivered/{orderId}")
+	@ResponseBody
+	public Order markOrderNotDelivered(@PathVariable("orderId") long orderId) {
+		return orderService.markOrderNotDelivered(orderId);
+	}
 }

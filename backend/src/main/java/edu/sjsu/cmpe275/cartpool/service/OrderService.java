@@ -155,4 +155,30 @@ public class OrderService {
 		emailService.sendEmailAfterOrderSelfPickup(order, userEntity.get().getEmail(), listOfFellowPoolerOrders);
 		return order;
 	}
+
+	@Transactional
+	public List<Order> getOrders(long userId) {
+		Optional<User> userEntity = userRepository.findById(userId);
+
+		if (!userEntity.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this userId found");
+		}
+		List<Order> orders = orderRepository.findAllByPooler(userEntity.get());
+		return orders;
+	}
+	
+	@Transactional
+	public Order markOrderNotDelivered(long orderId) {
+		Optional<Order> orderEntity = orderRepository.findById(orderId);
+
+		if (!orderEntity.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
+		}
+		if(orderEntity.get().getStatus().equals(Constants.DELIVERED)) {
+			orderEntity.get().setStatus(Constants.DELIVERY_NOT_RECEIVED);
+			return orderRepository.save(orderEntity.get());
+		} else {
+			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Order is not marked as delivered yet");
+		}
+	}
 }
