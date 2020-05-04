@@ -14,6 +14,7 @@ import Qrcode from "../Pickup/Qrcode";
 import Profile from "../Profile/Profile";
 import yourOrders from "../Orders/yourOrders";
 import deliveryTasks from "../deliveryTasks/deliveryTasks";
+import SelfPickup from "../Pickup/SelfPickup";
 
 class Main extends Component {
   render() {
@@ -39,6 +40,7 @@ class Main extends Component {
               path="/main/pooler/deliveryTasks"
               component={deliveryTasks}
             />
+            <Route path="/main/selfPickup" component={SelfPickup} />
           </Switch>
         </BrowserRouter>
       </div>
