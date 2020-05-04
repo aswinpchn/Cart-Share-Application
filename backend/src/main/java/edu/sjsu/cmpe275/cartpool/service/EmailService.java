@@ -158,4 +158,22 @@ public class EmailService {
 		}
 		return false;
 	}
+	
+	public boolean sendOrderNotDeliveredEmail(Order order, String toAddress) {
+		Context context = new Context();
+		context.setVariable("poolerOrder", order);
+		String content = templateEngine.process("deliverynotreceived", context);
+		MimeMessage message = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
+		try {
+			helper.setTo(toAddress);
+			helper.setSubject("CartPool Order - Delivery Not Received");
+			helper.setText(content, true);
+			javaMailSender.send(message);
+			return true;
+		} catch (Exception ex) {
+			// log here
+		}
+		return false;
+	}
 }

@@ -163,19 +163,47 @@ public class OrderService {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
 		}
 		Order order = orderEntity.get();
-		order.setStatus("picked-up by oneself");
+		order.setStatus(Constants.PICKED_UP_BY_SELF);
 		orderRepository.save(order);
 		List<Long> fellowPoolerOrderIds = model.getFellowPoolersOrders();
 		List<Order> fellowPoolerOrders = new ArrayList<Order>();
 		if (fellowPoolerOrderIds != null) {
 			for (long fellowPoolerOrderId : fellowPoolerOrderIds) {
 				Order fellowPoolerOrder = orderRepository.getOne(fellowPoolerOrderId);
-				fellowPoolerOrder.setStatus("picked-up");
+				fellowPoolerOrder.setStatus(Constants.PICKED_UP);
 				fellowPoolerOrders.add(fellowPoolerOrder);
 				orderRepository.save(fellowPoolerOrder);
 			}
 		}
 		emailService.sendEmailAfterOrderPickup(order, fellowPoolerOrders);
 		return true;
+    }
+
+	@Transactional
+	public List<Order> getOrders(long userId) {
+		Optional<User> userEntity = userRepository.findById(userId);
+
+		if (!userEntity.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this userId found");
+		}
+		List<Order> orders = orderRepository.findAllByPooler(userEntity.get());
+		return orders;
+	}
+	
+	@Transactional
+	public Order markOrderNotDelivered(long orderId) {
+		Optional<Order> orderEntity = orderRepository.findById(orderId);
+
+		if (!orderEntity.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
+		}
+		if(orderEntity.get().getStatus().equals(Constants.DELIVERED)) {
+			orderEntity.get().setStatus(Constants.DELIVERY_NOT_RECEIVED);
+			Order order = orderRepository.save(orderEntity.get());
+			emailService.sendOrderNotDeliveredEmail(order, order.getDeliveryPooler().getEmail());
+			return order;
+		} else {
+			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Order is not marked as delivered yet");
+		}
 	}
 }
