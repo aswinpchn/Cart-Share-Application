@@ -155,4 +155,27 @@ public class OrderService {
 		emailService.sendEmailAfterOrderSelfPickup(order, userEntity.get().getEmail(), listOfFellowPoolerOrders);
 		return order;
 	}
+	
+	@Transactional
+	public boolean pickupOrder(OrderPickupRequestModel model) {
+		Optional<Order> orderEntity = orderRepository.findById(model.getOrderId());
+		if (!orderEntity.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
+		}
+		Order order = orderEntity.get();
+		order.setStatus("picked-up by oneself");
+		orderRepository.save(order);
+		List<Long> fellowPoolerOrderIds = model.getFellowPoolersOrders();
+		List<Order> fellowPoolerOrders = new ArrayList<Order>();
+		if (fellowPoolerOrderIds != null) {
+			for (long fellowPoolerOrderId : fellowPoolerOrderIds) {
+				Order fellowPoolerOrder = orderRepository.getOne(fellowPoolerOrderId);
+				fellowPoolerOrder.setStatus("picked-up");
+				fellowPoolerOrders.add(fellowPoolerOrder);
+				orderRepository.save(fellowPoolerOrder);
+			}
+		}
+		emailService.sendEmailAfterOrderPickup(order, fellowPoolerOrders);
+		return true;
+	}
 }

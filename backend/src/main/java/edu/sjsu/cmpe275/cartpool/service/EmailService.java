@@ -119,4 +119,43 @@ public class EmailService {
 		}
 		return false;
 	}
+	
+	public boolean sendEmailAfterOrderPickup(Order order, List<Order> listOfFellowPoolerOrders) {
+		try {
+			Context context = new Context();
+			context.setVariable("orderId", order.getId());
+			context.setVariable("orderDate", order.getDate());
+			context.setVariable("poolerOrders", listOfFellowPoolerOrders);
+			String content = templateEngine.process("orderpickup", context);
+			MimeMessage message = javaMailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message);
+			helper.setTo(order.getPooler().getEmail());
+			helper.setSubject("CartPool Order Picked Up");
+			helper.setText(content, true);
+			javaMailSender.send(message);
+			
+			content = templateEngine.process("deliveryinstructions", context);
+			helper.setTo(order.getPooler().getEmail());
+			helper.setSubject("CartPool Order Delivery Instructions");
+			helper.setText(content, true);
+			javaMailSender.send(message);
+			
+			for (Order fellowPoolerOrder : listOfFellowPoolerOrders) {
+				Context fellowPoolerContext = new Context();
+				fellowPoolerContext.setVariable("orderId", fellowPoolerOrder.getId());
+				fellowPoolerContext.setVariable("orderDate", fellowPoolerOrder.getDate());
+				String fellowPoolerContent = templateEngine.process("orderpickup", fellowPoolerContext);
+				MimeMessage fellowPoolerMessage = javaMailSender.createMimeMessage();
+				MimeMessageHelper fellowPoolerHelper = new MimeMessageHelper(fellowPoolerMessage);
+				fellowPoolerHelper.setTo(fellowPoolerOrder.getPooler().getEmail());
+				fellowPoolerHelper.setSubject("CartPool Order Picked Up");
+				fellowPoolerHelper.setText(fellowPoolerContent, true);
+				javaMailSender.send(fellowPoolerMessage);
+			}
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return false;
+	}
 }
