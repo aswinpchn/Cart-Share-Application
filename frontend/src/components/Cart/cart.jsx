@@ -56,6 +56,10 @@ class Cart extends Component {
         this.totalprice();
       }
     );
+    // If the items in cart are removed and it becomes empty then clear the cart_store_id
+    if (Array.isArray(newCart) && newCart.length === 0) {
+      localStorage.removeItem("cart_store_id");
+    }
     localStorage.setItem("cart", JSON.stringify(this.state.cart));
   };
 
@@ -76,8 +80,8 @@ class Cart extends Component {
 
   handleSubmit = () => {
     const { history } = this.props;
-    history.push('/main/checkout');
-  }
+    history.push("/main/checkout");
+  };
 
   render() {
     const { cart, cartprice } = this.state;
