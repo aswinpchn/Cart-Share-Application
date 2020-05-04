@@ -81,7 +81,7 @@ class Profile extends Component {
               <ul className="list-group border">
                 <li className="list-group-item border border-white">
                   <label className="text-primary">Screen Name : </label>
-                  <span className="text-secondary text-center">
+                  <span className="text-secondary text-center ">
                     {screenName}
                   </span>
                 </li>
