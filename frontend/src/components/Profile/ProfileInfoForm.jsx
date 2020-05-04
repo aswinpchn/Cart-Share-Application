@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-
+import { Col, Form } from "react-bootstrap";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
-
+import swal from "sweetalert";
 import axios from "axios";
 import { properties } from "../../properties";
 
@@ -19,7 +19,7 @@ class ProfileInfoForm extends Component {
       state: "",
       zip: "",
       errors: "",
-      profileUpdated: false,
+      profileUpdated: "",
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -77,7 +77,7 @@ class ProfileInfoForm extends Component {
     axios
       .put(backendurl, data, config)
       .then((response) => {
-        window.alert("Thank you! your profile is updated.");
+        swal("Thank you! your profile is updated.");
         this.setState({
           profileUpdated: true,
         });
@@ -85,6 +85,7 @@ class ProfileInfoForm extends Component {
       .catch((error) => {
         console.log(error);
         this.setState({
+          profileUpdated: false,
           errors: "Error while updating profile" + error,
         });
       });
@@ -93,6 +94,12 @@ class ProfileInfoForm extends Component {
   }
   render() {
     let msg;
+    const { profileUpdated } = this.state;
+    if (profileUpdated === true) {
+      msg = <p className="text-success">Updated Profile successfully</p>;
+    } else if (profileUpdated === false) {
+      msg = <p className="text-danger">Profile update failed.</p>;
+    }
     const {
       email,
       screenName,
@@ -113,6 +120,7 @@ class ProfileInfoForm extends Component {
           <div className="form-row form-group">
             <div className="col-md-6 mb-3">
               <label htmlFor="screenName">Screen name</label>
+
               <input
                 type="text"
                 className="form-control"
@@ -144,6 +152,7 @@ class ProfileInfoForm extends Component {
               className="form-control"
               id="street"
               defaultValue={street}
+              required
             />
           </div>
           <div className="form-row form-group">
@@ -154,27 +163,22 @@ class ProfileInfoForm extends Component {
               className="form-control"
               id="city"
               defaultValue={city}
+              required
             />
           </div>
           <div className="form-row form-group">
             <div className="col-md-6 mb-3">
               <label htmlFor="state">State</label>
-              {/* <input
-                onChange={this.state}
-                type="text"
-                className="form-control"
-                id="state"
-                defaultValue={state}
-              /> */}
               <select
                 class="custom-select"
                 id="state"
                 defaultValue={state}
                 onChange={this.handleChange}
+                required
               >
-                <option value="1">CA</option>
-                <option value="2">TX</option>
-                <option value="3">VA</option>
+                <option>CA</option>
+                <option>TX</option>
+                <option>VA</option>
               </select>
             </div>
             <div className="col-md-6 mb-3">
@@ -185,6 +189,7 @@ class ProfileInfoForm extends Component {
                 className="form-control"
                 id="zip"
                 defaultValue={zip}
+                required
               />
             </div>
           </div>
@@ -192,6 +197,7 @@ class ProfileInfoForm extends Component {
             <button type="submit" className="btn btn-primary">
               Save
             </button>
+            {msg}
           </div>
         </div>
       </form>
