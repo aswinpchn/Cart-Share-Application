@@ -110,7 +110,11 @@ class Checkout extends Component {
       console.log(e.response);
       swal(e.response.data.message);
     }
+  }
 
+  handleSelfPickupSubmit = () => {
+    const { history } = this.props;
+    history.push('/main/selfPickup');
   }
 
   render () {
@@ -232,7 +236,7 @@ class Checkout extends Component {
             </Row>
             <Row>
               <Col md={{ span: 10, offset: 1 }}>
-                <Button>
+                <Button onClick={this.handleSelfPickupSubmit}>
                   Self pickup
                 </Button>
               </Col>

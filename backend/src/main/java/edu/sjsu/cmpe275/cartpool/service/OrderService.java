@@ -29,6 +29,9 @@ public class OrderService {
 	@Autowired
 	private OrderRepository orderRepository;
 
+	@Autowired
+	private StoreRepository storeRepository;
+
 	public Order createDeferredOrder(DeferredOrderRequestModel deferredOrderRequestModel) {
 		System.out.println(deferredOrderRequestModel.toString());
 
@@ -47,12 +50,16 @@ public class OrderService {
 		User pooler = userRepository.findById(deferredOrderRequestModel.getPoolerId()).get();
 		pooler.setCreditScore(pooler.getCreditScore() - 1);
 		userRepository.save(pooler);
+		
+		Optional<Store> store = storeRepository.findStoreById(deferredOrderRequestModel.getStoreId());
+		Store pickupStore = store.get();
 
 		Order order = new Order();
 		order.setPooler(userRepository.findById(deferredOrderRequestModel.getPoolerId()).get());
 		order.setPrice(deferredOrderRequestModel.getPrice());
 		order.setPoolId(deferredOrderRequestModel.getPoolId());
 		order.setStatus("Pending");
+		order.setStoreName(pickupStore.getName());
 		order.setDate(Calendar.getInstance().getTime());
 
 		List<OrderDetail> orderDetails = new ArrayList<>();
@@ -99,6 +106,9 @@ public class OrderService {
 
 		User deliveryUser = userRepository.getOne(selfPickupOrderRequestModel.getPoolerId());
 
+		Optional<Store> store = storeRepository.findStoreById(selfPickupOrderRequestModel.getStoreId());
+		Store pickupStore = store.get();
+
 		Order order = new Order();
 		order.setPooler(userRepository.findById(selfPickupOrderRequestModel.getPoolerId()).get());
 		order.setPrice(selfPickupOrderRequestModel.getPrice());
@@ -106,6 +116,8 @@ public class OrderService {
 		order.setStatus(Constants.ASSIGNED);
 		order.setDate(Calendar.getInstance().getTime());
 		order.setDeliveryPooler(deliveryUser);
+		order.setStoreName(pickupStore.getName());
+		order.setDate(Calendar.getInstance().getTime());
 
 		List<OrderDetail> orderDetails = new ArrayList<>();
 		for (int i = 0; i < selfPickupOrderRequestModel.getItems().size(); i++) {
