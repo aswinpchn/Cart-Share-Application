@@ -78,7 +78,7 @@ public class OrderService {
 		}
 		order.setOrderDetails(orderDetails);
 		orderRepository.save(order);
-		//emailService.sendEmailAfterOrderDeferredPickup(order, pooler.getEmail());
+		emailService.sendEmailAfterOrderDeferredPickup(order, pooler.getEmail());
 		return order;
 	}
 
@@ -152,7 +152,7 @@ public class OrderService {
 				listOfFellowPoolerOrders.add(fellowOrder);
 			}
 		}
-		//emailService.sendEmailAfterOrderSelfPickup(order, userEntity.get().getEmail(), listOfFellowPoolerOrders);
+		emailService.sendEmailAfterOrderSelfPickup(order, userEntity.get().getEmail(), listOfFellowPoolerOrders);
 		return order;
 	}
 }
