@@ -35,8 +35,8 @@ public class OrderService {
 	public Order createDeferredOrder(DeferredOrderRequestModel deferredOrderRequestModel) {
 		System.out.println(deferredOrderRequestModel.toString());
 
-		Optional<User> pooler = userRepository.findById(deferredOrderRequestModel.getPoolerId());
-		if (!pooler.isPresent()) {
+		Optional<User> poolerObj = userRepository.findById(deferredOrderRequestModel.getPoolerId());
+		if (!poolerObj.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Pooler with this userId found");
 		}
 
@@ -70,7 +70,7 @@ public class OrderService {
 		}
 		order.setOrderDetails(orderDetails);
 		orderRepository.save(order);
-		emailService.sendEmailAfterOrderDeferredPickup(order, pooler.get().getEmail());
+		emailService.sendEmailAfterOrderDeferredPickup(order, pooler.getEmail());
 		return order;
 	}
 

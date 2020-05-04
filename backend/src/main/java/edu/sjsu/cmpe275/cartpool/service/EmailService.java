@@ -95,4 +95,25 @@ public class EmailService {
 		}
 		return false;
 	}
+	
+	public boolean sendEmailAfterOrderSelfPickup(Order order, String toAddress) {
+		Context context = new Context();
+		context.setVariable("orderId", order.getId());
+		context.setVariable("orderDate", order.getDate());
+		context.setVariable("orderPrice", order.getPrice());
+		context.setVariable("orderDetails", order.getOrderDetails());
+		String content = templateEngine.process("orderplaceself", context);
+		MimeMessage message = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
+		try {
+			helper.setTo(toAddress);
+			helper.setSubject("CartPool Order Confirmation");
+			helper.setText(content, true);
+			javaMailSender.send(message);
+			return true;
+		} catch (Exception ex) {
+			// log here
+		}
+		return false;
+	}
 }
