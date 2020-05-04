@@ -41,6 +41,10 @@ public class OrderService {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No items in this order");
 		}
 
+		User pooler = userRepository.findById(deferredOrderRequestModel.getPoolerId()).get();
+		pooler.setCreditScore(pooler.getCreditScore() - 1);
+		userRepository.save(pooler);
+
 		Order order = new Order();
 		order.setPooler(userRepository.findById(deferredOrderRequestModel.getPoolerId()).get());
 		order.setPrice(deferredOrderRequestModel.getPrice());
