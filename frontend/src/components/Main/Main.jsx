@@ -15,7 +15,7 @@ import Cart from "../Cart/cart";
 import Checkout from "../Pooler/Checkout";
 import Qrcode from "../Pickup/Qrcode";
 import Profile from "../Profile/Profile";
-import yourOrders from "../Orders/yourOrders";
+import MyOrders from "../Orders/MyOrders";
 import deliveryTasks from "../deliveryTasks/deliveryTasks";
 import SelfPickup from "../Pickup/SelfPickup";
 
@@ -41,7 +41,7 @@ class Main extends Component {
             <Route path="/main/cart" component={Cart} />
             <Route path="/main/checkout" component={Checkout} />
             <Route path="/main/pooler/account" component={Profile} />
-            <Route path="/main/pooler/orders" component={yourOrders} />
+            <Route path="/main/pooler/orders" component={MyOrders} />
             <Route path="/main/pooler/pickup" component={Qrcode} />
             <Route
               path="/main/pooler/deliveryTasks"
