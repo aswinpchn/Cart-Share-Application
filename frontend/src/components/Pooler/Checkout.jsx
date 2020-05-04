@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {Button, Card, Col, Container, Row} from "react-bootstrap";
 import { properties } from "../../properties";
 import axios from 'axios';
+import swal from 'sweetalert';
 
 class Checkout extends Component {
 
@@ -53,6 +54,61 @@ class Checkout extends Component {
         store: store,
         order: order
       });
+    }
+
+  }
+
+  handleDeferPickup = async () => {
+    console.log('into Defer pickup click');
+
+    try {
+      let userResponse = await axios.get(properties.backendhost + 'user/?email=' + localStorage.getItem("email"));
+      //console.log(userResponse.data);
+
+      let postBody = {};
+      postBody.poolerId = localStorage.getItem("userId");
+      postBody.price = this.state.order.finalOrderTotal;
+      postBody.poolId = userResponse.data.poolId;
+      postBody.items = [];
+      for(let i = 0; i < this.state.cart.length; i++) {
+        let item = {};
+        item.productId = this.state.cart[i].id;
+        item.quantity = this.state.cart[i].quantity;
+        item.price = this.state.cart[i].price;
+        postBody.items.push(item);
+      }
+      //console.log(postBody);
+
+      let orderResponse = await axios.post(properties.backendhost + 'order/defer', postBody);
+      //console.log(orderResponse.data);
+      
+      if(orderResponse.data.pooler.creditScore <= -6) {
+        swal({
+          title: 'Order placed!',
+          text: 'Your contribution credit is: ' + orderResponse.data.pooler.creditScore + ' You are in red zone,Please start picking up some orders',
+          icon: 'error'
+        });
+      } else if(orderResponse.data.pooler.creditScore <= -4) {
+        swal({
+          title: 'Order placed!',
+          text: 'Your contribution credit is: ' + orderResponse.data.pooler.creditScore + ' You are in yellow zone, Please start picking up some orders',
+          icon: 'warning'
+        });
+      } else {
+        swal({
+          title: 'Order placed!',
+          text: 'Your contribution credit is: ' + orderResponse.data.pooler.creditScore + ' You are in green zone',
+          icon: 'success'
+        });
+      }
+
+      localStorage.removeItem("cart");
+      localStorage.removeItem("cart_store_id");
+      const { history } = this.props;
+      history.push('/main/home');
+    }catch (e) {
+      console.log(e.response);
+      swal(e.response.data.message);
     }
 
   }
@@ -183,7 +239,8 @@ class Checkout extends Component {
             </Row>
             <Row>
               <Col md={{ span: 10, offset: 1 }}>
-                <Button>
+                <Button
+                onClick={this.handleDeferPickup}>
                   Defer pickup
                 </Button>
               </Col>
