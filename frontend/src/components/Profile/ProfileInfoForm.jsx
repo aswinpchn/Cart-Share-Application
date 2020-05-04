@@ -152,6 +152,7 @@ class ProfileInfoForm extends Component {
               className="form-control"
               id="street"
               defaultValue={street}
+              required
             />
           </div>
           <div className="form-row form-group">
@@ -162,6 +163,7 @@ class ProfileInfoForm extends Component {
               className="form-control"
               id="city"
               defaultValue={city}
+              required
             />
           </div>
           <div className="form-row form-group">
@@ -172,6 +174,7 @@ class ProfileInfoForm extends Component {
                 id="state"
                 defaultValue={state}
                 onChange={this.handleChange}
+                required
               >
                 <option>CA</option>
                 <option>TX</option>
@@ -186,6 +189,7 @@ class ProfileInfoForm extends Component {
                 className="form-control"
                 id="zip"
                 defaultValue={zip}
+                required
               />
             </div>
           </div>
