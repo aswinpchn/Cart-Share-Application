@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { getUserProfile } from "../_actions/profileActions";
 import Navbar from "../Navbar/Navbar";
 import Home from "../Home/Home";
 import ProductList from "../AdminStore/ProductList";
@@ -17,6 +20,10 @@ import deliveryTasks from "../deliveryTasks/deliveryTasks";
 import SelfPickup from "../Pickup/SelfPickup";
 
 class Main extends Component {
+  componentDidMount() {
+    this.props.getUserProfile();
+  }
+
   render() {
     return (
       <div>
@@ -48,4 +55,12 @@ class Main extends Component {
   }
 }
 
-export default Main;
+Main.propTypes = {
+  profileState: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+};
+const mapStateToProps = (state) => ({
+  profileState: state.profileState,
+  errors: state.errorState,
+});
+export default connect(mapStateToProps, { getUserProfile })(Main);
