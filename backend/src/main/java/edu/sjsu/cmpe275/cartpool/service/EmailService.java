@@ -1,5 +1,7 @@
 package edu.sjsu.cmpe275.cartpool.service;
 
+import java.util.List;
+
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,12 +98,13 @@ public class EmailService {
 		return false;
 	}
 	
-	public boolean sendEmailAfterOrderSelfPickup(Order order, String toAddress) {
+	public boolean sendEmailAfterOrderSelfPickup(Order order, String toAddress, List<Order> listOfFellowPoolerOrders) {
 		Context context = new Context();
 		context.setVariable("orderId", order.getId());
 		context.setVariable("orderDate", order.getDate());
 		context.setVariable("orderPrice", order.getPrice());
 		context.setVariable("orderDetails", order.getOrderDetails());
+		context.setVariable("poolerOrders", listOfFellowPoolerOrders);
 		String content = templateEngine.process("orderplaceself", context);
 		MimeMessage message = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
