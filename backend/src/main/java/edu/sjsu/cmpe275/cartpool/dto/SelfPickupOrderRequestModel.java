@@ -10,6 +10,8 @@ public class SelfPickupOrderRequestModel {
 
     private String poolId;
 
+    private long storeId;
+
     private List<itemOrderRequestModel> items;
 
     private List<Long> fellowPoolersOrders;
@@ -20,6 +22,7 @@ public class SelfPickupOrderRequestModel {
                 "poolerId=" + poolerId +
                 ", price=" + price +
                 ", poolId='" + poolId + '\'' +
+                ", storeId=" + storeId +
                 ", items=" + items +
                 ", fellowPoolersOrders=" + fellowPoolersOrders +
                 '}';
@@ -47,6 +50,14 @@ public class SelfPickupOrderRequestModel {
 
     public void setPoolId(String poolId) {
         this.poolId = poolId;
+    }
+
+    public long getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(long storeId) {
+        this.storeId = storeId;
     }
 
     public List<itemOrderRequestModel> getItems() {
