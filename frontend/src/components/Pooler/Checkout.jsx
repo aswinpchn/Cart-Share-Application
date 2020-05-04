@@ -70,6 +70,7 @@ class Checkout extends Component {
       postBody.poolerId = localStorage.getItem("userId");
       postBody.price = this.state.order.finalOrderTotal;
       postBody.poolId = userResponse.data.poolId;
+      postBody.storeId = localStorage.getItem("cart_store_id");
       postBody.items = [];
       for(let i = 0; i < this.state.cart.length; i++) {
         let item = {};
