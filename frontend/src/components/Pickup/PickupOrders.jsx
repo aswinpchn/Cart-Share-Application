@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import Modal from "react-responsive-modal";
+import Qrcode from "./Qrcode";
 import {
   Col,
   Form,
@@ -18,6 +20,8 @@ class PickupOrders extends Component {
     groupOrders: [],
     GroupedById: {},
     numberOfOrders: "",
+    open: false,
+    blockScroll: true,
   };
 
   componentDidMount() {
@@ -45,8 +49,21 @@ class PickupOrders extends Component {
       });
   }
 
+  onOpenModal = () => {
+    this.setState({ open: true, blockScroll: false });
+  };
+
+  onCloseModal = () => {
+    this.setState({ open: false });
+  };
+
+  handleSubmit = () => {
+    const { history } = this.props;
+    history.push("/main/pickuporders/checkout");
+  };
+
   render() {
-    const { orders } = this.state;
+    const { orders, open } = this.state;
     // const { GroupedById } = this.state;
 
     if (!Array.isArray(orders) || !orders.length) {
@@ -130,12 +147,25 @@ class PickupOrders extends Component {
 
                                   <span style={{ marginLeft: "80px" }}>
                                     <button
-                                      type="submit"
+                                      type="button"
                                       className="btn btn-primary"
-                                      onClick={this.handleSubmit}
+                                      onClick={this.onOpenModal}
                                     >
-                                      Check Out
+                                      CheckOut
                                     </button>
+
+                                    <div className="overflow-auto">
+                                      <Modal
+                                        open={open}
+                                        onClose={this.onCloseModal}
+                                        center
+                                      >
+                                        <h4 className="text-center tex-secondary">
+                                          Scan Qrcode
+                                        </h4>
+                                        <Qrcode rowIndex={rowIndex} />
+                                      </Modal>
+                                    </div>
                                   </span>
                                 </span>
                               </Accordion.Toggle>
