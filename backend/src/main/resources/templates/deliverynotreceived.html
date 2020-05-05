@@ -1,0 +1,75 @@
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Home</title>
+    <style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 80%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 6px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+</head>
+<body>
+<h1>
+   Delivery not received
+</h1>
+
+<div class="container">
+<p><b>Order Id:  </b>
+<b th:text="${poolerOrder.id}"></b>
+</p>
+<p>
+   Your fellow pooler claims that the delivery for below order is not received. Kindly check the details and 
+   resolve this with the fellow pooler
+</p>
+
+<p>
+<b>Buyer Name:  </b>
+<b th:text="${poolerOrder.pooler.screenName}"></b>
+</p>
+
+<p>
+<b>Buyer Address:  </b>
+<b th:text="${poolerOrder.pooler.address}"></b>
+</p>
+
+<h4>Order Details</h4>
+ <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="orderDetail : ${poolerOrder.orderDetails}">
+                <td th:text="${orderDetail.product.name}"></td>
+                <td th:text="${orderDetail.quantity}"></td>
+                <td th:text="${orderDetail.price}"></td>
+                </tr>
+                
+                 <tr>
+                 <td colspan="2"><b>Total Price</b></td>
+                 <td th:text="${poolerOrder.price}"></td>
+                </tr>
+  </tbody>
+</table>
+
+</div>
+</body>
+</html> 
