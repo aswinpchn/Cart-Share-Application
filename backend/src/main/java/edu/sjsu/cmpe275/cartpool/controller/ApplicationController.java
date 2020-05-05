@@ -374,4 +374,16 @@ public class ApplicationController {
 	public Order markOrderNotDelivered(@PathVariable("orderId") long orderId) {
 		return orderService.markOrderNotDelivered(orderId);
 	}
+
+	@GetMapping("/orders/{userId}/pickedUp")
+	@ResponseBody
+	public List<Order> getPickedUpOrders(@PathVariable("userId") long userId) {
+		return orderService.getPickedUpOrder(userId);
+	}
+
+	@PostMapping("/order/markdelivered/{orderId}")
+	@ResponseBody
+	public Order markOrderDelivered(@PathVariable("orderId") long orderId) {
+		return orderService.markOrderDelivered(orderId);
+	}
 }
