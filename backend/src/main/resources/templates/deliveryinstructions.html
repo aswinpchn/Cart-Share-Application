@@ -1,0 +1,79 @@
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Home</title>
+    <style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 80%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 6px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+</head>
+<body>
+<h1>
+   Cartpool orders delivery instructions
+</h1>
+
+<div class="container">
+<p>
+   You have picked up fellow pooler orders. Please see details below for delivering these orders to the right fellow poolers
+</p>
+
+<br />
+<h4>Fellow Poolers Order Summary</h4>
+<div class="container" th:each="poolerOrder : ${poolerOrders}">
+<b>Order Id:  </b>
+<b th:text="${poolerOrder.id}"></b>
+
+<p>
+<b>Buyer Name:  </b>
+<b th:text="${poolerOrder.pooler.screenName}"></b>
+</p>
+
+<p>
+<b>Buyer Address:  </b>
+<b th:text="${poolerOrder.pooler.address}"></b>
+</p>
+
+<table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="fellowOrderDetail : ${poolerOrder.orderDetails}">
+                <td th:text="${fellowOrderDetail.product.name}"></td>
+                <td th:text="${fellowOrderDetail.quantity}"></td>
+                <td th:text="${fellowOrderDetail.price}"></td>
+                </tr>
+                
+                <tr>
+                 <td colspan="2"><b>Total Price</b></td>
+                 <td th:text="${poolerOrder.price}"></td>
+                </tr>
+  </tbody>
+</table>
+<br />
+<br />
+</div>
+
+</div>
+</body>
+</html> 
