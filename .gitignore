@@ -7,3 +7,4 @@ node_modules/
 backend/.classpath
 backend/uploads/
 .comments
+backend/uploads
