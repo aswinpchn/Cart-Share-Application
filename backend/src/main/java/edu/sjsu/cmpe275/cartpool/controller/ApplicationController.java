@@ -24,6 +24,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.sjsu.cmpe275.cartpool.Constants;
+import edu.sjsu.cmpe275.cartpool.dto.Address;
+import edu.sjsu.cmpe275.cartpool.dto.CreatePoolRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.CreateProductRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.CreateStoreRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.CreateUserRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.DeferredOrderRequestModel;
+import edu.sjsu.cmpe275.cartpool.dto.EditProductRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.JoinPoolRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.Order;
+import edu.sjsu.cmpe275.cartpool.dto.OrderPickupRequestModel;
+import edu.sjsu.cmpe275.cartpool.dto.Pool;
+import edu.sjsu.cmpe275.cartpool.dto.PoolRequest;
+import edu.sjsu.cmpe275.cartpool.dto.Product;
+import edu.sjsu.cmpe275.cartpool.dto.SelfPickupOrderRequestModel;
+import edu.sjsu.cmpe275.cartpool.dto.Store;
+import edu.sjsu.cmpe275.cartpool.dto.UpdateStoreRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.UpdateUserProfileRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.User;
 import edu.sjsu.cmpe275.cartpool.repository.PoolRepository;
 import edu.sjsu.cmpe275.cartpool.repository.StoreRepository;
 import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
@@ -50,8 +68,8 @@ public class ApplicationController {
 	@Autowired
 	private PoolService poolService;
 
-    @Autowired
-    private OrderService orderService;
+	@Autowired
+	private OrderService orderService;
 
 	@Autowired
 	private StoreRepository storeRepository;
@@ -320,19 +338,19 @@ public class ApplicationController {
 	public Order createDeferredOrder(@Valid @RequestBody DeferredOrderRequestModel deferredOrderRequestModel) {
 		return orderService.createDeferredOrder(deferredOrderRequestModel);
 	}
-	
-    @GetMapping("/orders/fellowpoolers/{userId}")
-    @ResponseBody
-    public List<Order> getFellowPoolerOrders(@PathVariable("userId") long userId) {
-        return orderService.getFellowPoolerOrders(userId);
-    }
+
+	@GetMapping("/orders/fellowpoolers/{userId}")
+	@ResponseBody
+	public List<Order> getFellowPoolerOrders(@PathVariable("userId") long userId) {
+		return orderService.getFellowPoolerOrders(userId);
+	}
 
 	@PostMapping("/order/self")
 	@ResponseBody
 	public Order createSelfPickupOrder(@Valid @RequestBody SelfPickupOrderRequestModel selfPickupOrderRequestModel) {
 		return orderService.createSelfPickupOrder(selfPickupOrderRequestModel);
 	}
-	
+
 	@PostMapping("order/pickup")
 	@ResponseBody
 	public Boolean pickupOrder(@Valid @RequestBody OrderPickupRequestModel model) {
@@ -343,6 +361,12 @@ public class ApplicationController {
 	@ResponseBody
 	public List<Order> getOrders(@PathVariable("userId") long userId) {
 		return orderService.getOrders(userId);
+	}
+
+	@GetMapping("/pickuporders/{userId}")
+	@ResponseBody
+	public List<Order> getPickupOrders(@PathVariable("userId") long userId) {
+		return orderService.getPickupOrders(userId);
 	}
 
 	@PostMapping("/order/marknotdelivered/{orderId}")

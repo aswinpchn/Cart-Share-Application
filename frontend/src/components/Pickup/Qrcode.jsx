@@ -3,15 +3,19 @@ import { Container, Button, Col, Row, Card } from "react-bootstrap";
 import QRCode from "qrcode.react";
 
 class Qrcode extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
+    const id = this.props.rowIndex;
     const downloadQR = () => {
-      const canvas = document.getElementById("12345678");
+      const canvas = document.getElementById(id);
       const pngUrl = canvas
         .toDataURL("image/png")
         .replace("image/png", "image/octet-stream");
       let downloadLink = document.createElement("a");
       downloadLink.href = pngUrl;
-      downloadLink.download = "12345678.png";
+      downloadLink.download = `${id}.png`;
       document.body.appendChild(downloadLink);
       downloadLink.click();
       document.body.removeChild(downloadLink);
@@ -20,8 +24,8 @@ class Qrcode extends Component {
     return (
       <div>
         <QRCode
-          id="12345678"
-          value="12345678"
+          id={id}
+          value={id}
           size={290}
           level={"H"}
           includeMargin={true}

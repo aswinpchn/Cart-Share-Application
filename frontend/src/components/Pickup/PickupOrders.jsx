@@ -1,47 +1,69 @@
 import React, { Component } from "react";
-import { Col, Form, Container, Row, Card } from "react-bootstrap";
+import Modal from "react-responsive-modal";
+import Qrcode from "./Qrcode";
+import {
+  Col,
+  Form,
+  Container,
+  Row,
+  Card,
+  Accordion,
+  Button,
+} from "react-bootstrap";
+import { properties } from "../../properties";
+import axios from "axios";
+const backendurl = properties.backendhost;
 
 class PickupOrders extends Component {
   state = {
     orders: [],
     groupOrders: [],
     GroupedById: {},
+    numberOfOrders: "",
+    open: false,
+    blockScroll: true,
   };
 
   componentDidMount() {
     // axios post call, with delivery pooler id to get all the orders mapping with status assigned.
-    this.setState({
-      orders: [
-        {
-          orderId: 1,
-          groupId: 101,
-          deliveryPoolerId: 6,
-          poolerId: 5,
-          status: "Assigned",
-          storeName: "Costco",
-        },
-        {
-          orderId: 5,
-          groupId: 101,
-          deliveryPoolerId: 6,
-          poolerId: 9,
-          status: "Assigned",
-          storeName: "Costco",
-        },
-        {
-          orderId: 2,
-          groupId: 102,
-          deliveryPoolerId: 7,
-          poolerId: 6,
-          status: "Assigned",
-          storeName: "Safeway",
-        },
-      ],
-    });
+
+    let userId = localStorage.getItem("userId");
+
+    axios
+      .get(backendurl + "pickuporders/" + userId)
+      .then((response) => {
+        console.log(response);
+        if (response.status == 200) {
+          this.setState({
+            numberOfOrders: response.data.length,
+            orders: response.data,
+            errors: "",
+          });
+        }
+      })
+      .catch((error) => {
+        console.log("Error in getting orders", error, error.response);
+        this.setState({
+          errors: error,
+        });
+      });
   }
 
+  onOpenModal = () => {
+    this.setState({ open: true, blockScroll: false });
+  };
+
+  onCloseModal = () => {
+    this.setState({ open: false });
+  };
+
+  handleSubmit = () => {
+    const { history } = this.props;
+    history.push("/main/pickuporders/checkout");
+  };
+
   render() {
-    const { orders } = this.state;
+    const { orders, open } = this.state;
     // const { GroupedById } = this.state;
 
     if (!Array.isArray(orders) || !orders.length) {
@@ -98,24 +120,88 @@ class PickupOrders extends Component {
               </h2>
             </div>
           </div>
-          {rows &&
-            rows.map((obj, i) => {
-              return (
-                <div key={i}>
-                  <h1> the group is {i}</h1>
-                  {obj &&
-                    obj.map((element, i) => {
-                      console.log("elements are" + element.orderId);
-                      return (
-                        <div key={i}>
-                          {" "}
-                          <h4> orderId is {element.orderId} </h4>
-                        </div>
-                      );
-                    })}
-                </div>
-              );
-            })}
+          <Container>
+            <Row>
+              <Col md={{ span: 10, offset: 1 }}>
+                <Accordion defaultActiveKey="0">
+                  <Card>
+                    {rows &&
+                      rows.map((obj, rowIndex) => {
+                        return (
+                          <div key={rowIndex}>
+                            <Card.Header>
+                              <Accordion.Toggle
+                                as={Button}
+                                variant="link"
+                                eventKey={rowIndex}
+                              >
+                                <span>
+                                  <span style={{ marginLeft: "2px" }}>
+                                    SNO : {rowIndex + 1}
+                                  </span>
+
+                                  <span style={{ marginLeft: "40px" }}>
+                                    Click here to view list of orders that can
+                                    be picked up!{" "}
+                                  </span>
+
+                                  <span style={{ marginLeft: "80px" }}>
+                                    <button
+                                      type="button"
+                                      className="btn btn-primary"
+                                      onClick={this.onOpenModal}
+                                    >
+                                      CheckOut
+                                    </button>
+
+                                    <div className="overflow-auto">
+                                      <Modal
+                                        open={open}
+                                        onClose={this.onCloseModal}
+                                        center
+                                      >
+                                        <h4 className="text-center tex-secondary">
+                                          Scan Qrcode
+                                        </h4>
+                                        <Qrcode rowIndex={rowIndex} />
+                                      </Modal>
+                                    </div>
+                                  </span>
+                                </span>
+                              </Accordion.Toggle>
+                            </Card.Header>
+
+                            {obj &&
+                              obj.map((element, i) => {
+                                console.log("elements are" + element.orderId);
+                                return (
+                                  <div key={i}>
+                                    <Accordion.Collapse eventKey={rowIndex}>
+                                      <Card.Body>
+                                        {" "}
+                                        <span>
+                                          <span style={{ marginLeft: "30px" }}>
+                                            <b> Store Name : </b>{" "}
+                                            {element.storeName}
+                                          </span>
+                                          <span style={{ marginLeft: "30px" }}>
+                                            <b> OrderId: </b>
+                                            {element.id}
+                                          </span>
+                                        </span>
+                                      </Card.Body>
+                                    </Accordion.Collapse>
+                                  </div>
+                                );
+                              })}
+                          </div>
+                        );
+                      })}
+                  </Card>
+                </Accordion>
+              </Col>
+            </Row>
+          </Container>
         </div>
       );
     }

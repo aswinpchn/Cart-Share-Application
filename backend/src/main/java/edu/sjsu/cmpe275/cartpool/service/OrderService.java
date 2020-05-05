@@ -1,15 +1,31 @@
 package edu.sjsu.cmpe275.cartpool.service;
 
-import edu.sjsu.cmpe275.cartpool.Constants;
-import edu.sjsu.cmpe275.cartpool.dto.*;
-import edu.sjsu.cmpe275.cartpool.repository.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.transaction.Transactional;
-import java.util.*;
+import edu.sjsu.cmpe275.cartpool.Constants;
+import edu.sjsu.cmpe275.cartpool.dto.DeferredOrderRequestModel;
+import edu.sjsu.cmpe275.cartpool.dto.Order;
+import edu.sjsu.cmpe275.cartpool.dto.OrderDetail;
+import edu.sjsu.cmpe275.cartpool.dto.OrderPickupRequestModel;
+import edu.sjsu.cmpe275.cartpool.dto.SelfPickupOrderRequestModel;
+import edu.sjsu.cmpe275.cartpool.dto.Store;
+import edu.sjsu.cmpe275.cartpool.dto.User;
+import edu.sjsu.cmpe275.cartpool.repository.OrderRepository;
+import edu.sjsu.cmpe275.cartpool.repository.PoolRepository;
+import edu.sjsu.cmpe275.cartpool.repository.ProductRepository;
+import edu.sjsu.cmpe275.cartpool.repository.StoreRepository;
+import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
 
 @Service
 public class OrderService {
@@ -139,11 +155,11 @@ public class OrderService {
 		}
 		order.setOrderDetails(orderDetails);
 		int groupId;
-		while(true){
+		while (true) {
 			Random random = new Random();
 			groupId = random.nextInt() & Integer.MAX_VALUE;
 			Order orderEntity = orderRepository.findByGroupId(groupId);
-			if(orderEntity == null){
+			if (orderEntity == null) {
 				break;
 			}
 		}
@@ -164,7 +180,7 @@ public class OrderService {
 		emailService.sendEmailAfterOrderSelfPickup(order, userEntity.get().getEmail(), listOfFellowPoolerOrders);
 		return order;
 	}
-	
+
 	@Transactional
 	public boolean pickupOrder(OrderPickupRequestModel model) {
 		Optional<Order> orderEntity = orderRepository.findById(model.getOrderId());
@@ -198,7 +214,17 @@ public class OrderService {
 		List<Order> orders = orderRepository.findAllByPooler(userEntity.get());
 		return orders;
 	}
-	
+
+	@Transactional
+	public List<Order> getPickupOrders(long deliveryPoolerId) {
+		Optional<User> userEntity = userRepository.findById(deliveryPoolerId);
+		if (!userEntity.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this delivery pooler id found");
+		}
+		List<Order> orders = orderRepository.findAllByDeliveryPoolerAndStatus(userEntity.get(), "Assigned");
+		return orders;
+	}
+
 	@Transactional
 	public Order markOrderNotDelivered(long orderId) {
 		Optional<Order> orderEntity = orderRepository.findById(orderId);
@@ -206,7 +232,7 @@ public class OrderService {
 		if (!orderEntity.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
 		}
-		if(orderEntity.get().getStatus().equals(Constants.DELIVERED)) {
+		if (orderEntity.get().getStatus().equals(Constants.DELIVERED)) {
 			orderEntity.get().setStatus(Constants.DELIVERY_NOT_RECEIVED);
 			Order order = orderRepository.save(orderEntity.get());
 			emailService.sendOrderNotDeliveredEmail(order, order.getDeliveryPooler().getEmail());
