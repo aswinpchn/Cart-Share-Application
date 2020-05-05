@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Col, Form, Container, Row, Card } from "react-bootstrap";
+import {
+  Col,
+  Form,
+  Container,
+  Row,
+  Card,
+  Accordion,
+  Button,
+} from "react-bootstrap";
 import { properties } from "../../properties";
 import axios from "axios";
 const backendurl = properties.backendhost;
@@ -98,36 +106,69 @@ class PickupOrders extends Component {
           <Container>
             <Row>
               <Col md={{ span: 10, offset: 1 }}>
-                <div>
-                  <ul class="list-group">
+                <Accordion defaultActiveKey="0">
+                  <Card>
                     {rows &&
-                      rows.map((obj, i) => {
+                      rows.map((obj, rowIndex) => {
                         return (
-                          <div key={i}>
-                            <li class="list-group-item list-group-item-primary">
-                              {" "}
-                              the group is {i}
-                            </li>
-                            <ul class="list-group">
-                              {obj &&
-                                obj.map((element, i) => {
-                                  console.log("elements are" + element.orderId);
-                                  return (
-                                    <div key={i}>
-                                      {" "}
-                                      <li class="list-group-item">
+                          <div key={rowIndex}>
+                            <Card.Header>
+                              <Accordion.Toggle
+                                as={Button}
+                                variant="link"
+                                eventKey={rowIndex}
+                              >
+                                <span>
+                                  <span style={{ marginLeft: "2px" }}>
+                                    SNO : {rowIndex + 1}
+                                  </span>
+
+                                  <span style={{ marginLeft: "40px" }}>
+                                    Click here to view list of orders that can
+                                    be picked up!{" "}
+                                  </span>
+
+                                  <span style={{ marginLeft: "80px" }}>
+                                    <button
+                                      type="submit"
+                                      className="btn btn-primary"
+                                      onClick={this.handleSubmit}
+                                    >
+                                      Check Out
+                                    </button>
+                                  </span>
+                                </span>
+                              </Accordion.Toggle>
+                            </Card.Header>
+
+                            {obj &&
+                              obj.map((element, i) => {
+                                console.log("elements are" + element.orderId);
+                                return (
+                                  <div key={i}>
+                                    <Accordion.Collapse eventKey={rowIndex}>
+                                      <Card.Body>
                                         {" "}
-                                        orderId is {element.id}{" "}
-                                      </li>
-                                    </div>
-                                  );
-                                })}
-                            </ul>
+                                        <span>
+                                          <span style={{ marginLeft: "30px" }}>
+                                            <b> Store Name : </b>{" "}
+                                            {element.storeName}
+                                          </span>
+                                          <span style={{ marginLeft: "30px" }}>
+                                            <b> OrderId: </b>
+                                            {element.id}
+                                          </span>
+                                        </span>
+                                      </Card.Body>
+                                    </Accordion.Collapse>
+                                  </div>
+                                );
+                              })}
                           </div>
                         );
                       })}
-                  </ul>
-                </div>
+                  </Card>
+                </Accordion>
               </Col>
             </Row>
           </Container>
