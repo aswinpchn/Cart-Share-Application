@@ -215,4 +215,38 @@ public class OrderService {
 			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Order is not marked as delivered yet");
 		}
 	}
+
+	@Transactional
+	public List<Order> getPickedUpOrder(long userId) {
+
+		Optional<User> userEntity = userRepository.findById(userId);
+		String poolId = userEntity.get().getPoolId();
+
+		if (!userEntity.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this userId found");
+		}
+
+		List<Order> ordersPickedUp = orderRepository.findAllByPoolIdAndDeliveryPoolerAndStatusOrderByDateAsc(poolId, userEntity.get(), Constants.PICKED_UP);
+
+		return ordersPickedUp;
+	}
+
+	@Transactional
+	public Order markOrderDelivered(long orderId) {
+
+		Optional<Order> orderEntity = orderRepository.findById(orderId);
+
+		if (!orderEntity.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
+		}
+
+		if(orderEntity.get().getStatus().equals(Constants.PICKED_UP)) {
+			orderEntity.get().setStatus(Constants.DELIVERED);
+			Order order = orderRepository.save(orderEntity.get());
+			//emailService.sendOrderNotDeliveredEmail(order, order.getDeliveryPooler().getEmail()); // Send email that the order has been delivered.
+			return order;
+		} else {
+			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Order is not marked as picked-up yet");
+		}
+	}
 }
