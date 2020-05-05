@@ -13,7 +13,7 @@ import CreatePool from "../Pooler/CreatePool";
 import PoolRequests from "../Pooler/PoolRequests";
 import Cart from "../Cart/cart";
 import Checkout from "../Pooler/Checkout";
-import Qrcode from "../Pickup/Qrcode";
+import PickupOrders from "../Pickup/PickupOrders";
 import Profile from "../Profile/Profile";
 import MyOrders from "../Orders/MyOrders";
 import deliveryTasks from "../deliveryTasks/deliveryTasks";
@@ -42,7 +42,7 @@ class Main extends Component {
             <Route path="/main/checkout" component={Checkout} />
             <Route path="/main/pooler/account" component={Profile} />
             <Route path="/main/pooler/orders" component={MyOrders} />
-            <Route path="/main/pooler/pickup" component={Qrcode} />
+            <Route path="/main/pooler/pickup" component={PickupOrders} />
             <Route
               path="/main/pooler/deliveryTasks"
               component={deliveryTasks}
