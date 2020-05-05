@@ -35,6 +35,8 @@ public class Order {
 
 	private String storeName;
 
+	private int groupId;
+
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = {CascadeType.PERSIST})
 	@JsonIgnoreProperties({"order"})
 	private List<OrderDetail> orderDetails;
@@ -119,6 +121,14 @@ public class Order {
 		this.storeName = storeName;
 	}
 
+	public int getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(int groupId) {
+		this.groupId = groupId;
+	}
+
 	@Override
 	public String toString() {
 		return "Order{" +
@@ -131,6 +141,7 @@ public class Order {
 				", price=" + price +
 				", poolId='" + poolId + '\'' +
 				", storeName='" + storeName + '\'' +
+				", groupId=" + groupId +
 				", orderDetails=" + orderDetails +
 				'}';
 	}

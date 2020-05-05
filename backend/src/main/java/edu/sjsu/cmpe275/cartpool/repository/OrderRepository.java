@@ -9,4 +9,5 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     public List<Order> findAllByPoolIdAndDeliveryPoolerAndStatusOrderByDateAsc(String poolId, User deliveryPooler , String status);
     public List<Order> findAllByPooler(User pooler);
+    public Order findByGroupId(int groupId);
 }

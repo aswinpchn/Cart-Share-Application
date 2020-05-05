@@ -1,0 +1,125 @@
+import React, { Component } from "react";
+import { Col, Form, Container, Row, Card } from "react-bootstrap";
+
+class PickupOrders extends Component {
+  state = {
+    orders: [],
+    groupOrders: [],
+    GroupedById: {},
+  };
+
+  componentDidMount() {
+    // axios post call, with delivery pooler id to get all the orders mapping with status assigned.
+    this.setState({
+      orders: [
+        {
+          orderId: 1,
+          groupId: 101,
+          deliveryPoolerId: 6,
+          poolerId: 5,
+          status: "Assigned",
+          storeName: "Costco",
+        },
+        {
+          orderId: 5,
+          groupId: 101,
+          deliveryPoolerId: 6,
+          poolerId: 9,
+          status: "Assigned",
+          storeName: "Costco",
+        },
+        {
+          orderId: 2,
+          groupId: 102,
+          deliveryPoolerId: 7,
+          poolerId: 6,
+          status: "Assigned",
+          storeName: "Safeway",
+        },
+      ],
+    });
+  }
+
+  render() {
+    const { orders } = this.state;
+    // const { GroupedById } = this.state;
+
+    if (!Array.isArray(orders) || !orders.length) {
+      // array does not exist, is not an array, or is empty
+      return (
+        <div style={{ height: "75vh" }} className="container valign-wrapper">
+          <div className="row">
+            <div className="col s12 center-align background blue">
+              <h2 className="text-center text-white font-italic font-family-sans-serif">
+                Cart
+              </h2>
+            </div>
+          </div>
+          <Container>
+            <Row>
+              <Col md={{ span: 10, offset: 4 }}>
+                <Card style={{ width: "18rem" }}>
+                  <Card.Body>
+                    <Card.Title>There are no orders to pickup!</Card.Title>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          </Container>
+        </div>
+      );
+    } else {
+      //Accepts the array and key
+      const groupBy = (orders, groupId) => {
+        // Return the end result
+        return orders.reduce((result, currentValue) => {
+          // If an array already present for key, push it to the array. Else create an array and push the object
+          (result[currentValue[groupId]] =
+            result[currentValue[groupId]] || []).push(currentValue);
+          // Return the current iteration `result` value, this will be taken as next iteration `result` value and accumulate
+          return result;
+        }, {}); // empty object is the initial value for result object
+      };
+      const GroupedById = groupBy(this.state.orders, "groupId");
+
+      let rows = [];
+      let property;
+      for (property in GroupedById) {
+        let obj = GroupedById[property];
+        rows.push(obj);
+      }
+
+      return (
+        <div style={{ height: "75vh" }} className="container valign-wrapper">
+          <div className="row">
+            <div className="col s12 center-align background blue">
+              <h2 className="text-center text-white font-italic font-family-sans-serif">
+                Pickup Orders
+              </h2>
+            </div>
+          </div>
+          {rows &&
+            rows.map((obj, i) => {
+              return (
+                <div key={i}>
+                  <h1> the group is {i}</h1>
+                  {obj &&
+                    obj.map((element, i) => {
+                      console.log("elements are" + element.orderId);
+                      return (
+                        <div key={i}>
+                          {" "}
+                          <h4> orderId is {element.orderId} </h4>
+                        </div>
+                      );
+                    })}
+                </div>
+              );
+            })}
+        </div>
+      );
+    }
+  }
+}
+
+export default PickupOrders;

@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -141,6 +138,16 @@ public class OrderService {
 			orderDetails.add(orderDetail);
 		}
 		order.setOrderDetails(orderDetails);
+		int groupId;
+		while(true){
+			Random random = new Random();
+			groupId = random.nextInt() & Integer.MAX_VALUE;
+			Order orderEntity = orderRepository.findByGroupId(groupId);
+			if(orderEntity == null){
+				break;
+			}
+		}
+		order.setGroupId(groupId);
 		orderRepository.save(order);
 
 		List<Order> listOfFellowPoolerOrders = new ArrayList<Order>();
@@ -149,6 +156,7 @@ public class OrderService {
 				Order fellowOrder = orderRepository.getOne(orderId);
 				fellowOrder.setDeliveryPooler(userEntity.get());
 				fellowOrder.setStatus(Constants.ASSIGNED);
+				fellowOrder.setGroupId(groupId);
 				orderRepository.save(fellowOrder);
 				listOfFellowPoolerOrders.add(fellowOrder);
 			}
