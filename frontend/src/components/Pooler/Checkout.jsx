@@ -34,12 +34,18 @@ class Checkout extends Component {
       //console.log(totalBasePrice);
 
       let tax = totalBasePrice*0.0925;
+      tax = tax.toFixed(2);
+      tax = Number(tax);
       //console.log(tax);
 
       let convenienceFee = totalBasePrice*0.005;
+      convenienceFee = convenienceFee.toFixed(2);
+      convenienceFee = Number(convenienceFee);
       //console.log(convenienceFee);
 
       let finalOrderTotal = totalBasePrice + tax + convenienceFee;
+      finalOrderTotal = finalOrderTotal.toFixed(2);
+      finalOrderTotal = Number(finalOrderTotal);
       //console.log(finalOrderTotal);
 
       let order = {};
@@ -69,7 +75,7 @@ class Checkout extends Component {
       if(userResponse.data.creditScore <= -6) {
         swal({
           title: 'Should you proceed!',
-          text: 'Your contribution credit is: ' + userResponse.data.creditScore + ' You are in yellow zone,Please start picking up some orders',
+          text: 'Your contribution credit is: ' + userResponse.data.creditScore + ' You are in red zone,Please start picking up some orders',
           icon: 'warning',
           buttons: true,
           dangerMode: true
@@ -83,7 +89,7 @@ class Checkout extends Component {
       } else if(userResponse.data.creditScore <= -4) {
         swal({
           title: 'Should you proceed!',
-          text: 'Your contribution credit is: ' + userResponse.data.creditScore + ' You are in red zone,Please start picking up some orders',
+          text: 'Your contribution credit is: ' + userResponse.data.creditScore + ' You are in yellow zone,Please start picking up some orders',
           icon: 'warning',
           buttons: true,
           dangerMode: true
