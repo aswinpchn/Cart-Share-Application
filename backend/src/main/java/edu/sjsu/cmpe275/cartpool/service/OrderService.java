@@ -155,6 +155,29 @@ public class OrderService {
 		emailService.sendEmailAfterOrderSelfPickup(order, userEntity.get().getEmail(), listOfFellowPoolerOrders);
 		return order;
 	}
+	
+	@Transactional
+	public boolean pickupOrder(OrderPickupRequestModel model) {
+		Optional<Order> orderEntity = orderRepository.findById(model.getOrderId());
+		if (!orderEntity.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
+		}
+		Order order = orderEntity.get();
+		order.setStatus(Constants.PICKED_UP_BY_SELF);
+		orderRepository.save(order);
+		List<Long> fellowPoolerOrderIds = model.getFellowPoolersOrders();
+		List<Order> fellowPoolerOrders = new ArrayList<Order>();
+		if (fellowPoolerOrderIds != null) {
+			for (long fellowPoolerOrderId : fellowPoolerOrderIds) {
+				Order fellowPoolerOrder = orderRepository.getOne(fellowPoolerOrderId);
+				fellowPoolerOrder.setStatus(Constants.PICKED_UP);
+				fellowPoolerOrders.add(fellowPoolerOrder);
+				orderRepository.save(fellowPoolerOrder);
+			}
+		}
+		emailService.sendEmailAfterOrderPickup(order, fellowPoolerOrders);
+		return true;
+    }
 
 	@Transactional
 	public List<Order> getOrders(long userId) {
@@ -176,7 +199,9 @@ public class OrderService {
 		}
 		if(orderEntity.get().getStatus().equals(Constants.DELIVERED)) {
 			orderEntity.get().setStatus(Constants.DELIVERY_NOT_RECEIVED);
-			return orderRepository.save(orderEntity.get());
+			Order order = orderRepository.save(orderEntity.get());
+			emailService.sendOrderNotDeliveredEmail(order, order.getDeliveryPooler().getEmail());
+			return order;
 		} else {
 			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Order is not marked as delivered yet");
 		}

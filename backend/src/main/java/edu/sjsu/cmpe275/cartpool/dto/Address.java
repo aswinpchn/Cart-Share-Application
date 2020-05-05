@@ -10,6 +10,11 @@ public class Address {
 	private String city;
 	private String state;
 	private String zip;
+	
+	@Override
+	public String toString() {
+		return street + ", " + city + ", " + state + ", " + zip;
+	}
 
 	@Column(name = "street")
 	public String getStreet() {
