@@ -1,43 +1,40 @@
 import React, { Component } from "react";
 import { Col, Form, Container, Row, Card } from "react-bootstrap";
+import { properties } from "../../properties";
+import axios from "axios";
+const backendurl = properties.backendhost;
 
 class PickupOrders extends Component {
   state = {
     orders: [],
     groupOrders: [],
     GroupedById: {},
+    numberOfOrders: "",
   };
 
   componentDidMount() {
     // axios post call, with delivery pooler id to get all the orders mapping with status assigned.
-    this.setState({
-      orders: [
-        {
-          orderId: 1,
-          groupId: 101,
-          deliveryPoolerId: 6,
-          poolerId: 5,
-          status: "Assigned",
-          storeName: "Costco",
-        },
-        {
-          orderId: 5,
-          groupId: 101,
-          deliveryPoolerId: 6,
-          poolerId: 9,
-          status: "Assigned",
-          storeName: "Costco",
-        },
-        {
-          orderId: 2,
-          groupId: 102,
-          deliveryPoolerId: 7,
-          poolerId: 6,
-          status: "Assigned",
-          storeName: "Safeway",
-        },
-      ],
-    });
+
+    let userId = localStorage.getItem("userId");
+
+    axios
+      .get(backendurl + "pickuporders/" + userId)
+      .then((response) => {
+        console.log(response);
+        if (response.status == 200) {
+          this.setState({
+            numberOfOrders: response.data.length,
+            orders: response.data,
+            errors: "",
+          });
+        }
+      })
+      .catch((error) => {
+        console.log("Error in getting orders", error, error.response);
+        this.setState({
+          errors: error,
+        });
+      });
   }
 
   render() {
@@ -98,24 +95,42 @@ class PickupOrders extends Component {
               </h2>
             </div>
           </div>
-          {rows &&
-            rows.map((obj, i) => {
-              return (
-                <div key={i}>
-                  <h1> the group is {i}</h1>
-                  {obj &&
-                    obj.map((element, i) => {
-                      console.log("elements are" + element.orderId);
-                      return (
-                        <div key={i}>
-                          {" "}
-                          <h4> orderId is {element.orderId} </h4>
-                        </div>
-                      );
-                    })}
+          <Container>
+            <Row>
+              <Col md={{ span: 10, offset: 1 }}>
+                <div>
+                  <ul class="list-group">
+                    {rows &&
+                      rows.map((obj, i) => {
+                        return (
+                          <div key={i}>
+                            <li class="list-group-item list-group-item-primary">
+                              {" "}
+                              the group is {i}
+                            </li>
+                            <ul class="list-group">
+                              {obj &&
+                                obj.map((element, i) => {
+                                  console.log("elements are" + element.orderId);
+                                  return (
+                                    <div key={i}>
+                                      {" "}
+                                      <li class="list-group-item">
+                                        {" "}
+                                        orderId is {element.id}{" "}
+                                      </li>
+                                    </div>
+                                  );
+                                })}
+                            </ul>
+                          </div>
+                        );
+                      })}
+                  </ul>
                 </div>
-              );
-            })}
+              </Col>
+            </Row>
+          </Container>
         </div>
       );
     }
