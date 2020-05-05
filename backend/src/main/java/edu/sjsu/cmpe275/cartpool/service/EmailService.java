@@ -93,7 +93,7 @@ public class EmailService {
 			javaMailSender.send(message);
 			return true;
 		} catch (Exception ex) {
-			// log here
+			//
 		}
 		return false;
 	}
@@ -154,7 +154,7 @@ public class EmailService {
 			}
 			return true;
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			// log here
 		}
 		return false;
 	}
