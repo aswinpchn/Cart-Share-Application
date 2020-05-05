@@ -5,4 +5,5 @@ node_modules/
 .classpath
 .idea
 backend/.classpath
+backend/uploads/
 .comments
