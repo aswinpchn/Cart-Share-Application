@@ -35,6 +35,7 @@ public class OrderService {
 	@Autowired
 	private StoreRepository storeRepository;
 
+	@Transactional
 	public Order createDeferredOrder(DeferredOrderRequestModel deferredOrderRequestModel) {
 		System.out.println(deferredOrderRequestModel.toString());
 
@@ -62,7 +63,7 @@ public class OrderService {
 		order.setPooler(pooler);
 		order.setPrice(deferredOrderRequestModel.getPrice());
 		order.setPoolId(deferredOrderRequestModel.getPoolId());
-		order.setStatus("Pending");
+		order.setStatus(Constants.PLACED);
 		order.setStoreName(pickupStore.getName());
 		order.setDate(Calendar.getInstance().getTime());
 
@@ -90,7 +91,7 @@ public class OrderService {
 		System.out.println("Pool Id-->" + poolId);
 
 		List<Order> orders = orderRepository.findAllByPoolIdAndDeliveryPoolerAndStatusOrderByDateAsc(poolId, null,
-				Constants.PENDING);
+				Constants.PLACED);
 
 		return orders;
 	}
@@ -177,7 +178,7 @@ public class OrderService {
 		}
 		emailService.sendEmailAfterOrderPickup(order, fellowPoolerOrders);
 		return true;
-    }
+	}
 
 	@Transactional
 	public List<Order> getOrders(long userId) {

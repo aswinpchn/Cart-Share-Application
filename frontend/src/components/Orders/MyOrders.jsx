@@ -154,7 +154,7 @@ class MyOrders extends Component {
                                 {this.transformDateTime(order.date)}
                               </th>
                               <td className="text-center">{order.storeName}</td>
-                              <td className="text-center">{order.deliveryPooler.nickName}</td>
+                              <td className="text-center">{order.deliveryPooler && order.deliveryPooler.nickName}</td>
                               <td className="text-center">{order.price}</td>
                               <td className="text-center">{order.status}</td>
                               <td className="text-center">
