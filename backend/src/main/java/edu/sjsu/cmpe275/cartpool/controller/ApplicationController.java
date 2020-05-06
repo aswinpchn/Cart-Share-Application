@@ -332,9 +332,9 @@ public class ApplicationController {
 		return poolService.deletePool(poolId);
 	}
 	
-	@DeleteMapping("/pool/delete/{poolId}/{userId}")
+	@PostMapping("/pool/leave")
 	@ResponseBody
-	public boolean leavePool(@PathVariable("poolId") String poolId, @PathVariable("userId") long userId) {
+	public boolean leavePool(@RequestParam("poolId") String poolId, @RequestParam("userId") long userId) {
 		return poolService.leavePool(poolId, userId);
 	}
 

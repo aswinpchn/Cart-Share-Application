@@ -115,7 +115,7 @@ class CurrentPool extends Component {
   handleLeavePool = async (e) => {
     try {
       axios.defaults.withCredentials = true;
-      let backendurl = properties.backendhost + "pool/leave/" + this.state.poolId + localStorage.getItem("userId");
+      let backendurl = properties.backendhost + "pool/leave?poolId=" + this.state.poolId + "&userId=" + localStorage.getItem("userId");
       let response = await axios.post(backendurl);
       if (response.status == 200) {
         swal("Pool left", "success");
