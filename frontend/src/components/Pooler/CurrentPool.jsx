@@ -16,6 +16,7 @@ class CurrentPool extends Component {
       poolLeader: null,
       poolId: null,
       deletePoolFailure: null,
+      leavePoolFailure: null,
     };
   }
 
@@ -110,23 +111,68 @@ class CurrentPool extends Component {
     }
   };
 
+
+  handleLeavePool = async (e) => {
+    try {
+      axios.defaults.withCredentials = true;
+      let backendurl = properties.backendhost + "pool/leave/" + this.state.poolId + localStorage.getItem("userId");
+      let response = await axios.post(backendurl);
+      if (response.status == 200) {
+        swal("Pool left", "success");
+        await this.pageLoad();
+      }
+    } catch (e) {
+      if (e.response.status == 404) {
+        swal("Pool or User Not found", "failure");
+        this.setState({
+          leavePoolFailure: "failure - Pool or User Not found",
+        });
+      } else if (e.response.status == 406) {
+        swal(
+          "Pool cannot be left because of the pending orders or delivery tasks",
+          "failure"
+        );
+        this.setState({
+          leavePoolFailure:
+            "failure - Pool cannot be left because of the pending orders or delivery tasks",
+        });
+      } else {
+        swal("Failed to leave pool", "failure");
+        this.setState({
+          leavePoolFailure:
+            "failure - Pool cannot be left, internal server error",
+        });
+      }
+    }
+  };
+
   render() {
     const { user, loading } = this.props.userState;
     let poolStatus;
 
     if (this.state.poolName) {
-      let deleteButton;
+      let actionButton;
 
       // console.log(localStorage.getItem("userId"));
       // console.log(this.state.poolLeader);
       if (localStorage.getItem("userId") == this.state.poolLeader) {
-        deleteButton = (
+        actionButton = (
           <Button
             className="btn btn-danger"
             onClick={this.handleDeletePool}
             type="submit"
           >
             Delete Pool
+          </Button>
+        );
+      } else {
+        actionButton = (
+          <Button
+            className="btn btn-danger"
+            onClick={this.handleLeavePool}
+            type="submit"
+          >
+            Leave Pool
           </Button>
         );
       }
@@ -138,7 +184,7 @@ class CurrentPool extends Component {
               <p class="lead text-bold">
                 You are part of {this.state.poolName}!.
               </p>
-              {deleteButton}
+              {actionButton}
             </div>
           </div>
         </div>

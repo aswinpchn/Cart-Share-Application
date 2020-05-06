@@ -3,23 +3,22 @@ package edu.sjsu.cmpe275.cartpool.service;
 import java.util.List;
 import java.util.Optional;
 
-import edu.sjsu.cmpe275.cartpool.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import edu.sjsu.cmpe275.cartpool.Constants;
 import edu.sjsu.cmpe275.cartpool.dto.JoinPoolRequestBodyModel;
+import edu.sjsu.cmpe275.cartpool.dto.Order;
 import edu.sjsu.cmpe275.cartpool.dto.Pool;
 import edu.sjsu.cmpe275.cartpool.dto.PoolRequest;
 import edu.sjsu.cmpe275.cartpool.dto.User;
+import edu.sjsu.cmpe275.cartpool.repository.OrderRepository;
 import edu.sjsu.cmpe275.cartpool.repository.PoolRepository;
 import edu.sjsu.cmpe275.cartpool.repository.PoolRequestRepository;
 import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 public class PoolService {
@@ -32,6 +31,9 @@ public class PoolService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private OrderRepository orderRepository;
 
 	@Autowired
 	private EmailService emailService;
@@ -176,5 +178,38 @@ public class PoolService {
 		} else {
 			throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Pool cannot be deleted because of the associated poolers");
 		}
+	}
+	
+	@Transactional
+	public boolean leavePool(String poolId, long userId) {
+		Pool pool = poolRepository.findByPoolId(poolId);
+		if (pool == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pool not found");
+		}
+
+		Optional<User> userObj = userRepository.findById(userId);
+		if (!userObj.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+		}
+		User user = userObj.get();
+		List<Order> orders = orderRepository.findAllByPooler(user);
+		if (orders != null && !orders.isEmpty()) {
+			for (Order order : orders) {
+				if (Constants.DELIVERED != order.getStatus() || Constants.PICKED_UP_BY_SELF != order.getStatus()) {
+					throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Cannot leave pool because of pending orders");
+				}
+			}
+		}
+		List<Order> deliveryTaskOrders = orderRepository.findAllByDeliveryPooler(user);
+		if (deliveryTaskOrders != null && !deliveryTaskOrders.isEmpty()) {
+			for (Order deliveryTask : deliveryTaskOrders) {
+				if (Constants.DELIVERED != deliveryTask.getStatus()) {
+					throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Cannot leave pool because of delivery tasks");
+				}
+			}
+		}
+		user.setPoolId(null);
+		userRepository.save(user);
+		return true;
 	}
 }
