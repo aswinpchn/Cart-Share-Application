@@ -166,13 +166,13 @@ class PickupOrders extends Component {
                                     be picked up!{" "}
                                   </span>
 
-                                  <span style={{ marginLeft: "80px" }}>
+                                  <span style={{ marginLeft: "70px" }}>
                                     <button
                                       type="button"
                                       className="btn btn-primary"
                                       onClick={this.onOpenModal}
                                     >
-                                      CheckOut
+                                      Scan QR Code
                                     </button>
 
                                     <div className="overflow-auto">
@@ -197,7 +197,7 @@ class PickupOrders extends Component {
                                       }
                                       disabled={!showButton}
                                     >
-                                      Mark as Pickedup
+                                      Pickedup
                                     </button>
                                   </span>
                                 </span>
