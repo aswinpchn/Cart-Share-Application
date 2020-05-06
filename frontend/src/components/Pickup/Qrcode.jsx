@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Container, Button, Col, Row, Card } from "react-bootstrap";
 import QRCode from "qrcode.react";
 
 class Qrcode extends Component {

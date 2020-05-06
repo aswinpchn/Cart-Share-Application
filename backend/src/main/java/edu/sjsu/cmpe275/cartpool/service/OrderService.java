@@ -241,4 +241,33 @@ public class OrderService {
 			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Order is not marked as delivered yet");
 		}
 	}
+
+	@Transactional
+	public String markpickedup(int groupId) {
+		String status = "";
+		List<Order> orders = orderRepository.findAllByGroupId(groupId);
+		try {
+			for (Order order : orders) {
+				Optional<Order> orderEntity = orderRepository.findById(order.getId());
+				if (!orderEntity.isPresent()) {
+					throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
+				}
+
+				if (orderEntity.get().getPooler() == orderEntity.get().getDeliveryPooler()) {
+					orderEntity.get().setStatus(Constants.PICKED_UP_BY_SELF);
+					orderRepository.save(orderEntity.get());
+
+				} else {
+					orderEntity.get().setStatus(Constants.PICKED_UP);
+					orderRepository.save(orderEntity.get());
+				}
+			}
+			status = "Status Updated";
+		} catch (Exception e) {
+			System.out.println("Exception occured while updating status" + e);
+			status = "Status Update failed";
+		}
+		return status;
+	}
+
 }

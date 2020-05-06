@@ -6,7 +6,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import edu.sjsu.cmpe275.cartpool.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -367,6 +366,12 @@ public class ApplicationController {
 	@ResponseBody
 	public List<Order> getPickupOrders(@PathVariable("userId") long userId) {
 		return orderService.getPickupOrders(userId);
+	}
+
+	@PostMapping("/pickuporders/markpickedup/{groupid}")
+	@ResponseBody
+	public String markpickedup(@PathVariable("groupid") int groupId) {
+		return orderService.markpickedup(groupId);
 	}
 
 	@PostMapping("/order/marknotdelivered/{orderId}")

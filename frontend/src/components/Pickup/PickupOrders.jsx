@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Modal from "react-responsive-modal";
+import swal from "sweetalert";
 import Qrcode from "./Qrcode";
 import {
   Col,
@@ -22,6 +23,7 @@ class PickupOrders extends Component {
     numberOfOrders: "",
     open: false,
     blockScroll: true,
+    showButton: true,
   };
 
   componentDidMount() {
@@ -57,14 +59,31 @@ class PickupOrders extends Component {
     this.setState({ open: false });
   };
 
-  handleSubmit = () => {
-    const { history } = this.props;
-    history.push("/main/pickuporders/checkout");
+  handleSubmit = (groupId) => {
+    console.log("in handle submit the group id is" + groupId);
+    const config = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+    axios
+      .post(backendurl + `pickuporders/markpickedup/${groupId}`, config)
+      .then((response) => {
+        if (response.status === 200) {
+          swal("Status Updated");
+          this.setState({
+            showButton: false,
+          });
+        }
+      })
+      .catch((error) => {
+        swal("Status Update Failed.Please try again");
+      });
   };
 
   render() {
-    const { orders, open } = this.state;
-    // const { GroupedById } = this.state;
+    const { orders, open, showButton } = this.state;
 
     if (!Array.isArray(orders) || !orders.length) {
       // array does not exist, is not an array, or is empty
@@ -108,6 +127,7 @@ class PickupOrders extends Component {
       let property;
       for (property in GroupedById) {
         let obj = GroupedById[property];
+        obj.property = property;
         rows.push(obj);
       }
 
@@ -127,6 +147,7 @@ class PickupOrders extends Component {
                   <Card>
                     {rows &&
                       rows.map((obj, rowIndex) => {
+                        console.log("group id is" + obj.property);
                         return (
                           <div key={rowIndex}>
                             <Card.Header>
@@ -166,6 +187,18 @@ class PickupOrders extends Component {
                                         <Qrcode rowIndex={rowIndex} />
                                       </Modal>
                                     </div>
+                                  </span>
+                                  <span>
+                                    <button
+                                      type="button"
+                                      className="btn btn-primary"
+                                      onClick={() =>
+                                        this.handleSubmit(obj.property)
+                                      }
+                                      disabled={!showButton}
+                                    >
+                                      Mark as Pickedup
+                                    </button>
                                   </span>
                                 </span>
                               </Accordion.Toggle>
