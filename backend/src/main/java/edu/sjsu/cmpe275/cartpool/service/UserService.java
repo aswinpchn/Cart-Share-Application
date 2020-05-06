@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.cartpool.service;
 
+import edu.sjsu.cmpe275.cartpool.dto.SendMessageRequestBodyModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,8 @@ import org.springframework.web.server.ResponseStatusException;
 import edu.sjsu.cmpe275.cartpool.Constants;
 import edu.sjsu.cmpe275.cartpool.dto.User;
 import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -88,4 +91,22 @@ public class UserService {
 		return "User verification failed";
 	}
 
+	@Transactional
+	public Boolean sendMessage(SendMessageRequestBodyModel sendMessageRequestBodyModel) {
+		Optional<User> sender = userRepository.findById(sendMessageRequestBodyModel.getSenderId());
+		if(!sender.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sender user not found");
+		}
+
+		if(sender.get().getScreenName().equals(sendMessageRequestBodyModel.getRecipientScreenName())) {
+			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Sender and recipient user cannot be same");
+		}
+
+		User recipient = userRepository.findByScreenName(sendMessageRequestBodyModel.getRecipientScreenName());
+		if(recipient == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Recipient user not found");
+		}
+		// Add code to send email
+		return Constants.TRUE;
+	}
 }
