@@ -195,7 +195,7 @@ public class PoolService {
 		List<Order> orders = orderRepository.findAllByPooler(user);
 		if (orders != null && !orders.isEmpty()) {
 			for (Order order : orders) {
-				if (Constants.DELIVERED != order.getStatus() || Constants.PICKED_UP_BY_SELF != order.getStatus()) {
+				if (!Constants.DELIVERED.equals(order.getStatus()) && !(Constants.PICKED_UP_BY_SELF.equals(order.getStatus()))) {
 					throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Cannot leave pool because of pending orders");
 				}
 			}
@@ -203,7 +203,7 @@ public class PoolService {
 		List<Order> deliveryTaskOrders = orderRepository.findAllByDeliveryPooler(user);
 		if (deliveryTaskOrders != null && !deliveryTaskOrders.isEmpty()) {
 			for (Order deliveryTask : deliveryTaskOrders) {
-				if (Constants.DELIVERED != deliveryTask.getStatus()) {
+				if (!Constants.DELIVERED.equals(deliveryTask.getStatus()) && !(Constants.PICKED_UP_BY_SELF.equals(deliveryTask.getStatus()))) {
 					throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Cannot leave pool because of delivery tasks");
 				}
 			}
