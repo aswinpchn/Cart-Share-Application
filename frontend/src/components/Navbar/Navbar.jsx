@@ -146,6 +146,9 @@ class Navigationbar extends Component {
             <Dropdown.Item href="/main/pooler/deliveryTasks">
               Your Delivery Tasks
             </Dropdown.Item>
+            <Dropdown.Item href="/main/pooler/sendMessage">
+              Message Others
+            </Dropdown.Item>
             <Dropdown.Item href="/main/pooler/search">
               Search Products
             </Dropdown.Item>

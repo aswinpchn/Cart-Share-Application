@@ -18,7 +18,8 @@ import Profile from "../Profile/Profile";
 import MyOrders from "../Orders/MyOrders";
 import deliveryTasks from "../deliveryTasks/deliveryTasks";
 import SelfPickup from "../Pickup/SelfPickup";
-import PoolerProductSearch from '../Pooler/PoolerProductSearch';
+import PoolerProductSearch from "../Pooler/PoolerProductSearch";
+import SendMessage from "../Message/Message";
 
 class Main extends Component {
   componentDidMount() {
@@ -49,6 +50,7 @@ class Main extends Component {
               path="/main/pooler/deliveryTasks"
               component={deliveryTasks}
             />
+            <Route path="/main/pooler/sendMessage" component={SendMessage} />
             <Route path="/main/selfPickup" component={SelfPickup} />
           </Switch>
         </BrowserRouter>
