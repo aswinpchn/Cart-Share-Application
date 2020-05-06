@@ -31,7 +31,7 @@ public class PoolService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private OrderRepository orderRepository;
 
@@ -42,7 +42,8 @@ public class PoolService {
 	public Pool createPool(Pool pool) {
 		Optional<Pool> poolExists = poolRepository.findByNameOrPoolId(pool.getName(), pool.getPoolId());
 		if (poolExists.isPresent()) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "Pool already exists with same pool id or name. Try another.");
+			throw new ResponseStatusException(HttpStatus.CONFLICT,
+					"Pool already exists with same pool id or name. Try another.");
 		}
 
 		Optional<User> leader = userRepository.findById(pool.getLeaderId());
@@ -58,17 +59,16 @@ public class PoolService {
 		String poolName = modelRequest.getPoolName();
 		String userScreenName = modelRequest.getUserScreenName();
 		String referrerScreenName = modelRequest.getReferrerScreenName();
-		
+
 		User newPooler = userRepository.findByScreenName(userScreenName);
 		if (newPooler.getPoolId() != null) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot join more than one pool at a time");
 		}
-		
+
 		User referrer = userRepository.findByScreenName(referrerScreenName);
 
-		if(referrer == null) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-							"Invalid referrer. The referrer doesn't exist");
+		if (referrer == null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid referrer. The referrer doesn't exist");
 		}
 
 		String referrerPoolId = referrer.getPoolId();
@@ -106,7 +106,7 @@ public class PoolService {
 		return poolRequestRepository.findByLeaderScreenName(leaderScreenName);
 	}
 
-	@Transactional
+	//@Transactional
 	public String approveReferralRequest(long requestId) {
 		PoolRequest poolRequest = poolRequestRepository.findById(requestId).get();
 		String poolName = poolRequest.getPoolName();
@@ -114,7 +114,10 @@ public class PoolService {
 		Optional<User> leader = userRepository.findById(pool.getLeaderId());
 		User newPooler = userRepository.findByScreenName(poolRequest.getUserScreenName());
 		if (newPooler.getPoolId() != null) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The pooler already joined another pool. This referral is canceled");
+			poolRequest.setStatus("Cancelled");
+			poolRequestRepository.save(poolRequest);
+			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+					"The pooler already joined another pool. This referral is canceled");
 		}
 		if (poolRequest.getReferrerScreenName().equals(leader.get().getScreenName())) {
 			newPooler.setPoolId(pool.getPoolId());
@@ -139,12 +142,15 @@ public class PoolService {
 		return "Thank you. The join request is rejected";
 	}
 
-	@Transactional
+	//@Transactional
 	public String approveJoinRequestForLeader(long requestId) {
 		PoolRequest poolRequest = poolRequestRepository.findById(requestId).get();
 		User newPooler = userRepository.findByScreenName(poolRequest.getUserScreenName());
 		if (newPooler.getPoolId() != null) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The pooler already joined another pool.");
+			poolRequest.setStatus("Cancelled");
+			poolRequestRepository.save(poolRequest);
+			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+					"The pooler already joined another pool. This referral is canceled");
 		}
 		String poolName = poolRequest.getPoolName();
 		Pool pool = poolRepository.findByName(poolName);
@@ -165,10 +171,10 @@ public class PoolService {
 		List<User> poolers = userRepository.findAllByPoolId(poolId);
 		int numberOfPoolers = poolers.size();
 
-		if(numberOfPoolers == Constants.ONE) {
+		if (numberOfPoolers == Constants.ONE) {
 			long userId = poolers.get(0).getId();
 			long leaderId = pool.getLeaderId();
-			if(userId == leaderId) {
+			if (userId == leaderId) {
 				poolRepository.deleteByPoolIdAndId(poolId, pool.getId());
 				poolers.get(0).setPoolId(null);
 				userRepository.save(poolers.get(0));
@@ -176,10 +182,11 @@ public class PoolService {
 			}
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Inconsistent data");
 		} else {
-			throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Pool cannot be deleted because of the associated poolers");
+			throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
+					"Pool cannot be deleted because of the associated poolers");
 		}
 	}
-	
+
 	@Transactional
 	public boolean leavePool(String poolId, long userId) {
 		Pool pool = poolRepository.findByPoolId(poolId);
@@ -195,16 +202,20 @@ public class PoolService {
 		List<Order> orders = orderRepository.findAllByPooler(user);
 		if (orders != null && !orders.isEmpty()) {
 			for (Order order : orders) {
-				if (!Constants.DELIVERED.equals(order.getStatus()) && !(Constants.PICKED_UP_BY_SELF.equals(order.getStatus()))) {
-					throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Cannot leave pool because of pending orders");
+				if (!Constants.DELIVERED.equals(order.getStatus())
+						&& !(Constants.PICKED_UP_BY_SELF.equals(order.getStatus()))) {
+					throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
+							"Cannot leave pool because of pending orders");
 				}
 			}
 		}
 		List<Order> deliveryTaskOrders = orderRepository.findAllByDeliveryPooler(user);
 		if (deliveryTaskOrders != null && !deliveryTaskOrders.isEmpty()) {
 			for (Order deliveryTask : deliveryTaskOrders) {
-				if (!Constants.DELIVERED.equals(deliveryTask.getStatus()) && !(Constants.PICKED_UP_BY_SELF.equals(deliveryTask.getStatus()))) {
-					throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Cannot leave pool because of delivery tasks");
+				if (!Constants.DELIVERED.equals(deliveryTask.getStatus())
+						&& !(Constants.PICKED_UP_BY_SELF.equals(deliveryTask.getStatus()))) {
+					throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
+							"Cannot leave pool because of delivery tasks");
 				}
 			}
 		}
