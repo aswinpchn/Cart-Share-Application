@@ -77,6 +77,10 @@ class ProductCard extends Component {
               {this.props.product.description}
             </Card.Text>
             <Card.Text>
+              <b>Store: </b>
+              {this.props.product.store.name}
+            </Card.Text>
+            <Card.Text>
               <b>Price: </b>${this.props.product.price} per{" "}
               {this.props.product.unit}
             </Card.Text>

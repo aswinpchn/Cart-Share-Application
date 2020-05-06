@@ -18,6 +18,7 @@ import Profile from "../Profile/Profile";
 import MyOrders from "../Orders/MyOrders";
 import deliveryTasks from "../deliveryTasks/deliveryTasks";
 import SelfPickup from "../Pickup/SelfPickup";
+import PoolerProductSearch from '../Pooler/PoolerProductSearch';
 
 class Main extends Component {
   componentDidMount() {
@@ -38,6 +39,7 @@ class Main extends Component {
             <Route path="/main/pooler/currentPool" component={CurrentPool} />
             <Route path="/main/pooler/createPool" component={CreatePool} />
             <Route path="/main/pooler/poolRequests" component={PoolRequests} />
+            <Route path="/main/pooler/search" component={PoolerProductSearch} />
             <Route path="/main/cart" component={Cart} />
             <Route path="/main/checkout" component={Checkout} />
             <Route path="/main/pooler/account" component={Profile} />

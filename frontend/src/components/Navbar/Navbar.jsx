@@ -120,6 +120,7 @@ class Navigationbar extends Component {
           </Nav>
 
           <Nav.Link href="/main/home">Home</Nav.Link>
+
           <DropdownButton id="dropdown-basic-button" title="Pool">
             <Dropdown.Item href="/main/pooler/currentPool">
               Current Pool
@@ -144,6 +145,9 @@ class Navigationbar extends Component {
             </Dropdown.Item>
             <Dropdown.Item href="/main/pooler/deliveryTasks">
               Your Delivery Tasks
+            </Dropdown.Item>
+            <Dropdown.Item href="/main/pooler/search">
+              Search Products
             </Dropdown.Item>
           </DropdownButton>
 
