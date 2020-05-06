@@ -1,0 +1,98 @@
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Home</title>
+    <style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 80%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 6px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+</head>
+<body>
+<h1>
+   Your order is confirmed
+</h1>
+
+<div class="container">
+<p><b>Order Id:  </b>
+<b th:text="${orderId}"></b>
+</p>
+<p>
+<b>Date:  </b>
+<b th:text="${orderDate}"></b>
+</p>
+<p>
+   You have chosen to self pick up your order and your fellow poolers orders as well.
+</p>
+<h4>Your Order Summary</h4>
+ <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="orderDetail : ${orderDetails}">
+                <td th:text="${orderDetail.product.name}"></td>
+                <td th:text="${orderDetail.quantity}"></td>
+                <td th:text="${orderDetail.price}"></td>
+                </tr>
+                
+                 <tr>
+                 <td colspan="2"><b>Total Price</b></td>
+                 <td th:text="${orderPrice}"></td>
+                </tr>
+  </tbody>
+</table>
+
+<br />
+<h4>Fellow Poolers Order Summary</h4>
+<div class="container" th:each="poolerOrder : ${poolerOrders}">
+<b>Order Id:  </b>
+<b th:text="${poolerOrder.id}"></b>
+<table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="fellowOrderDetail : ${poolerOrder.orderDetails}">
+                <td th:text="${fellowOrderDetail.product.name}"></td>
+                <td th:text="${fellowOrderDetail.quantity}"></td>
+                <td th:text="${fellowOrderDetail.price}"></td>
+                </tr>
+                
+                <tr>
+                 <td colspan="2"><b>Total Price</b></td>
+                 <td th:text="${poolerOrder.price}"></td>
+                </tr>
+  </tbody>
+</table>
+<br />
+<br />
+</div>
+
+</div>
+</body>
+</html> 
