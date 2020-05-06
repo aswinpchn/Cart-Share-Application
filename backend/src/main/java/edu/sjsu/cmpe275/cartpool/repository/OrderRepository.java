@@ -16,4 +16,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	public List<Order> findAllByDeliveryPoolerAndStatus(User deliveryPoolerId, String status);
 
 	public Order findByGroupId(int groupId);
+
+	public List<Order> findAllByGroupId(int groupid);
+
 }
