@@ -106,7 +106,8 @@ public class UserService {
 		if(recipient == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Recipient user not found");
 		}
-		// Add code to send email
+		
+		emailService.sendPersonalMessage(sender.get(), recipient, sendMessageRequestBodyModel.getMessage());
 		return Constants.TRUE;
 	}
 }
