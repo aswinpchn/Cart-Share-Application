@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import edu.sjsu.cmpe275.cartpool.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -23,24 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.sjsu.cmpe275.cartpool.Constants;
-import edu.sjsu.cmpe275.cartpool.dto.Address;
-import edu.sjsu.cmpe275.cartpool.dto.CreatePoolRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.CreateProductRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.CreateStoreRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.CreateUserRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.DeferredOrderRequestModel;
-import edu.sjsu.cmpe275.cartpool.dto.EditProductRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.JoinPoolRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.Order;
-import edu.sjsu.cmpe275.cartpool.dto.OrderPickupRequestModel;
-import edu.sjsu.cmpe275.cartpool.dto.Pool;
-import edu.sjsu.cmpe275.cartpool.dto.PoolRequest;
-import edu.sjsu.cmpe275.cartpool.dto.Product;
-import edu.sjsu.cmpe275.cartpool.dto.SelfPickupOrderRequestModel;
-import edu.sjsu.cmpe275.cartpool.dto.Store;
-import edu.sjsu.cmpe275.cartpool.dto.UpdateStoreRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.UpdateUserProfileRequestBodyModel;
-import edu.sjsu.cmpe275.cartpool.dto.User;
 import edu.sjsu.cmpe275.cartpool.repository.PoolRepository;
 import edu.sjsu.cmpe275.cartpool.repository.StoreRepository;
 import edu.sjsu.cmpe275.cartpool.repository.UserRepository;
@@ -332,9 +315,9 @@ public class ApplicationController {
 		return poolService.deletePool(poolId);
 	}
 	
-	@DeleteMapping("/pool/delete/{poolId}/{userId}")
+	@PostMapping("/pool/leave")
 	@ResponseBody
-	public boolean leavePool(@PathVariable("poolId") String poolId, @PathVariable("userId") long userId) {
+	public boolean leavePool(@RequestParam("poolId") String poolId, @RequestParam("userId") long userId) {
 		return poolService.leavePool(poolId, userId);
 	}
 
@@ -397,5 +380,11 @@ public class ApplicationController {
 	@ResponseBody
 	public Order markOrderDelivered(@PathVariable("orderId") long orderId) {
 		return orderService.markOrderDelivered(orderId);
+	}
+
+	@PostMapping("/user/message")
+	@ResponseBody
+	public Boolean sendMessage(@RequestBody SendMessageRequestBodyModel sendMessageRequestBodyModel) {
+		return userService.sendMessage(sendMessageRequestBodyModel);
 	}
 }

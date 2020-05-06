@@ -29,8 +29,9 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addMapping("/cartpool/**")
 		.allowedOrigins("http://localhost:3000")
 		.allowedMethods("PUT", "DELETE", "GET", "POST")
-		//.allowedHeaders("header1", "header2", "header3")
-		//.exposedHeaders("header1", "header2")
+		 .allowedHeaders("Content-Type", "X-Requested-With", "accept", "Origin", "Access-Control-Request-Method",
+                 "Access-Control-Request-Headers")
+         .exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials")
 		.allowCredentials(true).maxAge(3600);
 	}
 }

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button } from "react-bootstrap";
 import axios from "axios";
 import { properties } from "../../properties";
+import swal from "sweetalert";
 const backendurl = properties.backendhost;
 
 class LeaderPoolRequests extends Component {
@@ -47,7 +48,12 @@ class LeaderPoolRequests extends Component {
         });
       })
       .catch((error) => {
-        console.log("error while getting response");
+        if (error.response.status == 422) {
+          swal("User is already part of a pool", "failure");
+          this.setState({
+            approvalResponse: "Approval failure - User is already part of a pool",
+          });
+        } 
         this.setState({
           approvalResponse: "Approval Failed, " + error,
         });
