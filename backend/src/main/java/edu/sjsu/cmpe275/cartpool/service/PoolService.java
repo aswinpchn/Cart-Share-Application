@@ -106,7 +106,7 @@ public class PoolService {
 		return poolRequestRepository.findByLeaderScreenName(leaderScreenName);
 	}
 
-	//@Transactional
+	// @Transactional
 	public String approveReferralRequest(long requestId) {
 		PoolRequest poolRequest = poolRequestRepository.findById(requestId).get();
 		String poolName = poolRequest.getPoolName();
@@ -142,7 +142,7 @@ public class PoolService {
 		return "Thank you. The join request is rejected";
 	}
 
-	//@Transactional
+	// @Transactional
 	public String approveJoinRequestForLeader(long requestId) {
 		PoolRequest poolRequest = poolRequestRepository.findById(requestId).get();
 		User newPooler = userRepository.findByScreenName(poolRequest.getUserScreenName());
@@ -204,8 +204,10 @@ public class PoolService {
 			for (Order order : orders) {
 				if (!Constants.DELIVERED.equals(order.getStatus())
 						&& !(Constants.PICKED_UP_BY_SELF.equals(order.getStatus()))) {
-					throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-							"Cannot leave pool because of pending orders");
+					if (poolId == order.getPoolId()) {
+						throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
+								"Cannot leave pool because of pending orders");
+					}
 				}
 			}
 		}
@@ -214,8 +216,10 @@ public class PoolService {
 			for (Order deliveryTask : deliveryTaskOrders) {
 				if (!Constants.DELIVERED.equals(deliveryTask.getStatus())
 						&& !(Constants.PICKED_UP_BY_SELF.equals(deliveryTask.getStatus()))) {
-					throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-							"Cannot leave pool because of delivery tasks");
+					if (poolId == deliveryTask.getPoolId()) {
+						throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
+								"Cannot leave pool because of delivery tasks");
+					}
 				}
 			}
 		}
