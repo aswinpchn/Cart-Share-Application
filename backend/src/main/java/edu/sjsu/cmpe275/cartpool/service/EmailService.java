@@ -156,6 +156,24 @@ public class EmailService {
 		}
 		return false;
 	}
+	
+	public boolean sendOrderDeliveredEmail(Order order) {
+		try {
+			Context context = new Context();
+			context.setVariable("poolerOrder", order);
+			String content = templateEngine.process("orderdelivered", context);
+			MimeMessage message = javaMailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message);
+			helper.setTo(order.getPooler().getEmail());
+			helper.setSubject("CartPool Order Delivered");
+			helper.setText(content, true);
+			javaMailSender.send(message);
+			return true;
+		} catch (Exception ex) {
+			// log here
+		}
+		return false;
+	}
 
 	public boolean sendOrderNotDeliveredEmail(Order order, String toAddress) {
 		try {
