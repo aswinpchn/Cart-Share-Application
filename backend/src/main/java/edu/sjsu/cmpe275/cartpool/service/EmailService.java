@@ -50,7 +50,7 @@ public class EmailService {
 			helper.setTo(toEmailAddress);
 			helper.setSubject("CartPool join request - Referral");
 			String msgBody = "Thank you for referring \n" + userScreenName + " for the pool: " + poolName + "."
-					+ "\n Please login to the cartpool and approve the request>";
+					+ "\n Please login to the cartpool and approve the request";
 			helper.setText(msgBody, true);
 			javaMailSender.send(message);
 		} catch (Exception ex) {
@@ -67,7 +67,7 @@ public class EmailService {
 			helper.setTo(toEmailAddress);
 			helper.setSubject("CartPool join request - Referral");
 			String msgBody = "Hi ! You have received a pool join request from \n" + userScreenName + " for the pool: "
-					+ poolName + "." + "\n Please login to the cartpool and approve the request>";
+					+ poolName + "." + "\n Please login to the cartpool and approve the request";
 			helper.setText(msgBody, true);
 			javaMailSender.send(message);
 		} catch (Exception ex) {

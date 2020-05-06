@@ -181,6 +181,7 @@ public class OrderService {
 		return order;
 	}
 
+	/*
 	@Transactional
 	public boolean pickupOrder(OrderPickupRequestModel model) {
 		Optional<Order> orderEntity = orderRepository.findById(model.getOrderId());
@@ -202,7 +203,7 @@ public class OrderService {
 		}
 		emailService.sendEmailAfterOrderPickup(order, fellowPoolerOrders);
 		return true;
-	}
+	}*/
 
 	@Transactional
 	public List<Order> getOrders(long userId) {
@@ -246,6 +247,8 @@ public class OrderService {
 	public String markpickedup(int groupId) {
 		String status = "";
 		List<Order> orders = orderRepository.findAllByGroupId(groupId);
+		Order ownerOrder = null;
+		List<Order> listOfFellowPoolerOrders = new ArrayList<>();
 		try {
 			for (Order order : orders) {
 				Optional<Order> orderEntity = orderRepository.findById(order.getId());
@@ -255,13 +258,16 @@ public class OrderService {
 
 				if (orderEntity.get().getPooler() == orderEntity.get().getDeliveryPooler()) {
 					orderEntity.get().setStatus(Constants.PICKED_UP_BY_SELF);
+					ownerOrder = orderEntity.get();
 					orderRepository.save(orderEntity.get());
 
 				} else {
 					orderEntity.get().setStatus(Constants.PICKED_UP);
+					listOfFellowPoolerOrders.add(orderEntity.get());
 					orderRepository.save(orderEntity.get());
 				}
 			}
+			emailService.sendEmailAfterOrderPickup(ownerOrder, listOfFellowPoolerOrders);
 			status = "Status Updated";
 		} catch (Exception e) {
 			System.out.println("Exception occured while updating status" + e);

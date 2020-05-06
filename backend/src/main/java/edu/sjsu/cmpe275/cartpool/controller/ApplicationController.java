@@ -356,11 +356,12 @@ public class ApplicationController {
 		return orderService.createSelfPickupOrder(selfPickupOrderRequestModel);
 	}
 
+	/*
 	@PostMapping("order/pickup")
 	@ResponseBody
 	public Boolean pickupOrder(@Valid @RequestBody OrderPickupRequestModel model) {
 		return orderService.pickupOrder(model);
-	}
+	}*/
 
 	@GetMapping("/orders/{userId}")
 	@ResponseBody
