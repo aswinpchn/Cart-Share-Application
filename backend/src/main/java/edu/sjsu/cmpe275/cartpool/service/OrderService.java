@@ -221,7 +221,7 @@ public class OrderService {
 		if (!userEntity.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this delivery pooler id found");
 		}
-		List<Order> orders = orderRepository.findAllByDeliveryPoolerAndStatus(userEntity.get(), "Assigned");
+		List<Order> orders = orderRepository.findAllByDeliveryPoolerAndStatus(userEntity.get(), Constants.ASSIGNED);
 		return orders;
 	}
 

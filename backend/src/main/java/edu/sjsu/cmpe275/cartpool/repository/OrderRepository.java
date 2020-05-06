@@ -12,6 +12,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 			String status);
 
 	public List<Order> findAllByPooler(User pooler);
+	
+	public List<Order> findAllByDeliveryPooler(User pooler);
 
 	public List<Order> findAllByDeliveryPoolerAndStatus(User deliveryPoolerId, String status);
 
