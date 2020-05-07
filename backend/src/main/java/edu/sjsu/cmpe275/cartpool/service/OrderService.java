@@ -66,8 +66,10 @@ public class OrderService {
 		}
 
 		User pooler = poolerObj.get();
+		
+		/*
 		pooler.setCreditScore(pooler.getCreditScore() - 1);
-		userRepository.save(pooler);
+		userRepository.save(pooler);*/
 
 		Optional<Store> store = storeRepository.findStoreById(deferredOrderRequestModel.getStoreId());
 		Store pickupStore = store.get();
@@ -126,8 +128,9 @@ public class OrderService {
 
 		List<Long> listOfFellowOrderIds = selfPickupOrderRequestModel.getFellowPoolersOrders();
 
+		/*
 		userEntity.get().setCreditScore(userEntity.get().getCreditScore() + listOfFellowOrderIds.size());
-		userRepository.save(userEntity.get());
+		userRepository.save(userEntity.get());*/
 
 		Optional<Store> store = storeRepository.findStoreById(selfPickupOrderRequestModel.getStoreId());
 		Store pickupStore = store.get();
@@ -234,6 +237,15 @@ public class OrderService {
 		if (orderEntity.get().getStatus().equals(Constants.DELIVERED)) {
 			orderEntity.get().setStatus(Constants.DELIVERY_NOT_RECEIVED);
 			Order order = orderRepository.save(orderEntity.get());
+			
+			Optional<User> deliveryUserEntity = userRepository.findById(order.getDeliveryPooler().getId());
+			deliveryUserEntity.get().setCreditScore(deliveryUserEntity.get().getCreditScore() - 1);
+			userRepository.save(deliveryUserEntity.get());
+			
+			Optional<User> poolerUserEntity = userRepository.findById(order.getPooler().getId());
+			poolerUserEntity.get().setCreditScore(poolerUserEntity.get().getCreditScore() + 1);
+			userRepository.save(poolerUserEntity.get());
+			
 			emailService.sendOrderNotDeliveredEmail(order, order.getDeliveryPooler().getEmail());
 			return order;
 		} else {
@@ -302,6 +314,15 @@ public class OrderService {
 		if (orderEntity.get().getStatus().equals(Constants.PICKED_UP) || orderEntity.get().getStatus().equals(Constants.DELIVERY_NOT_RECEIVED)) {
 			orderEntity.get().setStatus(Constants.DELIVERED);
 			Order order = orderRepository.save(orderEntity.get());
+			
+			Optional<User> deliveryUserEntity = userRepository.findById(order.getDeliveryPooler().getId());
+			deliveryUserEntity.get().setCreditScore(deliveryUserEntity.get().getCreditScore() + 1);
+			userRepository.save(deliveryUserEntity.get());
+			
+			Optional<User> poolerUserEntity = userRepository.findById(order.getPooler().getId());
+			poolerUserEntity.get().setCreditScore(poolerUserEntity.get().getCreditScore() - 1);
+			userRepository.save(poolerUserEntity.get());
+			
 			emailService.sendOrderDeliveredEmail(order);
 			return order;
 		} else {
