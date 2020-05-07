@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { getUserProfile } from "../_actions/profileActions";
 import { Col, Form, Button } from "react-bootstrap";
 import axios from "axios";
+import Spinner from "../common/Spinner";
+import swal from "sweetalert";
 import { properties } from "../../properties";
 const backendurl = properties.backendhost;
 
@@ -16,6 +18,7 @@ class Message extends Component {
       message: "",
       text: "",
       errors: "",
+      loading: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -23,8 +26,10 @@ class Message extends Component {
   }
 
   componentDidMount() {
+    let senderId = localStorage.getItem("userId");
+
     this.setState({
-      senderId: this.props.profileState.user.id,
+      senderId: senderId,
     });
   }
 
@@ -37,11 +42,18 @@ class Message extends Component {
   handleSubmit = (e) => {
     //prevent page from refresh
     e.preventDefault();
+
+    this.setState({
+      loading: true,
+    });
+
     const data = {
       senderId: this.state.senderId,
       recipientScreenName: this.state.recipientScreenName,
       message: this.state.message,
     };
+
+    console.log("the data for send message is" + data);
 
     axios
       .post(backendurl + "user/message", data)
@@ -50,20 +62,32 @@ class Message extends Component {
         if (response.status == 200) {
           this.setState({
             text: "Message sent sucessfully",
+            recipientScreenName: "",
+            message: "",
+            loading: false,
             errors: "",
           });
+          swal("Message sent sucessfully");
         }
       })
       .catch((error) => {
         console.log("Error while sending message", error, error.response);
         this.setState({
           errors: error.response.data.message,
+          recipientScreenName: "",
+          message: "",
+          loading: false,
         });
+        swal(error.response.data.message);
       });
   };
 
   render() {
-    const { text, errors } = this.state;
+    const { text, errors, loading } = this.state;
+    let spinner;
+    if (loading) {
+      spinner = <Spinner />;
+    }
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div className="row">
@@ -112,8 +136,9 @@ class Message extends Component {
               Message
             </Button>
             <br />
-            <p className="text-danger"> {errors}</p>
-            <p className="text-success"> {text}</p>
+            {spinner}
+            {/* <p className="text-danger"> {errors}</p>
+            <p className="text-success"> {text}</p> */}
             <br />
           </Form>
         </div>
