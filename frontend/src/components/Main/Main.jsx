@@ -7,7 +7,6 @@ import Navbar from "../Navbar/Navbar";
 import Home from "../Home/Home";
 import ProductList from "../AdminStore/ProductList";
 import Search from "../AppEntry/Search";
-import UserDetailsForm from "../AppEntry/UserDetailsForm";
 import CurrentPool from "../Pooler/CurrentPool";
 import CreatePool from "../Pooler/CreatePool";
 import PoolRequests from "../Pooler/PoolRequests";
@@ -33,7 +32,6 @@ class Main extends Component {
         <div className="container"></div>
         <BrowserRouter>
           <Switch>
-            <Route path="/main/userDetailsForm" component={UserDetailsForm} />
             <Route path="/main/home" component={Home} />
             <Route path="/main/productList/:storeId" component={ProductList} />
             <Route path="/main/admin/search" component={Search} />

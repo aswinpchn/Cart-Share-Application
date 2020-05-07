@@ -56,7 +56,8 @@ class Home extends Component {
       console.log(this.state.responseStatus);
       console.log(this.state.profileCompleted);
       console.log("Into redirect");
-      redirectVar = <Redirect to="/main/userDetailsForm" />;
+      //redirectVar = <Redirect to="/userDetailsForm" />;
+      window.location.href = "/userDetailsForm";
     }
 
     if (

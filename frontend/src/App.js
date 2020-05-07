@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.css"; // To include React bootstrap's desig
 import "font-awesome/css/font-awesome.css"; // To include font anwesome's design.     https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers
 import "./App.css";
 import firebase from "firebase";
+import UserDetailsForm from "./components/AppEntry/UserDetailsForm";
 
 firebase.initializeApp({
   apiKey: "AIzaSyAsxkjbgvkJeKFIN2jMVszfhdyaWB7am7g",
@@ -21,6 +22,7 @@ class App extends Component {
             <Switch>
               <Route exact path="/" component={LandingPage} />
               <Route path="/main" component={Main} />
+              <Route path="/userDetailsForm" component={UserDetailsForm} />
             </Switch>
           </BrowserRouter>
         </div>
