@@ -9,7 +9,8 @@ import {
 } from "../_actions/types";
 
 const initialState = {
-  poolRequests: [],
+  referrerpoolRequests: [],
+  leaderpoolRequests: [],
   loading: false,
 };
 
@@ -35,7 +36,7 @@ export const poolReducer = (state = { ...initialState }, action) => {
     case GET_REFERRER_REQUESTS:
       return {
         ...state,
-        poolRequests: action.payload,
+        referrerpoolRequests: action.payload,
         loading: false,
       };
     case LEADER_APPROVE_REQUEST:
@@ -53,7 +54,7 @@ export const poolReducer = (state = { ...initialState }, action) => {
     case GET_LEADER_REQUESTS:
       return {
         ...state,
-        poolRequests: action.payload,
+        leaderpoolRequests: action.payload,
         loading: false,
       };
     default:

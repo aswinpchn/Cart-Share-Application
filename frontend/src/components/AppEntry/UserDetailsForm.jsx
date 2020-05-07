@@ -11,6 +11,7 @@ import constants from "../../utils/constants";
 import axios from "axios";
 import { properties } from "../../properties";
 import { Redirect } from "react-router-dom";
+import Spinner from "../common/Spinner";
 import swal from "sweetalert";
 import firebase from "firebase";
 import Spinner from "react-bootstrap/Spinner";
@@ -59,6 +60,10 @@ class UserDetailsForm extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
+    this.setState({
+      loading: true,
+    });
+
     const data = {
       email: localStorage.getItem("email"),
       screenName: this.state.screenName,
@@ -103,6 +108,10 @@ class UserDetailsForm extends Component {
     let redirectVar = null;
     if (this.state.profileUpdated) {
       redirectVar = <Redirect to="/main/home" />;
+    }
+    let spinner;
+    if (loading) {
+      spinner = <Spinner />;
     }
 
     let spinner;

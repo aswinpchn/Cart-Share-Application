@@ -3,6 +3,7 @@ import {
   PRODUCT_LOADING,
   GET_PRODUCTS,
   UPDATE_PRODUCT,
+  DELETE_PRODUCT,
 } from "../_actions/types";
 
 const initialState = {
@@ -34,6 +35,12 @@ export const productReducer = (state = { ...initialState }, action) => {
         ...state,
         products: action.payload,
         loading: false,
+      };
+    case DELETE_PRODUCT:
+      return {
+        ...state,
+        products: action.payload,
+        loading: true,
       };
     default:
       return { ...state };

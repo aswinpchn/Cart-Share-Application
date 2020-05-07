@@ -4,6 +4,7 @@ import {
   GET_PRODUCTS,
   GET_ERRORS,
   UPDATE_PRODUCT,
+  DELETE_PRODUCT
 } from "./types";
 import axios from "axios";
 import swal from "sweetalert";
@@ -78,6 +79,37 @@ export const updateProduct = (data) => (dispatch) => {
       dispatch({
         type: GET_ERRORS,
         payload: error.response.data,
+      });
+    });
+};
+
+// Delete Product
+export const deleteProduct = (productId) => (dispatch) => {
+  axios
+    .delete(backendurl + "product/" + productId)
+    .then((response) => {
+      console.log("response-->", response)
+      if (response.status === 200) {
+        dispatch({
+          type: DELETE_PRODUCT,
+          payload: response.status,
+        });
+        swal("Product Deleted");
+        dispatch(getProducts(response.data.store.id));
+      }
+    })
+    .catch((error) => {
+      console.log("errorrr", error)
+      if(error.message.includes("422")) {
+        swal("Product cannot de deleted due to unfulfilled orders against it");
+      } else if(error.message.includes("404")){
+        swal("Product not found");
+      } else {
+        swal("Server Error. Refresh page and try deleting the product again");
+      }
+      dispatch({
+        type: GET_ERRORS,
+        payload: error,
       });
     });
 };
