@@ -205,7 +205,7 @@ class DeliveryTasks extends Component {
                                     type="button"
                                     className="btn btn-light mr-1"
                                   >
-                                    <i className="text-secondary fa fa-times" />
+                                    <i className="text-secondary fa fa-check" />
                                   </Button>
                                 ) : (
                                   " "
