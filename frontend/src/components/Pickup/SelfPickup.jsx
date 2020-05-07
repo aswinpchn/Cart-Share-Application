@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Col, Row, Form, Container, Card } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import swal from 'sweetalert';
+import swal from "sweetalert";
 import axios from "axios";
 import { properties } from "../../properties";
+import Spinner from "../common/Spinner";
 const backendurl = properties.backendhost;
 
 class SelfPickup extends Component {
@@ -16,7 +17,8 @@ class SelfPickup extends Component {
       orderListToShow: [],
       errors: "",
       text: null,
-      showConfirmOrder: false
+      showConfirmOrder: false,
+      loading: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -65,9 +67,9 @@ class SelfPickup extends Component {
       this.state.noOfOrdersToPickUp > this.state.numberOfOrders
     ) {
       this.setState({
-				errors: `Please input value from range 0 - ${this.state.numberOfOrders}`,
+        errors: `Please input value from range 0 - ${this.state.numberOfOrders}`,
         orderListToShow: [],
-        showConfirmOrder: false
+        showConfirmOrder: false,
       });
     } else {
       this.setState({
@@ -76,75 +78,112 @@ class SelfPickup extends Component {
           this.state.noOfOrdersToPickUp
         ),
         showConfirmOrder: true,
-        errors: ""
+        errors: "",
       });
     }
-	};
-	
-	handleCreateOrder = async () => {
-    console.log('create order');
+  };
+
+  handleCreateOrder = async () => {
+    console.log("create order");
+
+    this.setState({
+      loading: true,
+    });
 
     try {
-      let userResponse = await axios.get(properties.backendhost + 'user/?email=' + localStorage.getItem("email"));
+      let userResponse = await axios.get(
+        properties.backendhost + "user/?email=" + localStorage.getItem("email")
+      );
       //console.log(userResponse.data);
 
       let data = {};
       data.poolerId = localStorage.getItem("userId");
       data.price = localStorage.getItem("finalOrderTotal");
-			data.poolId = userResponse.data.poolId;
-			data.storeId = localStorage.getItem("cart_store_id")
-			data.items = [];
-			let cart = JSON.parse(localStorage.getItem("cart"));
-      for(let i = 0; i < cart.length; i++) {
+      data.poolId = userResponse.data.poolId;
+      data.storeId = localStorage.getItem("cart_store_id");
+      data.items = [];
+      let cart = JSON.parse(localStorage.getItem("cart"));
+      for (let i = 0; i < cart.length; i++) {
         let item = {};
         item.productId = cart[i].id;
         item.quantity = cart[i].quantity;
         item.price = cart[i].price;
         data.items.push(item);
-			}
-			
-			data.fellowPoolersOrders = []
-			for(let i = 0; i < this.state.orderListToShow.length; i++) {
-				data.fellowPoolersOrders.push(this.state.orderListToShow[i].id)
-			}
+      }
+
+      data.fellowPoolersOrders = [];
+      for (let i = 0; i < this.state.orderListToShow.length; i++) {
+        data.fellowPoolersOrders.push(this.state.orderListToShow[i].id);
+      }
       console.log("data-->", data);
 
-      let orderResponse = await axios.post(properties.backendhost + 'order/self', data);
+      let orderResponse = await axios.post(
+        properties.backendhost + "order/self",
+        data
+      );
       console.log(orderResponse.data);
-      
-      if(orderResponse.data.pooler.creditScore <= -6) {
+
+      if (orderResponse.data.pooler.creditScore <= -6) {
         swal({
-          title: 'Order placed!',
-          text: 'Your contribution credit is: ' + orderResponse.data.pooler.creditScore + ' You are in red zone, continue picking up some more orders',
-          icon: 'error'
+          title: "Order placed!",
+          text:
+            "Your contribution credit is: " +
+            orderResponse.data.pooler.creditScore +
+            " You are in red zone, continue picking up some more orders",
+          icon: "error",
         });
-      } else if(orderResponse.data.pooler.creditScore <= -4) {
+        this.setState({
+          loading: false,
+        });
+      } else if (orderResponse.data.pooler.creditScore <= -4) {
         swal({
-          title: 'Order placed!',
-          text: 'Your contribution credit is: ' + orderResponse.data.pooler.creditScore + ' You are in yellow zone, continue picking up some more orders',
-          icon: 'warning'
+          title: "Order placed!",
+          text:
+            "Your contribution credit is: " +
+            orderResponse.data.pooler.creditScore +
+            " You are in yellow zone, continue picking up some more orders",
+          icon: "warning",
+        });
+        this.setState({
+          loading: false,
         });
       } else {
         swal({
-          title: 'Order placed!',
-          text: 'Your contribution credit is: ' + orderResponse.data.pooler.creditScore + ' You are in green zone',
-          icon: 'success'
+          title: "Order placed!",
+          text:
+            "Your contribution credit is: " +
+            orderResponse.data.pooler.creditScore +
+            " You are in green zone",
+          icon: "success",
+        });
+        this.setState({
+          loading: false,
         });
       }
 
       localStorage.removeItem("cart");
-			localStorage.removeItem("cart_store_id");
-			localStorage.removeItem("finalOrderTotal")
+      localStorage.removeItem("cart_store_id");
+      localStorage.removeItem("finalOrderTotal");
       const { history } = this.props;
-      history.push('/main/home');
-    }catch (e) {
+      history.push("/main/home");
+    } catch (e) {
       console.log(e, e.response);
       // swal(e.response.data.message);
     }
-  }
+  };
 
   render() {
-    const { text, errors, orderListToShow, showConfirmOrder } = this.state;
+    const {
+      text,
+      errors,
+      orderListToShow,
+      showConfirmOrder,
+      loading,
+    } = this.state;
+    let spinner;
+    if (loading) {
+      spinner = <Spinner />;
+    }
 
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
@@ -307,11 +346,16 @@ class SelfPickup extends Component {
           </Container>
         </div>
         <div>
-          {showConfirmOrder && <button
-            type="button"
-            className="btn btn-primary"
-            onClick={this.handleCreateOrder}
-          >Confirm order and pickup</button>}
+          {showConfirmOrder && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={this.handleCreateOrder}
+            >
+              Confirm order and pickup
+            </button>
+          )}{" "}
+          {spinner}
         </div>
       </div>
     );
