@@ -284,8 +284,9 @@ public class OrderService {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this userId found");
 		}
 
-		List<Order> ordersPickedUp = orderRepository.findAllByPoolIdAndDeliveryPoolerAndStatusOrderByDateAsc(poolId,
-				userEntity.get(), Constants.PICKED_UP);
+		List<Order> ordersPickedUp = orderRepository.findAllByDeliveryTask(poolId,
+				userEntity.get());
+
 		return ordersPickedUp;
 	}
 
@@ -298,7 +299,7 @@ public class OrderService {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
 		}
 
-		if (orderEntity.get().getStatus().equals(Constants.PICKED_UP)) {
+		if (orderEntity.get().getStatus().equals(Constants.PICKED_UP) || orderEntity.get().getStatus().equals(Constants.DELIVERY_NOT_RECEIVED)) {
 			orderEntity.get().setStatus(Constants.DELIVERED);
 			Order order = orderRepository.save(orderEntity.get());
 			emailService.sendOrderDeliveredEmail(order);

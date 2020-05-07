@@ -37,6 +37,10 @@ class ProductCard extends Component {
                   {product.description}
                 </Card.Text>
                 <Card.Text>
+                  <b>Store: </b>
+                  {product.store.name}
+                </Card.Text>
+                <Card.Text>
                   <b>Brand: </b>
                   {product.brand}
                 </Card.Text>

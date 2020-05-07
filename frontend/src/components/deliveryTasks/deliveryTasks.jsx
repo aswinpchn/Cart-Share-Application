@@ -171,7 +171,7 @@ class DeliveryTasks extends Component {
                               'Zip - ' + order.pooler.address.zip)}
                           </td>
                           <td className="text-center">
-                            {order.status === "Picked up" ?
+                            {order.status === "Picked up" || order.status === "Delivery not received" ?
                               <Button
                                 onClick={() => this.markOrderDelivered(order.id)}
                                 type="button"
