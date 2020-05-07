@@ -12,6 +12,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	public List<Order> findAllByPoolIdAndDeliveryPoolerAndStatusOrderByDateAsc(String poolId, User deliveryPooler,
 			String status);
 
+	@Query("SELECT u from Order u where u.poolId = ?1 and u.deliveryPooler = ?2 and (u.status = 'Picked up' or u.status = 'Delivery not received') order by u.date asc")
+	public List<Order> findAllByDeliveryTask(String poolId, User deliveryPooler);
+
 	public List<Order> findAllByPooler(User pooler);
 
 	public List<Order> findAllByDeliveryPooler(User pooler);
