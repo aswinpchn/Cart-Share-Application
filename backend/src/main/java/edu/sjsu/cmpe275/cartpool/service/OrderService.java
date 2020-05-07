@@ -101,10 +101,8 @@ public class OrderService {
 		Optional<User> userObj = userRepository.findById(userId);
 		User user = userObj.get();
 		String poolId = user.getPoolId();
-		System.out.println("Pool Id-->" + poolId);
 
-		List<Order> orders = orderRepository.findAllByPoolIdAndDeliveryPoolerAndStatusOrderByDateAsc(poolId, null,
-				Constants.PLACED);
+		List<Order> orders = orderRepository.findAllFellowPoolerOrders(Constants.PLACED, poolId, user.getId());
 
 		return orders;
 	}
