@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import swal from "sweetalert";
 import axios from "axios";
 import { properties } from "../../properties";
-import Spinner from "../common/Spinner";
+import Spinner from "react-bootstrap/Spinner";
 const backendurl = properties.backendhost;
 
 class SelfPickup extends Component {
@@ -18,7 +18,7 @@ class SelfPickup extends Component {
       errors: "",
       text: null,
       showConfirmOrder: false,
-      loading: false,
+      loading: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -96,6 +96,10 @@ class SelfPickup extends Component {
       );
       //console.log(userResponse.data);
 
+      this.setState({
+        loading: true
+      });
+
       let data = {};
       data.poolerId = localStorage.getItem("userId");
       data.price = localStorage.getItem("finalOrderTotal");
@@ -168,21 +172,19 @@ class SelfPickup extends Component {
       history.push("/main/home");
     } catch (e) {
       console.log(e, e.response);
+      this.setState({
+        loading: false
+      });
       // swal(e.response.data.message);
     }
   };
 
   render() {
-    const {
-      text,
-      errors,
-      orderListToShow,
-      showConfirmOrder,
-      loading,
-    } = this.state;
+    const { text, errors, orderListToShow, showConfirmOrder, loading } = this.state;
     let spinner;
-    if (loading) {
-      spinner = <Spinner />;
+
+    if(loading) {
+      spinner = <Spinner animation="border" variant="primary" />;
     }
 
     return (
@@ -346,15 +348,11 @@ class SelfPickup extends Component {
           </Container>
         </div>
         <div>
-          {showConfirmOrder && (
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={this.handleCreateOrder}
-            >
-              Confirm order and pickup
-            </button>
-          )}{" "}
+          {showConfirmOrder && <button
+            type="button"
+            className="btn btn-primary"
+            onClick={this.handleCreateOrder}
+          >Confirm order and pickup</button>}
           {spinner}
         </div>
       </div>
