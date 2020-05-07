@@ -96,8 +96,7 @@ export const deleteStore = (id) => (dispatch) => {
         type: GET_ERRORS,
         payload: error.response.data,
       });
-      if (error.response.status === 406) {
-        swal(error.response.data.message);
-      }
+
+      swal("Cannot delete stores due to unfulfilled orders");
     });
 };
