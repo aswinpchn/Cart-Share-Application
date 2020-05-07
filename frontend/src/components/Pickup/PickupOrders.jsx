@@ -11,6 +11,11 @@ import {
   Accordion,
   Button,
 } from "react-bootstrap";
+import { getPickupOrders, markPickedUp } from "../_actions/pickupActions";
+
+import { connect } from "react-redux";
+import Spinner from "../common/Spinner";
+import PropTypes from "prop-types";
 import { properties } from "../../properties";
 import axios from "axios";
 const backendurl = properties.backendhost;
@@ -24,35 +29,16 @@ class PickupOrders extends Component {
     open: false,
     blockScroll: true,
     showButton: true,
+    scanned: false,
   };
 
   componentDidMount() {
     // axios post call, with delivery pooler id to get all the orders mapping with status assigned.
-
-    let userId = localStorage.getItem("userId");
-
-    axios
-      .get(backendurl + "pickuporders/" + userId)
-      .then((response) => {
-        console.log(response);
-        if (response.status == 200) {
-          this.setState({
-            numberOfOrders: response.data.length,
-            orders: response.data,
-            errors: "",
-          });
-        }
-      })
-      .catch((error) => {
-        console.log("Error in getting orders", error, error.response);
-        this.setState({
-          errors: error,
-        });
-      });
+    this.props.getPickupOrders();
   }
 
   onOpenModal = () => {
-    this.setState({ open: true, blockScroll: false });
+    this.setState({ open: true, blockScroll: false, scanned: true });
   };
 
   onCloseModal = () => {
@@ -61,29 +47,16 @@ class PickupOrders extends Component {
 
   handleSubmit = (groupId) => {
     console.log("in handle submit the group id is" + groupId);
-    const config = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    };
-    axios
-      .post(backendurl + `pickuporders/markpickedup/${groupId}`, config)
-      .then((response) => {
-        if (response.status === 200) {
-          swal("Status Updated");
-          this.setState({
-            showButton: false,
-          });
-        }
-      })
-      .catch((error) => {
-        swal("Status Update Failed.Please try again");
-      });
+    this.props.markPickedUp(groupId);
   };
 
   render() {
-    const { orders, open, showButton } = this.state;
+    const { open, showButton, scanned } = this.state;
+    const { orders, loading } = this.props.pickupState;
+    let spinner;
+    if (loading) {
+      spinner = <Spinner />;
+    }
 
     if (!Array.isArray(orders) || !orders.length) {
       // array does not exist, is not an array, or is empty
@@ -121,7 +94,7 @@ class PickupOrders extends Component {
           return result;
         }, {}); // empty object is the initial value for result object
       };
-      const GroupedById = groupBy(this.state.orders, "groupId");
+      const GroupedById = groupBy(orders, "groupId");
 
       let rows = [];
       let property;
@@ -140,6 +113,7 @@ class PickupOrders extends Component {
               </h2>
             </div>
           </div>
+
           <Container>
             <Row>
               <Col md={{ span: 10, offset: 1 }}>
@@ -165,43 +139,43 @@ class PickupOrders extends Component {
                                     Click here to view list of orders that can
                                     be picked up!{" "}
                                   </span>
-
-                                  <span style={{ marginLeft: "70px" }}>
-                                    <button
-                                      type="button"
-                                      className="btn btn-primary"
-                                      onClick={this.onOpenModal}
-                                    >
-                                      Scan QR Code
-                                    </button>
-
-                                    <div className="overflow-auto">
-                                      <Modal
-                                        open={open}
-                                        onClose={this.onCloseModal}
-                                        center
-                                      >
-                                        <h4 className="text-center tex-secondary">
-                                          Scan Qrcode
-                                        </h4>
-                                        <Qrcode rowIndex={rowIndex} />
-                                      </Modal>
-                                    </div>
-                                  </span>
-                                  <span>
-                                    <button
-                                      type="button"
-                                      className="btn btn-primary"
-                                      onClick={() =>
-                                        this.handleSubmit(obj.property)
-                                      }
-                                      disabled={!showButton}
-                                    >
-                                      Pickedup
-                                    </button>
-                                  </span>
                                 </span>
                               </Accordion.Toggle>
+                              <span style={{ marginLeft: "70px" }}>
+                                <button
+                                  type="button"
+                                  className="btn btn-primary"
+                                  onClick={this.onOpenModal}
+                                >
+                                  Scan QR Code
+                                </button>
+
+                                <div className="overflow-auto">
+                                  <Modal
+                                    open={open}
+                                    onClose={this.onCloseModal}
+                                    center
+                                  >
+                                    <h4 className="text-center tex-secondary">
+                                      Scan Qrcode
+                                    </h4>
+                                    <Qrcode rowIndex={rowIndex} />
+                                  </Modal>
+                                </div>
+                              </span>
+                              <span>
+                                <button
+                                  type="button"
+                                  className="btn btn-primary"
+                                  onClick={() =>
+                                    this.handleSubmit(obj.property)
+                                  }
+                                  disabled={!scanned}
+                                >
+                                  Pickedup
+                                </button>
+                                {spinner}
+                              </span>
                             </Card.Header>
 
                             {obj &&
@@ -241,4 +215,15 @@ class PickupOrders extends Component {
   }
 }
 
-export default PickupOrders;
+PickupOrders.propTypes = {
+  errors: PropTypes.object.isRequired,
+  orders: PropTypes.array,
+};
+const mapStateToProps = (state) => ({
+  pickupState: state.pickupState,
+  errors: state.errorState,
+});
+
+export default connect(mapStateToProps, { getPickupOrders, markPickedUp })(
+  PickupOrders
+);
