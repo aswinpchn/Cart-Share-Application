@@ -13,7 +13,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 			String status);
 
 	public List<Order> findAllByPooler(User pooler);
-	
+
 	public List<Order> findAllByDeliveryPooler(User pooler);
 
 	public List<Order> findAllByDeliveryPoolerAndStatus(User deliveryPoolerId, String status);
@@ -26,5 +26,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 			value = "select * from pool_order where status = ?1 and pool_id = ?2 and delivery_pooler_id IS NULL and pooler_id <> ?3",
 			nativeQuery = true)
 	public List<Order> findAllFellowPoolerOrders(String status, String poolId, long poolerId);
+	public List<Order> findByStoreName(String name);
 
 }

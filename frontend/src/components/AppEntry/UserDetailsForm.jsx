@@ -11,6 +11,7 @@ import constants from "../../utils/constants";
 import axios from "axios";
 import { properties } from "../../properties";
 import { Redirect } from "react-router-dom";
+import swal from "sweetalert";
 
 class UserDetailsForm extends Component {
   constructor(props) {
@@ -54,7 +55,9 @@ class UserDetailsForm extends Component {
     axios
       .post(backendurl, data)
       .then((response) => {
-        window.alert('Thank you for registering. Please verify your email address to use the cartpool');
+        swal(
+          "Thank you for registering. Please verify your email address to use the cartpool"
+        );
         this.setState({
           profileUpdated: true,
         });
@@ -113,10 +116,7 @@ class UserDetailsForm extends Component {
                 </div>
                 <br />
                 <br />
-                <div>
-                  <h5> Email: {email} </h5>
-                  <br />
-                </div>
+                <div></div>
                 <Form>
                   <Form.Row>
                     <Form.Group as={Col} controlId="screenName">

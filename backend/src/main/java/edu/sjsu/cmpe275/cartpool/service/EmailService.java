@@ -15,6 +15,7 @@ import org.thymeleaf.context.Context;
 
 import edu.sjsu.cmpe275.cartpool.dto.Order;
 import edu.sjsu.cmpe275.cartpool.dto.PoolRequest;
+import edu.sjsu.cmpe275.cartpool.dto.User;
 
 @Service
 public class EmailService {
@@ -186,6 +187,25 @@ public class EmailService {
 			helper.setSubject("CartPool Order - Delivery Not Received");
 			helper.setText(content, true);
 			javaMailSender.send(message);
+			return true;
+		} catch (Exception ex) {
+			// log here
+		}
+		return false;
+	}
+	
+	public boolean sendPersonalMessage(User sender, User receiver, String message) {
+		try {
+			Context context = new Context();
+			context.setVariable("sender", sender);
+			context.setVariable("message", message);
+			String content = templateEngine.process("personalmessage", context);
+			MimeMessage emailMessage = javaMailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(emailMessage);
+			helper.setTo(receiver.getEmail());
+			helper.setSubject("CartPool Message from Pooler");
+			helper.setText(content, true);
+			javaMailSender.send(emailMessage);
 			return true;
 		} catch (Exception ex) {
 			// log here
