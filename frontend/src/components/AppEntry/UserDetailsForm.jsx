@@ -11,6 +11,7 @@ import constants from "../../utils/constants";
 import axios from "axios";
 import { properties } from "../../properties";
 import { Redirect } from "react-router-dom";
+import Spinner from "../common/Spinner";
 import swal from "sweetalert";
 import firebase from "firebase";
 
@@ -26,6 +27,7 @@ class UserDetailsForm extends Component {
       zipCode: "",
       errors: "",
       profileUpdated: false,
+      loading: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -57,6 +59,10 @@ class UserDetailsForm extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
+    this.setState({
+      loading: true,
+    });
+
     const data = {
       email: localStorage.getItem("email"),
       screenName: this.state.screenName,
@@ -78,6 +84,7 @@ class UserDetailsForm extends Component {
         );
         this.setState({
           profileUpdated: true,
+          loading: false,
         });
       })
       .catch((error) => {
@@ -90,11 +97,15 @@ class UserDetailsForm extends Component {
     //this.props.registerUser(data, this.props.history);
   }
   render() {
-    const { errors } = this.state;
+    const { errors, loading } = this.state;
     const { email, password } = this.props.auth.user;
     let redirectVar = null;
     if (this.state.profileUpdated) {
       redirectVar = <Redirect to="/main/home" />;
+    }
+    let spinner;
+    if (loading) {
+      spinner = <Spinner />;
     }
 
     var logoutButton;
@@ -237,6 +248,7 @@ class UserDetailsForm extends Component {
                   >
                     Proceed
                   </Button>
+                  {spinner}
                   <br />
                   <p className="text-danger"> {errors}</p>
                 </Form>
