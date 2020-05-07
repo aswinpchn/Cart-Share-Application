@@ -58,35 +58,38 @@ public class StoreService {
 
 	@Transactional
 	public Store deleteStore(long storeId) {
+		String status = "";
 		Optional<Store> existingStore = storeRepository.findById(storeId);
-		if (!existingStore.isPresent()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found");
-		}
-		Store store = existingStore.get();
-		String storeName = store.getName();
-		List<Order> orders = orderRepository.findByStoreName(storeName);
-		if (orders != null && !orders.isEmpty()) {
-			for (Order order : orders) {
-				if (Constants.PLACED.equals(order.getStatus()) && (Constants.ASSIGNED.equals(order.getStatus()))) {
+		try {
+			if (!existingStore.isPresent()) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found");
+			}
+			Store store = existingStore.get();
+			String storeName = store.getName();
+			List<Order> orders = orderRepository.findByStoreName(storeName);
+			if (orders != null && !orders.isEmpty()) {
 
-					throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-							"Cannot delete store because of unfulfilled orders");
+				for (Order order : orders) {
+					if (Constants.PLACED.equals(order.getStatus()) && (Constants.ASSIGNED.equals(order.getStatus()))) {
+
+						throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
+								"Cannot delete store because of unfulfilled orders");
+
+					}
+				}
+			}
+			List<Product> products = productRepository.findByStore(store);
+			if (products != null && !products.isEmpty()) {
+				for (Product product : products) {
+					long productId = product.getId();
+					Product deletedProduct = productService.deleteProduct(productId);
 
 				}
 			}
+		} catch (Exception e) {
+			System.out.println("Exception occured while deleting store" + e);
+			status = "Exception occurred while deleting the store";
 		}
-		List<Product> products = productRepository.findByStore(store);
-		if (products != null && !products.isEmpty()) {
-			for (Product product : products) {
-
-				long productId = product.getId();
-
-				productService.deleteProduct(productId);
-
-			}
-
-		}
-
 		storeRepository.deleteById(storeId);
 		return existingStore.get();
 	}
