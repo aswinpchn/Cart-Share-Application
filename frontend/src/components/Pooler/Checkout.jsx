@@ -3,12 +3,14 @@ import {Button, Card, Col, Container, Row} from "react-bootstrap";
 import { properties } from "../../properties";
 import axios from 'axios';
 import swal from 'sweetalert';
+import Spinner from "react-bootstrap/Spinner";
 
 class Checkout extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      loading: false
     };
   }
 
@@ -117,6 +119,10 @@ class Checkout extends Component {
       let userResponse = await axios.get(properties.backendhost + 'user/?email=' + localStorage.getItem("email"));
       //console.log(userResponse.data);
 
+      this.setState({
+        loading: true,
+      });
+
       let postBody = {};
       postBody.poolerId = localStorage.getItem("userId");
       postBody.price = this.state.order.finalOrderTotal;
@@ -147,6 +153,9 @@ class Checkout extends Component {
     }catch (e) {
       console.log(e.response);
       swal(e.response.data.message);
+      this.setState({
+        loading: false,
+      });
     }
 
   }
@@ -157,8 +166,12 @@ class Checkout extends Component {
   }
 
   render () {
-    const {cart, store, order} = this.state;
+    const {cart, store, order, loading} = this.state;
     console.log(this.state);
+    let spinner;
+    if (loading) {
+      spinner = <Spinner animation="border" variant="primary" />;
+    }
     if(cart && store && order) {
       return (
         <div style={{ height: "75vh" }} className="container valign-wrapper">
@@ -286,6 +299,7 @@ class Checkout extends Component {
                 onClick={this.handleDeferPickup}>
                   Defer pickup
                 </Button>
+                {spinner}
               </Col>
             </Row>
           </Container>

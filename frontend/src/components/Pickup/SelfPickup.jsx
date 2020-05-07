@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import swal from 'sweetalert';
 import axios from "axios";
 import { properties } from "../../properties";
+import Spinner from "react-bootstrap/Spinner";
 const backendurl = properties.backendhost;
 
 class SelfPickup extends Component {
@@ -16,7 +17,8 @@ class SelfPickup extends Component {
       orderListToShow: [],
       errors: "",
       text: null,
-      showConfirmOrder: false
+      showConfirmOrder: false,
+      loading: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -88,6 +90,10 @@ class SelfPickup extends Component {
       let userResponse = await axios.get(properties.backendhost + 'user/?email=' + localStorage.getItem("email"));
       //console.log(userResponse.data);
 
+      this.setState({
+        loading: true
+      });
+
       let data = {};
       data.poolerId = localStorage.getItem("userId");
       data.price = localStorage.getItem("finalOrderTotal");
@@ -139,12 +145,20 @@ class SelfPickup extends Component {
       history.push('/main/home');
     }catch (e) {
       console.log(e, e.response);
+      this.setState({
+        loading: false
+      });
       // swal(e.response.data.message);
     }
   }
 
   render() {
-    const { text, errors, orderListToShow, showConfirmOrder } = this.state;
+    const { text, errors, orderListToShow, showConfirmOrder, loading } = this.state;
+    let spinner;
+
+    if(loading) {
+      spinner = <Spinner animation="border" variant="primary" />;
+    }
 
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
@@ -312,6 +326,7 @@ class SelfPickup extends Component {
             className="btn btn-primary"
             onClick={this.handleCreateOrder}
           >Confirm order and pickup</button>}
+          {spinner}
         </div>
       </div>
     );

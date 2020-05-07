@@ -13,6 +13,7 @@ import { properties } from "../../properties";
 import { Redirect } from "react-router-dom";
 import swal from "sweetalert";
 import firebase from "firebase";
+import Spinner from "react-bootstrap/Spinner";
 
 class UserDetailsForm extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class UserDetailsForm extends Component {
       zipCode: "",
       errors: "",
       profileUpdated: false,
+      loading: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -68,6 +70,10 @@ class UserDetailsForm extends Component {
     };
     console.log("data is in handle submit step 2..", data);
 
+    this.setState({
+      loading: true
+    });
+
     // axios call to set profile
     const backendurl = properties.backendhost + "user/updateProfile";
     axios
@@ -78,23 +84,30 @@ class UserDetailsForm extends Component {
         );
         this.setState({
           profileUpdated: true,
+          loading: false
         });
       })
       .catch((error) => {
         console.log(error);
         this.setState({
           errors: "Screen Name or Nick name already exists",
+          loading: false
         });
       });
 
     //this.props.registerUser(data, this.props.history);
   }
   render() {
-    const { errors } = this.state;
+    const { errors, loading } = this.state;
     const { email, password } = this.props.auth.user;
     let redirectVar = null;
     if (this.state.profileUpdated) {
       redirectVar = <Redirect to="/main/home" />;
+    }
+
+    let spinner;
+    if(loading) {
+      spinner = <Spinner animation="border" variant="primary" />;
     }
 
     var logoutButton;
@@ -237,6 +250,7 @@ class UserDetailsForm extends Component {
                   >
                     Proceed
                   </Button>
+                  {spinner}
                   <br />
                   <p className="text-danger"> {errors}</p>
                 </Form>
