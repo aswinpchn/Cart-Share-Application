@@ -122,7 +122,7 @@ class Navigationbar extends Component {
           <Nav.Link href="/main/home">Home</Nav.Link>
 
           <Nav.Link href="/main/pooler/search">Search Products</Nav.Link>
-          
+
           <DropdownButton id="dropdown-basic-button" title="Pool">
             <Dropdown.Item href="/main/pooler/currentPool">
               Current Pool
@@ -139,9 +139,7 @@ class Navigationbar extends Component {
             <Dropdown.Item href="/main/pooler/account">
               My Account
             </Dropdown.Item>
-            <Dropdown.Item href="/main/pooler/orders">
-              My Orders
-            </Dropdown.Item>
+            <Dropdown.Item href="/main/pooler/orders">My Orders</Dropdown.Item>
             <Dropdown.Item href="/main/pooler/pickup">
               Pickup Orders
             </Dropdown.Item>
@@ -194,6 +192,7 @@ class Navigationbar extends Component {
             <Link to="/home" className="nav-link" href="#"></Link>
           </Navbar.Brand>
           {menuButtons}
+
           <Nav.Link>{logoutButton}</Nav.Link>
         </nav>
         {displayMessage}

@@ -58,7 +58,7 @@ class PoolRequests extends Component {
               aria-controls="referrer"
               onClick={() => this.onSectionClick("pills-referrer")}
             >
-              Requests for Refferer
+              Requests for Referrer
             </a>
           </li>
           {this.state.approverType === "Leader" ? (

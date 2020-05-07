@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Col, Form } from "react-bootstrap";
-import Button from "react-bootstrap/Button";
+import { Col, Form, Navbar, Nav, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
@@ -12,6 +12,7 @@ import axios from "axios";
 import { properties } from "../../properties";
 import { Redirect } from "react-router-dom";
 import swal from "sweetalert";
+import firebase from "firebase";
 
 class UserDetailsForm extends Component {
   constructor(props) {
@@ -29,6 +30,23 @@ class UserDetailsForm extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  onLogoutClick = (e) => {
+    e.preventDefault();
+    // logout logic
+    firebase
+      .auth()
+      .signOut()
+      .then(function () {
+        // Sign-out successful.
+        localStorage.clear(); //for localStorage
+        window.location.href = "/";
+      })
+      .catch(function (error) {
+        // An error happened.
+        console.log("Error occurred while logging out");
+      });
+  };
 
   handleChange(e) {
     this.setState({
@@ -78,10 +96,34 @@ class UserDetailsForm extends Component {
     if (this.state.profileUpdated) {
       redirectVar = <Redirect to="/main/home" />;
     }
+
+    var logoutButton;
+
+    logoutButton = (
+      <div className="collapse navbar-collapse navbar-right" id="navbarNav">
+        <Nav className="mr-auto"></Nav>
+        <Link
+          className="nav-link text-dark t-font-size-14"
+          to="/"
+          onClick={this.onLogoutClick}
+        >
+          <i className="fas fa-sign-out-alt pr-2"></i>Logout
+        </Link>
+      </div>
+    );
+
     console.log(this.state);
     return (
       <div>
         {redirectVar}
+
+        <Navbar bg="light" expand="lg">
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto"></Nav>
+            <Nav.Link>{logoutButton}</Nav.Link>
+          </Navbar.Collapse>
+        </Navbar>
         <div className="d-md-flex h-md-100 align-items-center">
           <div className="col-md-6 p-0 bg-indigo h-md-100">
             <div className="text-white d-md-flex align-items-center h-100 p-7 text-center justify-content-center">
