@@ -5,6 +5,7 @@ import { errorReducer } from "../components/_reducers/errorReducer";
 import { productReducer } from "../components/_reducers/productReducer";
 import { userReducer } from "../components/_reducers/userReducer";
 import { profileReducer } from "../components/_reducers/profileReducer";
+import { poolReducer } from "../components/_reducers/poolReducer";
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -13,4 +14,5 @@ export const rootReducer = combineReducers({
   productState: productReducer,
   userState: userReducer,
   profileState: profileReducer,
+  poolState: poolReducer,
 });

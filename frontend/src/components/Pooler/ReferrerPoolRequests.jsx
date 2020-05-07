@@ -1,7 +1,15 @@
 import React, { Component } from "react";
 import { Button } from "react-bootstrap";
 import axios from "axios";
+import PropTypes from "prop-types";
+import {
+  getReferrerRequests,
+  referrerApproveRequest,
+  referrerRejectRequest,
+} from "../_actions/poolActions";
+import { connect } from "react-redux";
 import { properties } from "../../properties";
+import Spinner from "../common/Spinner";
 import swal from "sweetalert";
 const backendurl = properties.backendhost;
 
@@ -21,72 +29,30 @@ class ReferrerPoolRequests extends Component {
   }
 
   componentDidMount() {
-    let referrerScreenName = localStorage.getItem("screenName");
-    axios
-      .get(backendurl + `pool/joinrequest/${referrerScreenName}`)
-      .then((response) => {
-        console.log("the pool request data is" + response.data);
-        this.setState({
-          poolRequests: response.data,
-        });
-      })
-      .catch((error) => {
-        console.log("error while getting response");
-      });
+    this.props.getReferrerRequests();
   }
 
   onApprove(index, poolRequestId) {
     this.setState({
       rowIndex: index,
     });
-    axios
-      .post(backendurl + `pool/referral/approvejoinrequest/${poolRequestId}`)
-      .then((response) => {
-        console.log("the approval data is" + response.data);
-        this.setState({
-          approvalResponse: response.data,
-        });
-      })
-      .catch((error) => {
-        if (error.response.status == 422) {
-          swal("User is already part of a pool", "failure");
-          this.setState({
-            approvalResponse: "Approval failure - User is already part of a pool",
-          });
-        } 
-        this.setState({
-          approvalResponse: "Approval Failed, " + error,
-        });
-      });
+    this.props.referrerApproveRequest(poolRequestId);
   }
 
   onReject(index, poolRequestId) {
     this.setState({
       rowIndex: index,
     });
-    axios
-      .post(backendurl + `pool/rejectjoinrequest/${poolRequestId}`)
-      .then((response) => {
-        console.log("the rejection data is" + response.data);
-        this.setState({
-          rejectionResponse: response.data,
-        });
-      })
-      .catch((error) => {
-        console.log("error while getting response");
-        this.setState({
-          rejectionResponse: "Rejection Failed, " + error,
-        });
-      });
+    this.props.referrerRejectRequest(poolRequestId);
   }
 
   render() {
-    const {
-      poolRequests,
-      rowIndex,
-      approvalResponse,
-      rejectionResponse,
-    } = this.state;
+    const { rowIndex, approvalResponse, rejectionResponse } = this.state;
+    const { poolRequests, loading } = this.props.poolState;
+    let spinner;
+    if (poolRequests === null || loading) {
+      spinner = <Spinner />;
+    }
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div>
@@ -131,7 +97,8 @@ class ReferrerPoolRequests extends Component {
                             >
                               Approve
                             </Button>
-                            {rowIndex === index ? (
+
+                            {/* {rowIndex === index ? (
                               <div>
                                 <p className="text-primary">
                                   {approvalResponse}
@@ -139,7 +106,7 @@ class ReferrerPoolRequests extends Component {
                               </div>
                             ) : (
                               ""
-                            )}
+                            )} */}
                           </td>
                           <td>
                             <Button
@@ -151,7 +118,8 @@ class ReferrerPoolRequests extends Component {
                             >
                               Reject
                             </Button>
-                            {rowIndex === index ? (
+
+                            {/* {rowIndex === index ? (
                               <div>
                                 <p className="text-primary">
                                   {rejectionResponse}
@@ -159,10 +127,11 @@ class ReferrerPoolRequests extends Component {
                               </div>
                             ) : (
                               ""
-                            )}
+                            )} */}
                           </td>
                         </tr>
                       </td>
+                      {spinner}
                     </tr>
                   );
                 })}
@@ -173,4 +142,17 @@ class ReferrerPoolRequests extends Component {
     );
   }
 }
-export default ReferrerPoolRequests;
+
+ReferrerPoolRequests.propTypes = {
+  errors: PropTypes.object.isRequired,
+  poolRequests: PropTypes.array,
+};
+const mapStateToProps = (state) => ({
+  poolState: state.poolState,
+  errors: state.errorState,
+});
+export default connect(mapStateToProps, {
+  getReferrerRequests,
+  referrerApproveRequest,
+  referrerRejectRequest,
+})(ReferrerPoolRequests);
