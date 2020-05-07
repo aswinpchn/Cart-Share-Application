@@ -3,6 +3,14 @@ import { Button } from "react-bootstrap";
 import axios from "axios";
 import { properties } from "../../properties";
 import swal from "sweetalert";
+import PropTypes from "prop-types";
+import {
+  getLeaderRequests,
+  leaderApproveRequest,
+  leaderRejectRequest,
+} from "../_actions/poolActions";
+import { connect } from "react-redux";
+import Spinner from "../common/Spinner";
 const backendurl = properties.backendhost;
 
 class LeaderPoolRequests extends Component {
@@ -21,72 +29,30 @@ class LeaderPoolRequests extends Component {
   }
 
   componentDidMount() {
-    let leaderScreenName = localStorage.getItem("screenName");
-    axios
-      .get(backendurl + `pool/leader/joinrequest/${leaderScreenName}`)
-      .then((response) => {
-        console.log("the pool request data is" + response.data);
-        this.setState({
-          poolRequests: response.data,
-        });
-      })
-      .catch((error) => {
-        console.log("error while getting response" + error);
-      });
+    this.props.getLeaderRequests();
   }
 
   onApprove(index, poolRequestId) {
     this.setState({
       rowIndex: index,
     });
-    axios
-      .post(backendurl + `pool/leader/approvejoinrequest/${poolRequestId}`)
-      .then((response) => {
-        console.log("the approval data is" + response.data);
-        this.setState({
-          approvalResponse: response.data,
-        });
-      })
-      .catch((error) => {
-        if (error.response.status == 422) {
-          swal("User is already part of a pool", "failure");
-          this.setState({
-            approvalResponse: "Approval failure - User is already part of a pool",
-          });
-        } 
-        this.setState({
-          approvalResponse: "Approval Failed, " + error,
-        });
-      });
+    this.props.leaderApproveRequest(poolRequestId);
   }
 
   onReject(index, poolRequestId) {
     this.setState({
       rowIndex: index,
     });
-    axios
-      .post(backendurl + `pool/rejectjoinrequest/${poolRequestId}`)
-      .then((response) => {
-        console.log("the rejection data is" + response.data);
-        this.setState({
-          rejectionResponse: response.data,
-        });
-      })
-      .catch((error) => {
-        console.log("error while getting response");
-        this.setState({
-          rejectionResponse: "Rejection Failed, " + error,
-        });
-      });
+    this.props.leaderRejectRequest(poolRequestId);
   }
 
   render() {
-    const {
-      poolRequests,
-      rowIndex,
-      approvalResponse,
-      rejectionResponse,
-    } = this.state;
+    const { rowIndex, approvalResponse, rejectionResponse } = this.state;
+    const { poolRequests, loading } = this.props.poolState;
+    let spinner;
+    if (poolRequests === null || loading) {
+      spinner = <Spinner />;
+    }
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div>
@@ -134,7 +100,8 @@ class LeaderPoolRequests extends Component {
                             >
                               Approve
                             </Button>
-                            {rowIndex === index ? (
+
+                            {/* {rowIndex === index ? (
                               <div>
                                 <p className="text-primary">
                                   {approvalResponse}
@@ -142,7 +109,7 @@ class LeaderPoolRequests extends Component {
                               </div>
                             ) : (
                               ""
-                            )}
+                            )} */}
                           </td>
 
                           <td>
@@ -155,7 +122,8 @@ class LeaderPoolRequests extends Component {
                             >
                               Reject
                             </Button>
-                            {rowIndex === index ? (
+
+                            {/* {rowIndex === index ? (
                               <div>
                                 <p className="text-primary">
                                   {rejectionResponse}
@@ -163,10 +131,11 @@ class LeaderPoolRequests extends Component {
                               </div>
                             ) : (
                               ""
-                            )}
+                            )} */}
                           </td>
                         </tr>
                       </td>
+                      {spinner}
                     </tr>
                   );
                 })}
@@ -177,4 +146,17 @@ class LeaderPoolRequests extends Component {
     );
   }
 }
-export default LeaderPoolRequests;
+
+LeaderPoolRequests.propTypes = {
+  errors: PropTypes.object.isRequired,
+  poolRequests: PropTypes.array,
+};
+const mapStateToProps = (state) => ({
+  poolState: state.poolState,
+  errors: state.errorState,
+});
+export default connect(mapStateToProps, {
+  getLeaderRequests,
+  leaderApproveRequest,
+  leaderRejectRequest,
+})(LeaderPoolRequests);
