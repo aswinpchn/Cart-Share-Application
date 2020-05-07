@@ -44,17 +44,10 @@ class PoolerHome extends Component {
     const getProductsUrl = properties.backendhost + `product/${storeId}`;
     const email = localStorage.getItem('email');
     const getUserDetailsUrl = properties.backendhost + `user?email=${email}`
-    let userIsPooler = false;
-    axios.get(getUserDetailsUrl, {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then((response) => {
-      if (response) {
-        userIsPooler = true
-      }
-    });
+    let userIsPartOfPool = false;
+    let userResponse = await axios.get(getUserDetailsUrl);
+    //console.log(userResponse.data);
+    userIsPartOfPool = userResponse.data.poolId?true:false;
 
     axios.get(getProductsUrl, {
       headers: {
@@ -64,7 +57,7 @@ class PoolerHome extends Component {
     }).then((response) => {
       if (response) {
         this.setState({
-          userIsPooler: userIsPooler,
+          userIsPartOfPool: userIsPartOfPool,
           products: response.data
         })
       }
@@ -95,7 +88,7 @@ class PoolerHome extends Component {
       products = this.state.products.map(product => {
         return (
           <Col key={product.id} sm={3}>
-            <ProductCard product={product} store={this.state.storeId} showAddToCart={this.state.userIsPooler} />
+            <ProductCard product={product} store={this.state.storeId} showAddToCart={this.state.userIsPartOfPool} />
           </Col>
         )
       })

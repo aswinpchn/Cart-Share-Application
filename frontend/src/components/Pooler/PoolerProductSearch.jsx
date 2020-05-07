@@ -10,6 +10,7 @@ class PoolerProductSearch extends Component {
     super(props);
     this.state = {
       searchText: "",
+      userIsPartOfPool: false
     };
   }
 
@@ -18,8 +19,14 @@ class PoolerProductSearch extends Component {
     const email = localStorage.getItem('email');
     const getUserDetailsUrl = properties.backendhost + `user?email=${email}`
 
+    let userIsPartOfPool = false;
     let user = await axios.get(getUserDetailsUrl);
     //console.log(user.data);
+    userIsPartOfPool = user.data.poolId?true:false;
+
+    this.setState({
+      userIsPartOfPool: userIsPartOfPool
+    });
   }
 
   onSearchTextChange = async (e) => {
@@ -64,7 +71,7 @@ class PoolerProductSearch extends Component {
                 this.state.products.map((product, productIndex) => {
                   return (
                     <Col key={productIndex} sm={3}>
-                      <ProductCard product={product} store={product.store.id} showAddToCart={true} />
+                      <ProductCard product={product} store={product.store.id} showAddToCart={this.state.userIsPartOfPool} />
                     </Col>
                   );
                 })}
