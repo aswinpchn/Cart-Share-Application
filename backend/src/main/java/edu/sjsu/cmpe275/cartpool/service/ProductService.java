@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import edu.sjsu.cmpe275.cartpool.dto.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import edu.sjsu.cmpe275.cartpool.dto.Product;
 import edu.sjsu.cmpe275.cartpool.dto.Store;
 import edu.sjsu.cmpe275.cartpool.repository.ProductRepository;
 import edu.sjsu.cmpe275.cartpool.repository.StoreRepository;
+import edu.sjsu.cmpe275.cartpool.repository.OrderRepository;
 
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,6 +30,9 @@ public class ProductService {
 
 	@Autowired
 	private StoreRepository storeRespository;
+
+	@Autowired
+	private OrderRepository orderRepository;
 
 	@Autowired
 	private AWSS3Service awsS3Service;
@@ -102,5 +107,18 @@ public class ProductService {
 		result.addAll(productRespository.findByNameContaining(searchString));
 
 		return result;
+	}
+
+	public Product deleteProduct(long productId) {
+		Optional<Product> productExists = productRespository.findById(productId);
+		if (productExists.isPresent()) {
+			List<Order> unfulfilledOrders = orderRepository.findUnfulfilledOrders(productId);
+			if(unfulfilledOrders.size() == 0) {
+				productRespository.deleteById(productId);
+				return productExists.get();
+			}
+			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Product cannot be deleted because of unfulfilled orders against it");
+		}
+		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
 	}
 }

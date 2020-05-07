@@ -26,6 +26,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 			value = "select * from pool_order where status = ?1 and pool_id = ?2 and delivery_pooler_id IS NULL and pooler_id <> ?3",
 			nativeQuery = true)
 	public List<Order> findAllFellowPoolerOrders(String status, String poolId, long poolerId);
+
 	public List<Order> findByStoreName(String name);
 
+	@Query(value = "select * from pool_order where status NOT IN (\"Delivered\", \"Picked up by self\") AND id IN (select order_id from cmpe275TermProject.order_detail where product_id = ?1);",
+			nativeQuery = true)
+	public List<Order> findUnfulfilledOrders(long productId);
 }

@@ -404,4 +404,10 @@ public class ApplicationController {
 	public Boolean sendMessage(@RequestBody SendMessageRequestBodyModel sendMessageRequestBodyModel) {
 		return userService.sendMessage(sendMessageRequestBodyModel);
 	}
+
+	@DeleteMapping("/product/{productId}")
+	@ResponseBody
+	public Product deleteProduct(@PathVariable("productId") long productId) {
+		return productService.deleteProduct(productId);
+	}
 }
