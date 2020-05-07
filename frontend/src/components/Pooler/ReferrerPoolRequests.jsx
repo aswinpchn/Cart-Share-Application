@@ -21,7 +21,7 @@ class ReferrerPoolRequests extends Component {
       requesterScreenName: "",
       poolName: "",
       poolId: "",
-      poolRequests: [],
+      referrerpoolRequests: [],
       approvalResponse: "",
       rejectionResponse: "",
       rowIndex: "",
@@ -48,9 +48,9 @@ class ReferrerPoolRequests extends Component {
 
   render() {
     const { rowIndex, approvalResponse, rejectionResponse } = this.state;
-    const { poolRequests, loading } = this.props.poolState;
+    const { referrerpoolRequests, loading } = this.props.poolState;
     let spinner;
-    if (poolRequests === null || loading) {
+    if (referrerpoolRequests === null || loading) {
       spinner = <Spinner />;
     }
     return (
@@ -74,7 +74,7 @@ class ReferrerPoolRequests extends Component {
               </tr>
             </thead>
             <tbody>
-              {poolRequests
+              {referrerpoolRequests
                 .filter((poolRequest) => poolRequest.status === "Pending")
                 .map((poolRequest, index) => {
                   console.log("the pool req rec is " + poolRequest);
@@ -145,7 +145,7 @@ class ReferrerPoolRequests extends Component {
 
 ReferrerPoolRequests.propTypes = {
   errors: PropTypes.object.isRequired,
-  poolRequests: PropTypes.array,
+  referrerpoolRequests: PropTypes.array,
 };
 const mapStateToProps = (state) => ({
   poolState: state.poolState,

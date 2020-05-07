@@ -21,7 +21,7 @@ class LeaderPoolRequests extends Component {
       requesterScreenName: "",
       poolName: "",
       poolId: "",
-      poolRequests: [],
+      leaderpoolRequests: [],
       approvalResponse: "",
       rejectionResponse: "",
       rowIndex: "",
@@ -48,9 +48,9 @@ class LeaderPoolRequests extends Component {
 
   render() {
     const { rowIndex, approvalResponse, rejectionResponse } = this.state;
-    const { poolRequests, loading } = this.props.poolState;
+    const { leaderpoolRequests, loading } = this.props.poolState;
     let spinner;
-    if (poolRequests === null || loading) {
+    if (leaderpoolRequests === null || loading) {
       spinner = <Spinner />;
     }
     return (
@@ -74,7 +74,7 @@ class LeaderPoolRequests extends Component {
               </tr>
             </thead>
             <tbody>
-              {poolRequests
+              {leaderpoolRequests
                 .filter(
                   (poolRequest) =>
                     poolRequest.status === "Pending_Leader_Approval"
@@ -149,7 +149,7 @@ class LeaderPoolRequests extends Component {
 
 LeaderPoolRequests.propTypes = {
   errors: PropTypes.object.isRequired,
-  poolRequests: PropTypes.array,
+  leaderpoolRequests: PropTypes.array,
 };
 const mapStateToProps = (state) => ({
   poolState: state.poolState,
