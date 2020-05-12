@@ -2,6 +2,7 @@ package edu.sjsu.cmpe275.cartpool.repository;
 
 import java.util.List;
 
+import edu.sjsu.cmpe275.cartpool.dto.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import edu.sjsu.cmpe275.cartpool.dto.Order;
@@ -30,7 +31,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 			nativeQuery = true)
 	public List<Order> findAllFellowPoolerOrders(String status, String poolId, long poolerId, long storeId);
 
-	public List<Order> findByStoreName(String name);
+	public List<Order> findByStore(Store store);
 
 	@Query(value = "select * from pool_order where status NOT IN (\"Delivered\", \"Picked up by self\") AND id IN (select order_id from cmpe275TermProject.order_detail where product_id = ?1);",
 			nativeQuery = true)

@@ -65,8 +65,7 @@ public class StoreService {
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found");
 			}
 			Store store = existingStore.get();
-			String storeName = store.getName();
-			List<Order> orders = orderRepository.findByStoreName(storeName);
+			List<Order> orders = orderRepository.findByStore(store);
 			if (orders != null && !orders.isEmpty()) {
 
 				for (Order order : orders) {
