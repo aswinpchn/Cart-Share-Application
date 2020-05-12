@@ -79,7 +79,7 @@ public class OrderService {
 		order.setPrice(deferredOrderRequestModel.getPrice());
 		order.setPoolId(deferredOrderRequestModel.getPoolId());
 		order.setStatus(Constants.PLACED);
-		order.setStoreName(pickupStore.getName());
+		order.setStore(pickupStore);
 		order.setDate(Calendar.getInstance().getTime());
 
 		List<OrderDetail> orderDetails = new ArrayList<>();
@@ -99,12 +99,12 @@ public class OrderService {
 	}
 
 	@Transactional
-	public List<Order> getFellowPoolerOrders(long userId) {
+	public List<Order> getFellowPoolerOrders(long userId, long storeId) {
 		Optional<User> userObj = userRepository.findById(userId);
 		User user = userObj.get();
 		String poolId = user.getPoolId();
 
-		List<Order> orders = orderRepository.findAllFellowPoolerOrders(Constants.PLACED, poolId, user.getId());
+		List<Order> orders = orderRepository.findAllFellowPoolerOrders(Constants.PLACED, poolId, user.getId(), storeId);
 
 		return orders;
 	}
@@ -141,7 +141,7 @@ public class OrderService {
 		order.setStatus(Constants.ASSIGNED);
 		order.setDate(Calendar.getInstance().getTime());
 		order.setDeliveryPooler(userEntity.get());
-		order.setStoreName(pickupStore.getName());
+		order.setStore(pickupStore);
 		order.setDate(Calendar.getInstance().getTime());
 
 		List<OrderDetail> orderDetails = new ArrayList<>();

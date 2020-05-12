@@ -344,10 +344,10 @@ public class ApplicationController {
 		return orderService.createDeferredOrder(deferredOrderRequestModel);
 	}
 
-	@GetMapping("/orders/fellowpoolers/{userId}")
+	@GetMapping("/orders/fellowpoolers/{userId}/store/{storeId}")
 	@ResponseBody
-	public List<Order> getFellowPoolerOrders(@PathVariable("userId") long userId) {
-		return orderService.getFellowPoolerOrders(userId);
+	public List<Order> getFellowPoolerOrders(@PathVariable("userId") long userId, @PathVariable("storeId") long storeId) {
+		return orderService.getFellowPoolerOrders(userId, storeId);
 	}
 
 	@PostMapping("/order/self")

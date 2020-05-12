@@ -33,7 +33,9 @@ public class Order {
 	
 	private String poolId;
 
-	private String storeName;
+	@ManyToOne(fetch = FetchType.EAGER, optional = true)
+	@JoinColumn(name = "store_id", nullable = true)
+	private Store store;
 
 	private int groupId;
 
@@ -113,12 +115,12 @@ public class Order {
 		this.poolId = poolId;
 	}
 
-	public String getStoreName() {
-		return storeName;
+	public Store getStore() {
+		return store;
 	}
 
-	public void setStoreName(String storeName) {
-		this.storeName = storeName;
+	public void setStore(Store store) {
+		this.store = store;
 	}
 
 	public int getGroupId() {
@@ -140,7 +142,7 @@ public class Order {
 				", qrCode='" + qrCode + '\'' +
 				", price=" + price +
 				", poolId='" + poolId + '\'' +
-				", storeName='" + storeName + '\'' +
+				", store=" + store +
 				", groupId=" + groupId +
 				", orderDetails=" + orderDetails +
 				'}';

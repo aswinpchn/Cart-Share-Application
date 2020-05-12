@@ -26,9 +26,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	public List<Order> findAllByGroupId(int groupid);
 
 	@Query(
-			value = "select * from pool_order where status = ?1 and pool_id = ?2 and delivery_pooler_id IS NULL and pooler_id <> ?3",
+			value = "select * from pool_order where status = ?1 and pool_id = ?2 and delivery_pooler_id IS NULL and pooler_id <> ?3 and store_id = ?4",
 			nativeQuery = true)
-	public List<Order> findAllFellowPoolerOrders(String status, String poolId, long poolerId);
+	public List<Order> findAllFellowPoolerOrders(String status, String poolId, long poolerId, long storeId);
 
 	public List<Order> findByStoreName(String name);
 

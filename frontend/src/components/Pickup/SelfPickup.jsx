@@ -26,8 +26,9 @@ class SelfPickup extends Component {
 
   componentDidMount() {
     let userId = localStorage.getItem("userId");
+    let storeId = localStorage.getItem("cart_store_id")
     axios
-      .get(backendurl + "orders/fellowpoolers/" + userId)
+      .get(backendurl + "orders/fellowpoolers/" + userId + "/store/" + storeId)
       .then((response) => {
         console.log(response);
         if (response.status == 200) {
@@ -215,7 +216,7 @@ class SelfPickup extends Component {
               <Form.Group as={Col} controlId="poolId">
                 <Form.Label>
                   How many number of orders you want to pick up for your fellow
-                  poolers:
+                  poolers from the store you are currently shopping <b>(Only top orders will be picked up)</b>:
                 </Form.Label>
               </Form.Group>
             </Form.Row>
@@ -276,7 +277,7 @@ class SelfPickup extends Component {
                         <tr key={rowIndex}>
                           <td className="text-center">
                             <span className="badge badge-primary badge-pill">
-                              <h5> ${order.storeName} </h5>
+                              <h5> ${order.store.name} </h5>
                             </span>
                           </td>
                           <table>
