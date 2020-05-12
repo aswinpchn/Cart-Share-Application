@@ -219,6 +219,7 @@ public class ApplicationController {
 				product.setBrand(createProductRequestBody.getBrand());
 				product.setPrice(createProductRequestBody.getPrice());
 				product.setUnit(createProductRequestBody.getUnit());
+				product.setAvailable(Constants.TRUE);
 				productService.createProduct(product, createProductRequestBody.getImage());
 			} else {
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found");

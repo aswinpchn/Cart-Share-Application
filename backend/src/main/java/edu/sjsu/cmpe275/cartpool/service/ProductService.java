@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import edu.sjsu.cmpe275.cartpool.Constants;
 import edu.sjsu.cmpe275.cartpool.dto.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,14 +41,14 @@ public class ProductService {
 	public List<Product> getProductsByStore(long storeId) {
 		Optional<Store> store = storeRespository.findById(storeId);
 		if (store.isPresent()) {
-			return productRespository.findByStore(store.get());
+			return productRespository.findByStoreAndAvailable(store.get(), Constants.TRUE);
 		}
 		return new ArrayList<>();
 	}
 
 	public Product createProduct(Product product, MultipartFile image) {
-		Optional<Product> productExists = productRespository.findProductByStoreAndSku(product.getStore(),
-				product.getSku());
+		Optional<Product> productExists = productRespository.findProductByStoreAndSkuAndAvailable(product.getStore(),
+				product.getSku(), Constants.TRUE);
 		if (productExists.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Product already exists with same store and sku");
 		}
@@ -91,7 +92,7 @@ public class ProductService {
 			Optional<Store> store = storeRespository.findStoreById(Long.parseLong(searchString));
 
 			if (store.isPresent())
-				result.addAll(productRespository.findByStore(store.get()));
+				result.addAll(productRespository.findByStoreAndAvailable(store.get(), Constants.TRUE));
 		} catch (NumberFormatException e) {
 
 		}
@@ -99,23 +100,23 @@ public class ProductService {
 		try {
 			Long sku = Long.parseLong(searchString);
 
-			result.addAll(productRespository.findBySku(sku));
+			result.addAll(productRespository.findBySkuAndAvailable(sku, Constants.TRUE));
 		} catch (NumberFormatException e) {
 
 		}
 
-		result.addAll(productRespository.findByNameContaining(searchString));
+		result.addAll(productRespository.findByNameContainingAndAvailable(searchString, Constants.TRUE));
 
 		return result;
 	}
 
 	public Product deleteProduct(long productId) {
-		Optional<Product> productExists = productRespository.findById(productId);
+		Optional<Product> productExists = productRespository.findByIdAndAvailable(productId, Constants.TRUE);
 		if (productExists.isPresent()) {
 			List<Order> unfulfilledOrders = orderRepository.findUnfulfilledOrders(productId);
 			if(unfulfilledOrders.size() == 0) {
-				productRespository.deleteById(productId);
-				return productExists.get();
+				productExists.get().setAvailable(Constants.FALSE);
+				return productRespository.save(productExists.get());
 			}
 			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Product cannot be deleted because of unfulfilled orders against it");
 		}

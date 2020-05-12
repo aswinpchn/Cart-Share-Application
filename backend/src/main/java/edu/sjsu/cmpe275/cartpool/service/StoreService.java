@@ -77,7 +77,7 @@ public class StoreService {
 					}
 				}
 			}
-			List<Product> products = productRepository.findByStore(store);
+			List<Product> products = productRepository.findByStoreAndAvailable(store, Constants.TRUE);
 			if (products != null && !products.isEmpty()) {
 				for (Product product : products) {
 					long productId = product.getId();

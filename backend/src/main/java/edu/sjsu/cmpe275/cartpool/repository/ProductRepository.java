@@ -11,9 +11,9 @@ import edu.sjsu.cmpe275.cartpool.dto.Store;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-	public List<Product> findByStore(Store store);
-	public Optional<Product> findProductByStoreAndSku(Store store, long sku);
-	public Set<Product> findBySku(Long sku);
-	public Set<Product> findByNameContaining(String name);
-
+	public List<Product> findByStoreAndAvailable(Store store, Boolean isAvailable);
+	public Optional<Product> findProductByStoreAndSkuAndAvailable(Store store, long sku, Boolean isAvailable);
+	public Set<Product> findBySkuAndAvailable(Long sku, Boolean isAvailable);
+	public Set<Product> findByNameContainingAndAvailable(String name, Boolean isAvailable);
+	public Optional<Product> findByIdAndAvailable(long id, Boolean isAvailable);
 }

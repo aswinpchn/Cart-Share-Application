@@ -1,6 +1,7 @@
 package edu.sjsu.cmpe275.cartpool.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import edu.sjsu.cmpe275.cartpool.Constants;
 
 import javax.persistence.*;
 
@@ -101,4 +102,14 @@ public class Product {
   private double price;
 
   private String unit;
+
+  private boolean available = Constants.TRUE;
+
+  public boolean isAvailable() {
+    return available;
+  }
+
+  public void setAvailable(boolean available) {
+    this.available = available;
+  }
 }
