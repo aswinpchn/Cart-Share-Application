@@ -33,7 +33,7 @@ public class StoreService {
 	private ProductService productService;
 
 	public List<Store> getAllStores() {
-		return storeRepository.findAll();
+		return storeRepository.findStoresByAvailable(Constants.TRUE);
 	}
 
 	@Transactional
@@ -85,6 +85,12 @@ public class StoreService {
 
 				}
 			}
+
+			store.setAvailable(Constants.FALSE);
+			storeRepository.save(store);
+
+			return store;
+
 		} catch (Exception e) {
 			System.out.println("Exception occured while deleting store" + e);
 			status = "Exception occurred while deleting the store";

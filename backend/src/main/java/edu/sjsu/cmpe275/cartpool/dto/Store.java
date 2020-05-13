@@ -1,5 +1,7 @@
 package edu.sjsu.cmpe275.cartpool.dto;
 
+import edu.sjsu.cmpe275.cartpool.Constants;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,4 +43,14 @@ public class Store {
 
 	@Embedded
 	private Address address;
+
+	private boolean available = Constants.TRUE;
+
+	public boolean isAvailable() {
+		return available;
+	}
+
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
 }
