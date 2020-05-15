@@ -33,7 +33,7 @@ public class EmailService {
 			helper.setTo(email);
 			helper.setSubject("Welcome to SJSU CartPool");
 			String msgBody = "Please verify your account\n"
-					+ "<a href=http://localhost:8081/cartpool/user/verify?email=" + email + "&code=" + code
+					+ "<a href=" + Constants.BACKEND_URL + "/cartpool/user/verify?email=" + email + "&code=" + code
 					+ ">Verify</a>";
 			helper.setText(msgBody, true);
 			javaMailSender.send(message);

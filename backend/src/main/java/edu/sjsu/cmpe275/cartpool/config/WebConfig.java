@@ -7,6 +7,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import edu.sjsu.cmpe275.cartpool.Constants;
+
 @Configuration
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
@@ -27,7 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/cartpool/**")
-		.allowedOrigins("http://localhost:3000")
+		.allowedOrigins(Constants.FRONTEND_URL)
 		.allowedMethods("PUT", "DELETE", "GET", "POST")
 		 .allowedHeaders("Content-Type", "X-Requested-With", "accept", "Origin", "Access-Control-Request-Method",
                  "Access-Control-Request-Headers")

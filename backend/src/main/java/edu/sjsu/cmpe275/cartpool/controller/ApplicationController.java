@@ -52,7 +52,7 @@ import edu.sjsu.cmpe275.cartpool.service.UserService;
 
 @Controller
 @RequestMapping(path = "/cartpool")
-@CrossOrigin(origins = Constants.BACKEND_URL)
+@CrossOrigin(origins = Constants.FRONTEND_URL)
 public class ApplicationController {
 
 	@Autowired
