@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import edu.sjsu.cmpe275.cartpool.Constants;
 import edu.sjsu.cmpe275.cartpool.dto.Order;
 import edu.sjsu.cmpe275.cartpool.dto.PoolRequest;
 import edu.sjsu.cmpe275.cartpool.dto.User;
