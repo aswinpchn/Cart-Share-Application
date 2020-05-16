@@ -16,6 +16,7 @@ class StoreInfoForm extends Component {
       zipCode: "",
       errors: "",
       text: null,
+      formErrors: {},
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -28,13 +29,18 @@ class StoreInfoForm extends Component {
       if (this.props.store.responseStatus === 200) {
         this.setState({
           text: "Store Created",
+          formErrors: {},
         });
       }
     }
     if (this.props.errors !== prevProps.errors) {
       console.log("errors are" + this.props.errors);
       if (this.props.errors) {
-        this.setState({ text: "", errors: this.props.errors.message });
+        this.setState({
+          text: "",
+          formErrors: {},
+          errors: this.props.errors.message,
+        });
       }
     }
   }
@@ -45,6 +51,62 @@ class StoreInfoForm extends Component {
     });
   };
 
+  validate = () => {
+    var letters = /^[0-9a-zA-Z]+$/;
+
+    var zipExp = /^\d{5}(-\d{4})?$/;
+
+    let storeNameError = "";
+    let streetDetailsError = "";
+    let cityNameError = "";
+    let stateNameError = "";
+    let zipCodeError = "";
+
+    if (!this.state.storeName) {
+      storeNameError = "Please enter Store Name";
+    }
+
+    if (!this.state.streetDetails) {
+      streetDetailsError = "Please enter Address";
+    }
+
+    if (!this.state.cityName) {
+      cityNameError = "Please enter City";
+    }
+
+    if (!this.state.stateName) {
+      stateNameError = "Please enter State";
+    }
+
+    if (!this.state.zipCode) {
+      zipCodeError = "Please enter Zipcode";
+    } else if (!this.state.zipCode.match(zipExp)) {
+      zipCodeError = "The US zip code must contain 5 digits";
+    }
+
+    if (
+      storeNameError ||
+      streetDetailsError ||
+      cityNameError ||
+      stateNameError ||
+      zipCodeError
+    ) {
+      this.setState((prevState) => ({
+        formErrors: {
+          // object that we want to update
+          ...prevState.formErrors, // keep all other key-value pairs
+          storeNameError: storeNameError, // update the value of specific key
+          streetDetailsError: streetDetailsError,
+          cityNameError: cityNameError,
+          stateNameError: stateNameError,
+          zipCodeError: zipCodeError,
+        },
+      }));
+      return false;
+    }
+    return true;
+  };
+
   handleSubmit = (e) => {
     //prevent page from refresh
     e.preventDefault();
@@ -52,15 +114,18 @@ class StoreInfoForm extends Component {
       text: "",
       errors: "",
     });
-    const data = {
-      name: this.state.storeName,
-      street: this.state.streetDetails,
-      city: this.state.cityName,
-      state: this.state.stateName,
-      zip: this.state.zipCode,
-    };
+    const isValid = this.validate();
+    if (isValid) {
+      const data = {
+        name: this.state.storeName,
+        street: this.state.streetDetails,
+        city: this.state.cityName,
+        state: this.state.stateName,
+        zip: this.state.zipCode,
+      };
 
-    this.props.createStore(data);
+      this.props.createStore(data);
+    }
   };
 
   render() {
@@ -79,6 +144,11 @@ class StoreInfoForm extends Component {
                 placeholder="Enter Store Name"
                 onChange={this.handleChange}
               />
+              {this.state.formErrors.storeNameError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.storeNameError}
+                </div>
+              ) : null}
             </Form.Group>
           </Form.Row>
 
@@ -91,6 +161,11 @@ class StoreInfoForm extends Component {
               placeholder="1234 Main St"
               onChange={this.handleChange}
             />
+            {this.state.formErrors.streetDetailsError ? (
+              <div style={{ fontSize: 12, color: "red" }}>
+                {this.state.formErrors.streetDetailsError}
+              </div>
+            ) : null}
           </Form.Group>
           <Form.Row>
             <Form.Group as={Col} controlId="cityName">
@@ -101,6 +176,11 @@ class StoreInfoForm extends Component {
                 value={this.state.cityName}
                 onChange={this.handleChange}
               />
+              {this.state.formErrors.cityNameError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.cityNameError}
+                </div>
+              ) : null}
             </Form.Group>
 
             <Form.Group as={Col} controlId="stateName">
@@ -115,6 +195,11 @@ class StoreInfoForm extends Component {
                 <option>TX</option>
                 <option>VA</option>
               </Form.Control>
+              {this.state.formErrors.stateNameError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.stateNameError}
+                </div>
+              ) : null}
             </Form.Group>
 
             <Form.Group as={Col} controlId="zipCode">
@@ -124,6 +209,11 @@ class StoreInfoForm extends Component {
                 value={this.state.zipCode}
                 onChange={this.handleChange}
               />
+              {this.state.formErrors.zipCodeError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.zipCodeError}
+                </div>
+              ) : null}
             </Form.Group>
           </Form.Row>
 
