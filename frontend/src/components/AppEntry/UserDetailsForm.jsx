@@ -5,9 +5,6 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
 import { connect } from "react-redux";
-// import classnames from "classnames";
-// import Login from "./Login";
-import constants from "../../utils/constants";
 import axios from "axios";
 import { properties } from "../../properties";
 import { Redirect } from "react-router-dom";
@@ -23,11 +20,12 @@ class UserDetailsForm extends Component {
       nickName: "",
       streetDetails: "",
       cityName: "",
-      stateName: "",
+      stateName: "CA",
       zipCode: "",
       errors: "",
       profileUpdated: false,
-      loading: false
+      loading: false,
+      formErrors: {},
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -56,50 +54,123 @@ class UserDetailsForm extends Component {
     });
   }
 
+  validate = () => {
+    var letters = /^[0-9a-zA-Z]+$/;
+
+    var zipExp = /^\d{5}(-\d{4})?$/;
+
+    let screenNameError = "";
+    let nickNameError = "";
+    let streetDetailsError = "";
+    let cityNameError = "";
+    let stateNameError = "";
+    let zipCodeError = "";
+
+    if (!this.state.screenName) {
+      screenNameError = "Please enter Screen Name";
+    } else if (!this.state.screenName.match(letters)) {
+      screenNameError = "Please input alphanumeric characters only";
+    }
+
+    if (!this.state.nickName) {
+      nickNameError = "Please enter Nick Name";
+    }
+
+    if (!this.state.streetDetails) {
+      streetDetailsError = "Please enter Address";
+    }
+
+    if (!this.state.cityName) {
+      cityNameError = "Please enter City";
+    }
+
+    if (!this.state.stateName) {
+      stateNameError = "Please enter State";
+    }
+
+    if (!this.state.zipCode) {
+      zipCodeError = "Please enter Zipcode";
+    } else if (!this.state.zipCode.match(zipExp)) {
+      zipCodeError = "The US zip code must contain 5 digits";
+    }
+
+    if (
+      screenNameError ||
+      nickNameError ||
+      streetDetailsError ||
+      cityNameError ||
+      stateNameError ||
+      zipCodeError
+    ) {
+      this.setState((prevState) => ({
+        formErrors: {
+          // object that we want to update
+          ...prevState.formErrors, // keep all other key-value pairs
+          screenNameError: screenNameError, // update the value of specific key
+          nickNameError: nickNameError,
+          streetDetailsError: streetDetailsError,
+          cityNameError: cityNameError,
+          stateNameError: stateNameError,
+          zipCodeError: zipCodeError,
+        },
+      }));
+      return false;
+    }
+    return true;
+  };
+
   handleSubmit(e) {
     e.preventDefault();
-
     this.setState({
-      loading: true,
+      errors: "",
     });
 
-    const data = {
-      email: localStorage.getItem("email"),
-      screenName: this.state.screenName,
-      nickName: this.state.nickName,
-      street: this.state.streetDetails,
-      city: this.state.cityName,
-      state: this.state.stateName,
-      zip: this.state.zipCode,
-    };
-    console.log("data is in handle submit step 2..", data);
+    const isValid = this.validate();
 
-    this.setState({
-      loading: true
-    });
-
-    // axios call to set profile
-    const backendurl = properties.backendhost + "user/updateProfile";
-    axios
-      .post(backendurl, data)
-      .then((response) => {
-        swal(
-          "Thank you for registering. Please verify your email address to use the cartpool"
-        );
-        this.setState({
-          profileUpdated: true,
-          loading: false
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        this.setState({
-          errors: "Screen Name or Nick name already exists",
-          loading: false
-        });
+    if (isValid) {
+      this.setState({
+        loading: true,
       });
 
-    //this.props.registerUser(data, this.props.history);
+      const data = {
+        email: localStorage.getItem("email"),
+        screenName: this.state.screenName,
+        nickName: this.state.nickName,
+        street: this.state.streetDetails,
+        city: this.state.cityName,
+        state: this.state.stateName,
+        zip: this.state.zipCode,
+      };
+      console.log("data is in handle submit step 2..", data);
+
+      this.setState({
+        loading: true,
+      });
+
+      // axios call to set profile
+      const backendurl = properties.backendhost + "user/updateProfile";
+      axios
+        .post(backendurl, data)
+        .then((response) => {
+          swal(
+            "Thank you for registering. Please verify your email address to use the cartpool"
+          );
+          this.setState({
+            profileUpdated: true,
+            loading: false,
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          this.setState({
+            formErrors: {},
+            errors: "Screen Name or Nick name already exists",
+            loading: false,
+          });
+        });
+
+      //this.props.registerUser(data, this.props.history);
+    }
   }
   render() {
     const { errors, loading } = this.state;
@@ -110,7 +181,7 @@ class UserDetailsForm extends Component {
     }
 
     let spinner;
-    if(loading) {
+    if (loading) {
       spinner = <Spinner animation="border" variant="primary" />;
     }
 
@@ -188,6 +259,11 @@ class UserDetailsForm extends Component {
                         onChange={this.handleChange}
                         required
                       />
+                      {this.state.formErrors.screenNameError ? (
+                        <div style={{ fontSize: 12, color: "red" }}>
+                          {this.state.formErrors.screenNameError}
+                        </div>
+                      ) : null}
                     </Form.Group>
 
                     <Form.Group as={Col} controlId="nickName">
@@ -200,6 +276,11 @@ class UserDetailsForm extends Component {
                         onChange={this.handleChange}
                         required
                       />
+                      {this.state.formErrors.nickNameError ? (
+                        <div style={{ fontSize: 12, color: "red" }}>
+                          {this.state.formErrors.nickNameError}
+                        </div>
+                      ) : null}
                     </Form.Group>
                   </Form.Row>
 
@@ -212,6 +293,11 @@ class UserDetailsForm extends Component {
                       placeholder="1234 Main St"
                       onChange={this.handleChange}
                     />
+                    {this.state.formErrors.streetDetailsError ? (
+                      <div style={{ fontSize: 12, color: "red" }}>
+                        {this.state.formErrors.streetDetailsError}
+                      </div>
+                    ) : null}
                   </Form.Group>
 
                   <Form.Row>
@@ -223,16 +309,30 @@ class UserDetailsForm extends Component {
                         value={this.state.cityName}
                         onChange={this.handleChange}
                       />
+                      {this.state.formErrors.cityNameError ? (
+                        <div style={{ fontSize: 12, color: "red" }}>
+                          {this.state.formErrors.cityNameError}
+                        </div>
+                      ) : null}
                     </Form.Group>
 
                     <Form.Group as={Col} controlId="stateName">
                       <Form.Label>State</Form.Label>
                       <Form.Control
-                        type="text"
+                        as="select"
                         name="stateName"
                         value={this.state.stateName}
                         onChange={this.handleChange}
-                      ></Form.Control>
+                      >
+                        <option>CA</option>
+                        <option>TX</option>
+                        <option>VA</option>
+                      </Form.Control>
+                      {this.state.formErrors.stateNameError ? (
+                        <div style={{ fontSize: 12, color: "red" }}>
+                          {this.state.formErrors.stateNameError}
+                        </div>
+                      ) : null}
                     </Form.Group>
 
                     <Form.Group as={Col} controlId="zipCode">
@@ -243,6 +343,11 @@ class UserDetailsForm extends Component {
                         value={this.state.zipCode}
                         onChange={this.handleChange}
                       />
+                      {this.state.formErrors.zipCodeError ? (
+                        <div style={{ fontSize: 12, color: "red" }}>
+                          {this.state.formErrors.zipCodeError}
+                        </div>
+                      ) : null}
                     </Form.Group>
                   </Form.Row>
 
@@ -250,7 +355,7 @@ class UserDetailsForm extends Component {
                     className="btn btn-success"
                     type="submit"
                     onClick={this.handleSubmit}
-                    disabled={!this.state.screenName || !this.state.nickName}
+                    // disabled={!this.state.screenName || !this.state.nickName}
                   >
                     Proceed
                   </Button>
