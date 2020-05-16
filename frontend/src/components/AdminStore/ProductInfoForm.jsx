@@ -21,6 +21,7 @@ class ProductInfoForm extends Component {
       unit: "",
       errors: "",
       text: null,
+      formErrors: {},
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -38,13 +39,18 @@ class ProductInfoForm extends Component {
       if (this.props.product.responseStatus === 200) {
         this.setState({
           text: "Product Created",
+          formErrors: {},
         });
       }
     }
     if (this.props.errors !== prevProps.errors) {
       console.log("errors are" + this.props.errors);
       if (this.props.errors) {
-        this.setState({ text: "", errors: this.props.errors.message });
+        this.setState({
+          text: "",
+          formErrors: {},
+          errors: this.props.errors.message,
+        });
       }
     }
   }
@@ -54,6 +60,65 @@ class ProductInfoForm extends Component {
       [e.target.name]: e.target.value,
     });
   }
+
+  validate = () => {
+    var numbers = /^[0-9]+$/;
+    var priceExp = /^[+]?\d+(\.\d+)?$/;
+    let selectedStoresError = "";
+    let skuError = "";
+    let nameError = "";
+    let priceError = "";
+    let unitError = "";
+
+    if (
+      !Array.isArray(this.state.selectedStores) ||
+      !this.state.selectedStores.length
+    ) {
+      selectedStoresError = "Please select Store";
+    }
+
+    if (!this.state.sku) {
+      skuError = "Please enter SKU";
+    } else if (!this.state.sku.match(numbers)) {
+      skuError = "Please enter a valid SKU number";
+    }
+
+    if (!this.state.name) {
+      nameError = "Please enter Name";
+    }
+
+    if (!this.state.price) {
+      priceError = "Please enter Price";
+    } else if (!this.state.price.match(priceExp)) {
+      priceError = "Not a valid value for price";
+    }
+
+    if (!this.state.unit) {
+      unitError = "Please enter Unit";
+    }
+
+    if (
+      selectedStoresError ||
+      skuError ||
+      nameError ||
+      priceError ||
+      unitError
+    ) {
+      this.setState((prevState) => ({
+        formErrors: {
+          // object that we want to update
+          ...prevState.formErrors, // keep all other key-value pairs
+          selectedStoresError: selectedStoresError, // update the value of specific key
+          skuError: skuError,
+          nameError: nameError,
+          priceError: priceError,
+          unitError: unitError,
+        },
+      }));
+      return false;
+    }
+    return true;
+  };
 
   onImageChange = (event) => {
     this.setState({
@@ -70,21 +135,27 @@ class ProductInfoForm extends Component {
   handleSubmit = (e) => {
     //prevent page from refresh
     e.preventDefault();
-    let data = new FormData();
-    this.state.selectedStores.forEach((eachObj) => {
-      data.append("stores", eachObj.value);
+    this.setState({
+      errors: "",
     });
-    data.append("sku", this.state.sku);
-    data.append("name", this.state.name);
-    if (this.state.image) {
-      data.append("image", this.state.image);
-    }
-    data.append("brand", this.state.brand);
-    data.append("price", this.state.price);
-    data.append("unit", this.state.unit);
-    console.log("data-->", data);
+    const isValid = this.validate();
+    if (isValid) {
+      let data = new FormData();
+      this.state.selectedStores.forEach((eachObj) => {
+        data.append("stores", eachObj.value);
+      });
+      data.append("sku", this.state.sku);
+      data.append("name", this.state.name);
+      if (this.state.image) {
+        data.append("image", this.state.image);
+      }
+      data.append("brand", this.state.brand);
+      data.append("price", this.state.price);
+      data.append("unit", this.state.unit);
+      console.log("data-->", data);
 
-    this.props.createProduct(data);
+      this.props.createProduct(data);
+    }
   };
 
   render() {
@@ -95,13 +166,6 @@ class ProductInfoForm extends Component {
     if (loading) {
       spinner = <Spinner />;
     }
-
-    /*
-    let options = this.props.stores.map((option, index) => {
-      return (
-        <option value={option.id}>{option.name}</option>
-      );
-    });*/
 
     let options = [];
     if (this.props.stores.length) {
@@ -126,6 +190,11 @@ class ProductInfoForm extends Component {
                 value={this.state.selectedStores}
                 required
               />
+              {this.state.formErrors.selectedStoresError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.selectedStoresError}
+                </div>
+              ) : null}
             </Form.Group>
           </Form.Row>
 
@@ -140,6 +209,11 @@ class ProductInfoForm extends Component {
                 onChange={this.handleChange}
                 required
               />
+              {this.state.formErrors.skuError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.skuError}
+                </div>
+              ) : null}
             </Form.Group>
           </Form.Row>
           <Form.Row>
@@ -153,6 +227,11 @@ class ProductInfoForm extends Component {
                 onChange={this.handleChange}
                 required
               />
+              {this.state.formErrors.nameError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.nameError}
+                </div>
+              ) : null}
             </Form.Group>
           </Form.Row>
 
@@ -181,6 +260,11 @@ class ProductInfoForm extends Component {
                 onChange={this.handleChange}
                 required
               />
+              {this.state.formErrors.priceError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.priceError}
+                </div>
+              ) : null}
             </Form.Group>
             <Form.Group as={Col} controlId="unit">
               <Form.Label>Unit</Form.Label>
@@ -192,6 +276,11 @@ class ProductInfoForm extends Component {
                 onChange={this.handleChange}
                 required
               />
+              {this.state.formErrors.unitError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.unitError}
+                </div>
+              ) : null}
             </Form.Group>
           </Form.Row>
 
