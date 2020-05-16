@@ -91,7 +91,8 @@ class UserDetailsForm extends Component {
     if (!this.state.zipCode) {
       zipCodeError = "Please enter Zipcode";
     } else if (!this.state.zipCode.match(zipExp)) {
-      zipCodeError = "The US zip code must contain 5 digits";
+      zipCodeError =
+        "The US zip code must contain 5 digits. Allowed formats are 12345 or 12345-1234";
     }
 
     if (
