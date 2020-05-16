@@ -10,45 +10,69 @@ class JoinPoolForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      screenName: "",
       loading: false,
+      formErrors: {},
     };
   }
 
   handleChange = (e) => {
-    let name = e.target.name;
     this.setState({
-      name: e.target.value,
+      [e.target.name]: e.target.value,
     });
+  };
+
+  validate = () => {
+    let screenNameError = "";
+
+    if (!this.state.screenName) {
+      screenNameError = "Please enter Screen Name of the Referrer";
+    }
+    if (screenNameError) {
+      this.setState((prevState) => ({
+        formErrors: {
+          // object that we want to update
+          ...prevState.formErrors, // keep all other key-value pairs
+          screenNameError: screenNameError,
+        },
+      }));
+      return false;
+    }
+    return true;
   };
 
   handleSubmit = async (e) => {
     // prevent page from refresh
     e.preventDefault();
 
-    // Add code here for join Pool API.
-    this.setState({
-      loading: true,
-    });
-
-    try {
-      const { pool } = this.props;
-      let backendurl = properties.backendhost + "pool/join";
-      let joinResponse = await axios.post(backendurl, {
-        userScreenName: localStorage.getItem("screenName"),
-        poolName: pool.name,
-        referrerScreenName: this.state.name,
+    const isValid = this.validate();
+    if (isValid) {
+      // Add code here for join Pool API.
+      this.setState({
+        loading: true,
       });
-      //console.log(joinResponse);
 
-      if (joinResponse.status == 200) {
-        swal(joinResponse.data);
-        this.setState({
-          loading: false,
+      try {
+        const { pool } = this.props;
+        let backendurl = properties.backendhost + "pool/join";
+        let joinResponse = await axios.post(backendurl, {
+          userScreenName: localStorage.getItem("screenName"),
+          poolName: pool.name,
+          referrerScreenName: this.state.screenName,
         });
+        //console.log(joinResponse);
+
+        if (joinResponse.status == 200) {
+          swal(joinResponse.data);
+          this.setState({
+            loading: false,
+            formErrors: {},
+          });
+        }
+      } catch (e) {
+        console.log(e.response);
+        swal(e.response.data.message);
       }
-    } catch (e) {
-      console.log(e.response);
-      swal(e.response.data.message);
     }
   };
 
@@ -74,6 +98,11 @@ class JoinPoolForm extends Component {
                 onChange={this.handleChange}
                 required
               />
+              {this.state.formErrors.screenNameError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.screenNameError}
+                </div>
+              ) : null}
             </Form.Group>
           </Form.Row>
           <Button
