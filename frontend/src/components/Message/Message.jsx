@@ -19,6 +19,7 @@ class Message extends Component {
       text: "",
       errors: "",
       loading: false,
+      formErrors: {},
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -39,47 +40,82 @@ class Message extends Component {
     });
   }
 
+  validate = () => {
+    let recipientScreenNameError = "";
+    let messageError = "";
+
+    if (!this.state.recipientScreenName) {
+      recipientScreenNameError = "Please enter Recipient Screen Name";
+    }
+
+    if (!this.state.message) {
+      messageError = "Please enter some message";
+    }
+
+    if (recipientScreenNameError || messageError) {
+      this.setState((prevState) => ({
+        formErrors: {
+          // object that we want to update
+          ...prevState.formErrors, // keep all other key-value pairs
+          recipientScreenNameError: recipientScreenNameError, // update the value of specific key
+          messageError: messageError,
+        },
+      }));
+      return false;
+    }
+    return true;
+  };
+
   handleSubmit = (e) => {
     //prevent page from refresh
     e.preventDefault();
 
     this.setState({
-      loading: true,
+      errors: "",
     });
 
-    const data = {
-      senderId: this.state.senderId,
-      recipientScreenName: this.state.recipientScreenName,
-      message: this.state.message,
-    };
+    const isValid = this.validate();
 
-    console.log("the data for send message is" + data);
+    if (isValid) {
+      this.setState({
+        loading: true,
+      });
+      const data = {
+        senderId: this.state.senderId,
+        recipientScreenName: this.state.recipientScreenName,
+        message: this.state.message,
+      };
 
-    axios
-      .post(backendurl + "user/message", data)
-      .then((response) => {
-        console.log(response);
-        if (response.status == 200) {
+      console.log("the data for send message is" + data);
+
+      axios
+        .post(backendurl + "user/message", data)
+        .then((response) => {
+          console.log(response);
+          if (response.status == 200) {
+            this.setState({
+              text: "Message sent sucessfully",
+              recipientScreenName: "",
+              message: "",
+              loading: false,
+              errors: "",
+              formErrors: {},
+            });
+            swal("Message sent sucessfully");
+          }
+        })
+        .catch((error) => {
+          console.log("Error while sending message", error, error.response);
           this.setState({
-            text: "Message sent sucessfully",
+            errors: error.response.data.message,
+            formErrors: {},
             recipientScreenName: "",
             message: "",
             loading: false,
-            errors: "",
           });
-          swal("Message sent sucessfully");
-        }
-      })
-      .catch((error) => {
-        console.log("Error while sending message", error, error.response);
-        this.setState({
-          errors: error.response.data.message,
-          recipientScreenName: "",
-          message: "",
-          loading: false,
+          swal(error.response.data.message);
         });
-        swal(error.response.data.message);
-      });
+    }
   };
 
   render() {
@@ -112,6 +148,11 @@ class Message extends Component {
                   onChange={this.handleChange}
                   required
                 />
+                {this.state.formErrors.recipientScreenNameError ? (
+                  <div style={{ fontSize: 12, color: "red" }}>
+                    {this.state.formErrors.recipientScreenNameError}
+                  </div>
+                ) : null}
               </Form.Group>
             </Form.Row>
             <Form.Row>
@@ -126,6 +167,11 @@ class Message extends Component {
                   onChange={this.handleChange}
                   required
                 />
+                {this.state.formErrors.messageError ? (
+                  <div style={{ fontSize: 12, color: "red" }}>
+                    {this.state.formErrors.messageError}
+                  </div>
+                ) : null}
               </Form.Group>
             </Form.Row>
             <Button
