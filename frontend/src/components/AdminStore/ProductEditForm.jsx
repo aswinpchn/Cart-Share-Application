@@ -9,18 +9,19 @@ class ProductEditForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        storeId: "",
-        sku: "",
-        name: "",
-        description: "",
-        image: "",
-        imageURL: "",
-        brand: "",
-        price: "",
-        unit: "",
-        errors: "",
-        text: null,
-      };
+      storeId: "",
+      sku: "",
+      name: "",
+      description: "",
+      image: "",
+      imageURL: "",
+      brand: "",
+      price: "",
+      unit: "",
+      errors: "",
+      text: null,
+      formErrors: {},
+    };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -28,14 +29,14 @@ class ProductEditForm extends Component {
   componentWillMount() {
     let { product } = this.props;
     this.setState({
-        name: product.name,
-        description: product.description,
-        brand: product.brand,
-        price: product.price,
-        unit: product.unit,
-        imageURL: product.imageURL
+      name: product.name,
+      description: product.description,
+      brand: product.brand,
+      price: product.price,
+      unit: product.unit,
+      imageURL: product.imageURL,
     });
-    console.log("this--->", this.props)
+    console.log("this--->", this.props);
   }
 
   componentDidUpdate(prevProps) {
@@ -46,13 +47,18 @@ class ProductEditForm extends Component {
       if (this.props.productState.responseStatus === 200) {
         this.setState({
           text: "Product Updated",
+          formErrors: {},
         });
       }
     }
     if (this.props.errors !== prevProps.errors) {
       console.log("errors are" + this.props.errors);
       if (this.props.errors) {
-        this.setState({ text: "", errors: this.props.errors.message });
+        this.setState({
+          text: "",
+          formErrors: {},
+          errors: this.props.errors.message,
+        });
       }
     }
   }
@@ -63,6 +69,40 @@ class ProductEditForm extends Component {
     });
   }
 
+  validate = () => {
+    var priceExp = /^[+]?\d+(\.\d+)?$/;
+    let nameError = "";
+    let priceError = "";
+    let unitError = "";
+
+    if (!this.state.name) {
+      nameError = "Please enter Name";
+    }
+
+    console.log("the price is" + this.state.price);
+    if (!this.state.price) {
+      priceError = "Please enter Price";
+    }
+
+    if (!this.state.unit) {
+      unitError = "Please enter Unit";
+    }
+
+    if (nameError || priceError || unitError) {
+      this.setState((prevState) => ({
+        formErrors: {
+          // object that we want to update
+          ...prevState.formErrors, // keep all other key-value pairs
+          nameError: nameError,
+          priceError: priceError,
+          unitError: unitError,
+        },
+      }));
+      return false;
+    }
+    return true;
+  };
+
   handleSubmit = (e) => {
     //prevent page from refresh
     e.preventDefault();
@@ -71,20 +111,22 @@ class ProductEditForm extends Component {
       text: "",
       errors: "",
     });
-    
-    console.log(this.state)
-    const data = {
-      id: this.props.product.id,
-      name: this.state.name,
-      description: this.state.description,
-      image: this.state.image,
-      imageURL: this.state.imageURL,
-      brand: this.state.brand,
-      price: this.state.price,
-      unit: this.state.unit,
-    };
-    console.log("Data for updating product is" + data);
-    this.props.updateProduct(data);
+    const isValid = this.validate();
+    if (isValid) {
+      console.log(this.state);
+      const data = {
+        id: this.props.product.id,
+        name: this.state.name,
+        description: this.state.description,
+        image: this.state.image,
+        imageURL: this.state.imageURL,
+        brand: this.state.brand,
+        price: this.state.price,
+        unit: this.state.unit,
+      };
+      console.log("Data for updating product is" + data);
+      this.props.updateProduct(data);
+    }
   };
 
   render() {
@@ -94,7 +136,7 @@ class ProductEditForm extends Component {
     return (
       <div>
         <Form>
-        <Form.Row>
+          <Form.Row>
             <Form.Group as={Col} controlId="name">
               <Form.Label>Product Name</Form.Label>
               <Form.Control
@@ -105,6 +147,11 @@ class ProductEditForm extends Component {
                 onChange={this.handleChange}
                 required
               />
+              {this.state.formErrors.nameError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.nameError}
+                </div>
+              ) : null}
             </Form.Group>
           </Form.Row>
 
@@ -133,6 +180,11 @@ class ProductEditForm extends Component {
                 onChange={this.handleChange}
                 required
               />
+              {this.state.formErrors.priceError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.priceError}
+                </div>
+              ) : null}
             </Form.Group>
             <Form.Group as={Col} controlId="unit">
               <Form.Label>Unit</Form.Label>
@@ -144,6 +196,11 @@ class ProductEditForm extends Component {
                 onChange={this.handleChange}
                 required
               />
+              {this.state.formErrors.unitError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.unitError}
+                </div>
+              ) : null}
             </Form.Group>
           </Form.Row>
 

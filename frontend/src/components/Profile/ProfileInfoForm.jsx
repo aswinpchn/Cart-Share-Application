@@ -20,6 +20,7 @@ class ProfileInfoForm extends Component {
       zip: "",
       errors: "",
       profileUpdated: "",
+      formErrors: {},
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -52,45 +53,116 @@ class ProfileInfoForm extends Component {
     });
   }
 
+  validate = () => {
+    console.log("the city sent is " + this.state.city);
+
+    console.log("the state sent is " + this.state.state);
+    var letters = /^[0-9a-zA-Z]+$/;
+
+    var zipExp = /^\d{5}(-\d{4})?$/;
+
+    let nickNameError = "";
+    let streetDetailsError = "";
+    let cityNameError = "";
+    let stateNameError = "";
+    let zipCodeError = "";
+
+    if (!this.state.nickName) {
+      nickNameError = "Please enter Nick Name";
+    }
+
+    if (!this.state.street) {
+      streetDetailsError = "Please enter Address";
+    }
+
+    if (!this.state.city) {
+      cityNameError = "Please enter City";
+    }
+
+    if (!this.state.state) {
+      stateNameError = "Please enter State";
+    }
+
+    if (!this.state.zip) {
+      zipCodeError = "Please enter Zipcode";
+    } else if (!this.state.zip.match(zipExp)) {
+      zipCodeError =
+        "The US zip code must contain 5 digits. Allowed formats are 12345 or 12345-1234";
+    }
+
+    if (
+      nickNameError ||
+      streetDetailsError ||
+      cityNameError ||
+      stateNameError ||
+      zipCodeError
+    ) {
+      this.setState((prevState) => ({
+        formErrors: {
+          // object that we want to update
+          ...prevState.formErrors, // keep all other key-value pairs
+          // update the value of specific key
+          nickNameError: nickNameError,
+          streetDetailsError: streetDetailsError,
+          cityNameError: cityNameError,
+          stateNameError: stateNameError,
+          zipCodeError: zipCodeError,
+        },
+      }));
+      return false;
+    }
+    return true;
+  };
+
   handleSubmit(e) {
     e.preventDefault();
+    this.setState({
+      errors: "",
+    });
+    const isValid = this.validate();
+    if (isValid) {
+      const data = {
+        email: this.state.email,
+        screenName: this.state.screenName,
+        nickName: this.state.nickName,
+        street: this.state.street,
+        city: this.state.city,
+        state: this.state.state,
+        zip: this.state.zip,
+      };
+      console.log("data is in handle submit step 2..", data);
 
-    const data = {
-      email: this.state.email,
-      screenName: this.state.screenName,
-      nickName: this.state.nickName,
-      street: this.state.street,
-      city: this.state.city,
-      state: this.state.state,
-      zip: this.state.zip,
-    };
-    console.log("data is in handle submit step 2..", data);
-
-    // axios call to set profile
-    const backendurl = properties.backendhost + "user/setProfile";
-    const config = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    };
-    axios
-      .put(backendurl, data, config)
-      .then((response) => {
-        swal("Thank you! your profile is updated.");
-        this.setState({
-          profileUpdated: true,
+      // axios call to set profile
+      const backendurl = properties.backendhost + "user/setProfile";
+      const config = {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      };
+      axios
+        .put(backendurl, data, config)
+        .then((response) => {
+          let message = "Thank you! Your profile is updated.\n";
+          let info =
+            "Please refresh Account Information page to see the changes";
+          swal(message, info);
+          this.setState({
+            profileUpdated: true,
+            formErrors: {},
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          this.setState({
+            profileUpdated: false,
+            errors: "Error while updating profile" + error,
+            formErrors: {},
+          });
         });
-      })
-      .catch((error) => {
-        console.log(error);
-        this.setState({
-          profileUpdated: false,
-          errors: "Error while updating profile" + error,
-        });
-      });
 
-    //this.props.registerUser(data, this.props.history);
+      //this.props.registerUser(data, this.props.history);
+    }
   }
   render() {
     let msg;
@@ -110,6 +182,8 @@ class ProfileInfoForm extends Component {
       zip,
       errors,
     } = this.state;
+
+    console.log("values being sent " + JSON.stringify(this.state));
     return (
       <form
         className="needs-validation container novalidate content-form-padding"
@@ -141,6 +215,11 @@ class ProfileInfoForm extends Component {
                 required
               />
               <div className="invalid-feedback">Nick Name is Required.</div>
+              {this.state.formErrors.nickNameError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.nickNameError}
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -154,6 +233,11 @@ class ProfileInfoForm extends Component {
               defaultValue={street}
               required
             />
+            {this.state.formErrors.streetDetailsError ? (
+              <div style={{ fontSize: 12, color: "red" }}>
+                {this.state.formErrors.streetDetailsError}
+              </div>
+            ) : null}
           </div>
           <div className="form-row form-group">
             <label htmlFor="city">City</label>
@@ -165,6 +249,11 @@ class ProfileInfoForm extends Component {
               defaultValue={city}
               required
             />
+            {this.state.formErrors.cityNameError ? (
+              <div style={{ fontSize: 12, color: "red" }}>
+                {this.state.formErrors.cityNameError}
+              </div>
+            ) : null}
           </div>
           <div className="form-row form-group">
             <div className="col-md-6 mb-3">
@@ -176,10 +265,16 @@ class ProfileInfoForm extends Component {
                 onChange={this.handleChange}
                 required
               >
+                <option>{state}</option>
                 <option>CA</option>
                 <option>TX</option>
                 <option>VA</option>
               </select>
+              {this.state.formErrors.stateNameError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.stateNameError}
+                </div>
+              ) : null}
             </div>
             <div className="col-md-6 mb-3">
               <label htmlFor="zip">Zip</label>
@@ -191,6 +286,11 @@ class ProfileInfoForm extends Component {
                 defaultValue={zip}
                 required
               />
+              {this.state.formErrors.zipCodeError ? (
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.formErrors.zipCodeError}
+                </div>
+              ) : null}
             </div>
           </div>
           <div className="form-row">
