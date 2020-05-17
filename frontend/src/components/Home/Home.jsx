@@ -5,6 +5,7 @@ import PoolerHome from "./PoolerHome";
 import AdminHome from "./AdminHome";
 import decode from "jwt-decode";
 import axios from "axios";
+import { Container, Row, Card, Col } from "react-bootstrap";
 import { properties } from "../../properties";
 
 class Home extends Component {
@@ -51,6 +52,7 @@ class Home extends Component {
     var homeComponent;
 
     let redirectVar;
+    let displayMessage;
 
     if (this.state.responseStatus && !this.state.profileCompleted) {
       console.log(this.state.responseStatus);
@@ -76,10 +78,37 @@ class Home extends Component {
       homeComponent = <PoolerHome />;
     }
 
+    if (
+      this.state.responseStatus &&
+      this.state.profileCompleted &&
+      !this.state.verified
+    ) {
+      displayMessage = (
+        <div>
+          <Container>
+            <Row>
+              <Col md={{ span: 10, offset: 4 }}>
+                <Card style={{ width: "18rem" }}>
+                  <Card.Body>
+                    <Card.Title>Please verify your account</Card.Title>
+                    <Card.Text>
+                      Check your email and click the verify link!
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          </Container>
+          ;
+        </div>
+      );
+    }
+
     return (
       <div>
         {redirectVar}
         {homeComponent}
+        {displayMessage}
       </div>
     );
   }
