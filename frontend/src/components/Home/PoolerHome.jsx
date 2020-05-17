@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { Col, Row } from "react-bootstrap";
-import Select from 'react-select'
+import { Col, Row, Alert } from "react-bootstrap";
+import Select from "react-select";
 import ProductCard from "./ProductCard";
-import axios from 'axios';
-import { properties } from '../../properties';
+import axios from "axios";
+import { properties } from "../../properties";
 
 class PoolerHome extends Component {
   constructor(props) {
@@ -13,7 +13,7 @@ class PoolerHome extends Component {
       storeId: "",
       stores: [],
       products: [],
-      userIsPooler: false
+      userIsPooler: false,
     };
   }
 
@@ -23,51 +23,55 @@ class PoolerHome extends Component {
 
   getStores = async () => {
     axios.defaults.withCredentials = true;
-    const backendurl = properties.backendhost + 'store/all'
-    axios.get(backendurl, {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then((response) => {
-      if (response) {
-        this.setState({
-          stores: response.data   
-        })
-      }
-    });
-  }
+    const backendurl = properties.backendhost + "store/all";
+    axios
+      .get(backendurl, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        if (response) {
+          this.setState({
+            stores: response.data,
+          });
+        }
+      });
+  };
 
   getProducts = async () => {
     const storeId = this.state.storeId;
     axios.defaults.withCredentials = true;
     const getProductsUrl = properties.backendhost + `product/${storeId}`;
-    const email = localStorage.getItem('email');
-    const getUserDetailsUrl = properties.backendhost + `user?email=${email}`
+    const email = localStorage.getItem("email");
+    const getUserDetailsUrl = properties.backendhost + `user?email=${email}`;
     let userIsPartOfPool = false;
     let userResponse = await axios.get(getUserDetailsUrl);
     //console.log(userResponse.data);
-    userIsPartOfPool = userResponse.data.poolId?true:false;
+    userIsPartOfPool = userResponse.data.poolId ? true : false;
 
-    axios.get(getProductsUrl, {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then((response) => {
-      if (response) {
-        this.setState({
-          userIsPartOfPool: userIsPartOfPool,
-          products: response.data
-        })
-      }
-    });
+    axios
+      .get(getProductsUrl, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        if (response) {
+          this.setState({
+            userIsPartOfPool: userIsPartOfPool,
+            products: response.data,
+          });
+        }
+      });
   };
 
   onStoreChange = async (item) => {
     await this.setState({
       selectedStore: item,
-      storeId: item.value
+      storeId: item.value,
     });
     this.getProducts();
   };
@@ -79,19 +83,23 @@ class PoolerHome extends Component {
       this.state.stores.forEach(function (store) {
         options.push({
           label: store.name,
-          value: store.id
-        })
+          value: store.id,
+        });
       });
     }
 
     if (this.state.products.length) {
-      products = this.state.products.map(product => {
+      products = this.state.products.map((product) => {
         return (
           <Col key={product.id} sm={3}>
-            <ProductCard product={product} store={this.state.storeId} showAddToCart={this.state.userIsPartOfPool} />
+            <ProductCard
+              product={product}
+              store={this.state.storeId}
+              showAddToCart={this.state.userIsPartOfPool}
+            />
           </Col>
-        )
-      })
+        );
+      });
     }
 
     return (
@@ -99,16 +107,29 @@ class PoolerHome extends Component {
         <div className="container">
           <form>
             <br />
+            <h5 style={{ fontSize: 20, color: "gray" }}>
+              {" "}
+              Select a store to proceed{" "}
+            </h5>
             <Select
               options={options}
               autosize={true}
               value={this.state.selectedStore}
-              onChange={value => this.onStoreChange(value)}
-              defaultValue={{ label: 'Select Store..', value: '' }}
+              onChange={(value) => this.onStoreChange(value)}
+              defaultValue={{ label: "Select Store..", value: "" }}
               placeholder="Select Store.."
             />
             <br />
             <div>
+              {!this.state.userIsPartOfPool ? (
+                <div>
+                  <Alert variant="primary">
+                    The user should be part of some pool to add items to cart
+                  </Alert>
+                </div>
+              ) : (
+                ""
+              )}
               <Row>{products}</Row>
             </div>
           </form>

@@ -119,6 +119,7 @@ class PickupOrders extends Component {
               <Col md={{ span: 10, offset: 1 }}>
                 <Accordion defaultActiveKey="0">
                   <Card>
+                    {spinner}
                     {rows &&
                       rows.map((obj, rowIndex) => {
                         console.log("group id is" + obj.property);
@@ -174,7 +175,6 @@ class PickupOrders extends Component {
                                 >
                                   Pickedup
                                 </button>
-                                {spinner}
                               </span>
                             </Card.Header>
 

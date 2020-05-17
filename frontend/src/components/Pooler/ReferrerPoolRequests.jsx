@@ -57,6 +57,7 @@ class ReferrerPoolRequests extends Component {
       <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div>
           <table className="table table-bordered table-hover">
+            {spinner}
             <thead className="thead">
               <tr>
                 <th className="text-center font-weight-bold" scope="col">
@@ -131,7 +132,6 @@ class ReferrerPoolRequests extends Component {
                           </td>
                         </tr>
                       </td>
-                      {spinner}
                     </tr>
                   );
                 })}
