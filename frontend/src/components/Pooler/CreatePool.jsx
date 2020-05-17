@@ -17,6 +17,7 @@ class CreatePool extends Component {
       zip: "",
       errors: "",
       text: null,
+      formErrors: {},
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -34,41 +35,87 @@ class CreatePool extends Component {
     });
   }
 
+  validate = () => {
+    var letters = /^[0-9a-zA-Z]+$/;
+
+    var zipExp = /^\d{5}(-\d{4})?$/;
+
+    let poolIdError = "";
+    let poolNameError = "";
+    let zipCodeError = "";
+
+    if (!this.state.poolId) {
+      poolIdError = "Please enter Pool Id";
+    } else if (!this.state.poolId.match(letters)) {
+      poolIdError = "Please input alphanumeric characters only";
+    }
+
+    if (!this.state.name) {
+      poolNameError = "Please enter Pool Name";
+    }
+    if (!this.state.zip) {
+      zipCodeError = "Please enter Zipcode";
+    } else if (!this.state.zip.match(zipExp)) {
+      zipCodeError =
+        "The US zip code must contain 5 digits. Allowed formats are 12345 or 12345-1234";
+    }
+
+    if (poolIdError || poolNameError || zipCodeError) {
+      this.setState((prevState) => ({
+        formErrors: {
+          // object that we want to update
+          ...prevState.formErrors, // keep all other key-value pairs
+          poolIdError: poolIdError, // update the value of specific key
+          poolNameError: poolNameError,
+          zipCodeError: zipCodeError,
+        },
+      }));
+      return false;
+    }
+    return true;
+  };
+
   handleSubmit = (e) => {
     //prevent page from refresh
     e.preventDefault();
-    let data = {};
-    console.log("this.state-->", this.state);
-    data.leaderId = parseInt(this.state.leaderId);
-    data.poolId = this.state.poolId;
-    data.name = this.state.name;
-    data.description = this.state.description;
-    data.neighborhoodName = this.state.neighborhoodName;
-    data.zip = this.state.zip;
-    console.log("data-->", data);
 
-    axios
-      .post(backendurl + "pool/create", data)
-      .then((response) => {
-        console.log(response);
-        if (response.status == 200) {
+    const isValid = this.validate();
+    if (isValid) {
+      let data = {};
+      console.log("this.state-->", this.state);
+      data.leaderId = parseInt(this.state.leaderId);
+      data.poolId = this.state.poolId;
+      data.name = this.state.name;
+      data.description = this.state.description;
+      data.neighborhoodName = this.state.neighborhoodName;
+      data.zip = this.state.zip;
+      console.log("data-->", data);
+
+      axios
+        .post(backendurl + "pool/create", data)
+        .then((response) => {
+          console.log(response);
+          if (response.status == 200) {
+            this.setState({
+              text: "Pool created successfully",
+              poolId: "",
+              name: "",
+              description: "",
+              neighborhoodName: "",
+              zip: "",
+              errors: "",
+              formErrors: {},
+            });
+          }
+        })
+        .catch((error) => {
+          console.log("Error in adding new product", error, error.response);
           this.setState({
-            text: "Pool created successfully",
-            poolId: "",
-            name: "",
-            description: "",
-            neighborhoodName: "",
-            zip: "",
-            errors: "",
+            errors: error.response.data.message,
+            formErrors: {},
           });
-        }
-      })
-      .catch((error) => {
-        console.log("Error in adding new product", error, error.response);
-        this.setState({
-          errors: error.response.data.message,
         });
-      });
+    }
   };
 
   render() {
@@ -95,6 +142,11 @@ class CreatePool extends Component {
                   onChange={this.handleChange}
                   required
                 />
+                {this.state.formErrors.poolIdError ? (
+                  <div style={{ fontSize: 12, color: "red" }}>
+                    {this.state.formErrors.poolIdError}
+                  </div>
+                ) : null}
               </Form.Group>
             </Form.Row>
 
@@ -109,6 +161,11 @@ class CreatePool extends Component {
                   onChange={this.handleChange}
                   required
                 />
+                {this.state.formErrors.poolNameError ? (
+                  <div style={{ fontSize: 12, color: "red" }}>
+                    {this.state.formErrors.poolNameError}
+                  </div>
+                ) : null}
               </Form.Group>
             </Form.Row>
 
@@ -151,6 +208,11 @@ class CreatePool extends Component {
                   onChange={this.handleChange}
                   required
                 />
+                {this.state.formErrors.zipCodeError ? (
+                  <div style={{ fontSize: 12, color: "red" }}>
+                    {this.state.formErrors.zipCodeError}
+                  </div>
+                ) : null}
               </Form.Group>
             </Form.Row>
 
