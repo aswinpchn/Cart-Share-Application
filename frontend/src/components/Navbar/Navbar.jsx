@@ -80,27 +80,27 @@ class Navigationbar extends Component {
       </div>
     );
 
-    if (!verified) {
-      displayMessage = (
-        <div>
-          <Container>
-            <Row>
-              <Col md={{ span: 10, offset: 4 }}>
-                <Card style={{ width: "18rem" }}>
-                  <Card.Body>
-                    <Card.Title>Please verify your account</Card.Title>
-                    <Card.Text>
-                      Check your email and click the verify link!
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-          </Container>
-          ;
-        </div>
-      );
-    }
+    // if (!verified) {
+    //   displayMessage = (
+    //     <div>
+    //       <Container>
+    //         <Row>
+    //           <Col md={{ span: 10, offset: 4 }}>
+    //             <Card style={{ width: "18rem" }}>
+    //               <Card.Body>
+    //                 <Card.Title>Please verify your account</Card.Title>
+    //                 <Card.Text>
+    //                   Check your email and click the verify link!
+    //                 </Card.Text>
+    //               </Card.Body>
+    //             </Card>
+    //           </Col>
+    //         </Row>
+    //       </Container>
+    //       ;
+    //     </div>
+    //   );
+    // }
 
     if (role === "pooler" && verified) {
       menuButtons = (
