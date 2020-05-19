@@ -79,6 +79,11 @@ class CreatePool extends Component {
     //prevent page from refresh
     e.preventDefault();
 
+    this.setState({
+      text: "",
+      errors: "",
+    });
+
     const isValid = this.validate();
     if (isValid) {
       let data = {};
