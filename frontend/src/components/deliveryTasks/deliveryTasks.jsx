@@ -175,7 +175,7 @@ class DeliveryTasks extends Component {
                               <th className="text-center" scope="row">
                                 {this.transformDateTime(order.date)}
                               </th>
-                              <td className="text-center">{order.storeName}</td>
+                              <td className="text-center">{order.store.name}</td>
                               <td className="text-center">
                                 {order.pooler && order.pooler.nickName}
                               </td>
