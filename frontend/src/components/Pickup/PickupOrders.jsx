@@ -189,7 +189,7 @@ class PickupOrders extends Component {
                                         <span>
                                           <span style={{ marginLeft: "30px" }}>
                                             <b> Store Name : </b>{" "}
-                                            {element.storeName}
+                                            {element.store.name}
                                           </span>
                                           <span style={{ marginLeft: "30px" }}>
                                             <b> OrderId: </b>
