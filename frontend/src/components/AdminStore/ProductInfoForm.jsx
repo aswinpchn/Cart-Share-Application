@@ -152,6 +152,7 @@ class ProductInfoForm extends Component {
       data.append("brand", this.state.brand);
       data.append("price", this.state.price);
       data.append("unit", this.state.unit);
+      data.append("description", this.state.description);
       console.log("data-->", data);
 
       this.props.createProduct(data);
