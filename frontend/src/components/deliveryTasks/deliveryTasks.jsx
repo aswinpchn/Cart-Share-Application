@@ -120,6 +120,7 @@ class DeliveryTasks extends Component {
               <Col md={{ span: 10, offset: 1 }}>
                 <div>
                   <table className="table table-bordered table-hover">
+                    {spinner}
                     <thead className="thead">
                       <tr>
                         <th
@@ -175,7 +176,9 @@ class DeliveryTasks extends Component {
                               <th className="text-center" scope="row">
                                 {this.transformDateTime(order.date)}
                               </th>
-                              <td className="text-center">{order.store.name}</td>
+                              <td className="text-center">
+                                {order.store.name}
+                              </td>
                               <td className="text-center">
                                 {order.pooler && order.pooler.nickName}
                               </td>
@@ -210,7 +213,6 @@ class DeliveryTasks extends Component {
                                 ) : (
                                   " "
                                 )}
-                                {spinner}
                               </td>
                             </tr>
                           );
