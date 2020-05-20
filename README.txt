@@ -1,10 +1,10 @@
 275-Term-Project
 
 Members:
-1. Aswin Prasad - 014344512
-2. Shubhangi Yadav - 014517412
-3. Sruthi Duvvuri - 014528813
-4. Vidita Vijaykumar Daga - 014488630
+1. Aswin Prasad - 014344512 (aswin.prasad@sjsu.edu)
+2. Shubhangi Yadav - 014517412 (shubhangi.yadav@sjsu.edu)
+3. Sruthi Duvvuri - 014528813 (sruthi.duvvuri@sjsu.edu)
+4. Vidita Vijaykumar Daga - 014488630 (viditavijaykumar.daga@sjsu.edu)
 
 APP URL:
 http://ec2-52-23-158-241.compute-1.amazonaws.com:3000/
