@@ -9,18 +9,19 @@ Members:
 APP URL:
 http://ec2-52-23-158-241.compute-1.amazonaws.com:3000/
 
-To run FrontEnd:
+To run Frontend:
 1. In base folder, 
 2. `cd frontend`
 3. `npm install`
 4. `npm start`
 
-To run BackEnd (In IDE's):
+There are two ways to run backend
+a) In IDE's:
 1. Import project.
 2. Build app.
 3. Run app.
 
-To run BackEnd (In CLI):
+b) In CLI:
 1. Pre requsites, Java 8 and maven installed.
 2. `mvn clean install`
 3. `mvn spring-boot:run`
