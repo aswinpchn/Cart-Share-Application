@@ -1,0 +1,14 @@
+1. Whenever you are opening a springboot project for the first time in your system in Intellij. You have to set-up some things in Intellij. I struggled to figure out what those are.
+    a. We have to mark the src folder/ some java folder as "source folder". It can be done by Right click on src folder then Mark Directory as > Sources Root
+    b. We have to set the project as a maven project. It can be done by Right click on POM.xml then "Add as maven Project". (If build type is maven)
+    https://stackoverflow.com/questions/37282285/intellij-cannot-find-any-declarations
+
+2. Setting up live-reload for SpringBoot project in Intellij. (It will not work direct in Intellij)
+    https://stackoverflow.com/questions/33869606/intellij-15-springboot-devtools-livereload-not-working
+
+3. Using @Query for complex queries that can't be written in methodName.
+    https://stackoverflow.com/questions/35788856/spring-data-jpa-how-to-combine-multiple-and-and-or-through-method-name
+   See order repository for @Query example.
+
+4. Log SQL statements.
+    https://stackoverflow.com/questions/30118683/how-to-log-sql-statements-in-spring-boot

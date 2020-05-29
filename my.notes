@@ -1,0 +1,6 @@
+1. Worked with branches in this team project. Each one got one branch. And there is a master, which will act as a source of truth.
+	Consider some code is in master. To start working, checkout to master -> "git merge master" command, this will merge master code into your branch.
+	Work on the code -> and push to your branch. Then go to Github -> A popup will come automatically to create pull request.
+	Click create pull request button -> Now the code from your branch will be merged with master.
+	Now checkout to master -> do "git pull", merged code will come to master.
+	Then, Checkout to your branch and start allover again.

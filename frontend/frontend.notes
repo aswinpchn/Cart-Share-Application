@@ -1,0 +1,13 @@
+
+
+1. To move to different pages, you can use Redirect var method, history and window methods.
+    https://stackoverflow.com/questions/50644976/react-button-onclick-redirect-page   (useHistory(), is a concept of hooks. It will work only in functional components. (Functional components is a concept in react 16.))
+    https://stackoverflow.com/questions/44312437/react-router-v4-this-props-history-push-not-working
+    I tried to use useHistory() way, it won't work in normal react classes
+2. Swal is a great package to show alerts and explain users.
+    https://sweetalert.js.org/guides/#getting-started
+
+3. Spinners are a good way to show the user, when some api's take time. (Here in this project, API's involving Emails take time, so we have to use spinners in those cases.)
+    Bootstrap provides support for spinners using HTML and CSS.
+    https://getbootstrap.com/docs/4.4/components/spinners/
+    But if you are using react-bootstrap wrapper, you better use this.    https://react-bootstrap.github.io/components/spinners/
